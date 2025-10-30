@@ -1,0 +1,11 @@
+__pycache__/
+logs/
+ckpts/
+figs/
+datasets/
+
+*.so
+*.ckpt
+*.pkl
+
+
