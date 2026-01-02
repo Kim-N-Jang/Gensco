@@ -148,7 +148,7 @@ if __name__ == '__main__':
         batch_size=train_config.batch_size,
         noise_type=train_config.noise_type,
         target_disruption=train_config.target_disruption,
-        data_argument=3,
+        data_augment=3,
         num_workers=32,
     )
     
