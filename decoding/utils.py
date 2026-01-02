@@ -48,12 +48,12 @@ def convert_heatmap_dtype(
     
 
 
-class CoordDynamicArgument:
+class CoordDynamicAugment:
     def __init__(
         self, 
         encode_fn: tp.Callable[[jax.Array], jax.Array],
         coords: np.ndarray,
-        argument_level: int = 0,
+        augment_level: int = 0,
     ):
         def reflect_x(coords: np.ndarray):
             return np.stack([-coords[..., 0], coords[..., 1]], axis=-1)
@@ -61,7 +61,7 @@ class CoordDynamicArgument:
             return np.stack([coords[..., 0], -coords[..., 1]], axis=-1)
 
         self.feature_list: list[jax.Array]
-        match argument_level:
+        match augment_level:
             case 0:
                 self.feature_list = [
                     encode_fn(coords)
@@ -83,12 +83,12 @@ class CoordDynamicArgument:
             case _:
                 raise ValueError()
             
-        self.argument_level = argument_level
-        self.argument_num = len(self.feature_list)
+        self.augment_level = augment_level
+        self.augment_num = len(self.feature_list)
         
     def __call__(self, generator: np.random.Generator | None = None):
-        if self.argument_level == 0:
+        if self.augment_level == 0:
             return self.feature_list[0]
         else:
-            return self.feature_list[generator.integers(0, self.argument_num)]
+            return self.feature_list[generator.integers(0, self.augment_num)]
 

@@ -24,7 +24,7 @@ from training import load_ckpt
 from lib import tsp_greedy_insert, tsp_double_two_opt, tsp_eval_cost, tsp_random_two_opt
 from decoding.utils import (
     convert_heatmap_dtype, 
-    CoordDynamicArgument as DynamicArgument,
+    CoordDynamicAugment as DynamicAugment,
 )
 from decoding.gpu_heuristics.tsp import two_opt as gpu_tsp_two_opt
 from functools import partial
@@ -41,7 +41,7 @@ def tsp_flow_searching_decode(
     runs: int,
     heatmap_dtype: jax.typing.DTypeLike,
     topk: int | None,
-    argument_level: int,
+    augment_level: int,
     threads_over_batches: int | None,
     seed: int,
 ):      
@@ -96,7 +96,7 @@ def tsp_flow_searching_decode(
 
     def inference_fn(seed: int, coords: np.ndarray, dist_mat: np.ndarray):
         # features: jax.Array = encode(coords)
-        features_manager = DynamicArgument(encode, coords, argument_level=argument_level)
+        features_manager = DynamicAugment(encode, coords, augment_level=augment_level)
         storage: dict[int, np.ndarray] = {}
         dist_mat_gpu = jnp.array(dist_mat)
         def _single_run(r: int):
@@ -208,7 +208,7 @@ if __name__ == '__main__':
     parser.add_argument('--random_two_opt_steps_range', type=eval, required=True)
     parser.add_argument('--heatmap_dtype', type=str, default='float32')
     parser.add_argument('--topk', type=eval, default=None)
-    parser.add_argument('--argument_level', type=int, default=0)
+    parser.add_argument('--augment_level', type=int, default=0)
     parser.add_argument('--threads_over_batches', type=int, default=1)
 
 
@@ -258,7 +258,7 @@ if __name__ == '__main__':
             runs=args.runs,
             heatmap_dtype=args.heatmap_dtype,
             topk=args.topk,
-            argument_level=args.argument_level,
+            augment_level=args.augment_level,
             threads_over_batches=args.threads_over_batches,
             seed=args.seed,
         )

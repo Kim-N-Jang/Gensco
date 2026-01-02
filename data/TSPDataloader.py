@@ -263,7 +263,7 @@ class TSPDataloader:
         timestep_distribution_k: float | int = 0,
         random_two_opt_steps_range: tuple[int, int] | None = None,
         target_disruption: tuple[int, int] | None = None,
-        data_argument: Literal[0, 1, 2, 3] = 3,
+        data_augment: Literal[0, 1, 2, 3] = 3,
         divide_first_axis_into_n_parts: Optional[int] = None,
         num_workers: int | None = 16,
     ) -> None:
@@ -278,7 +278,7 @@ class TSPDataloader:
             random_two_opt_steps_range = (1, max(2, self.num_nodes))
         assert random_two_opt_steps_range[1] > random_two_opt_steps_range[0] > 0
         self.random_two_opt_steps_range = np.array(random_two_opt_steps_range, dtype='int32')
-        self.data_argument = int(data_argument)
+        self.data_augment = int(data_augment)
 
         assert batch_size > 0
         self.batch_size = batch_size
@@ -304,12 +304,12 @@ class TSPDataloader:
             targets: jax.Array,
             coords: jax.Array,
             random_two_opt_steps_range: jax.Array,
-            data_argument: Literal[0, 1, 2, 3],
+            data_augment: Literal[0, 1, 2, 3],
             divide_first_axis_into_n_parts: Optional[int],  # unused
         ) -> tuple[jax.Array, jax.Array]:
             del divide_first_axis_into_n_parts
 
-            match data_argument:
+            match data_augment:
                 case 3:
                     key, subkey = jax.random.split(key)
                     coords = rotate_coords(subkey, coords)
@@ -345,7 +345,7 @@ class TSPDataloader:
                 case 0:
                     pass
                 case _:
-                    raise ValueError(f'Got invalid data argument level: {data_argument}.')
+                    raise ValueError(f'Got invalid data augment level: {data_augment}.')
             coords = normalize(coords, centering_method='mean')
 
             key, subkey = jax.random.split(key)
@@ -361,7 +361,7 @@ class TSPDataloader:
         self.preprocess = partial(
             jax.jit(_preprocess, static_argnums=(4, 5), backend='cpu'),
             random_two_opt_steps_range=self.random_two_opt_steps_range,
-            data_argument=self.data_argument,
+            data_augment=self.data_augment,
             divide_first_axis_into_n_parts=self.divide_first_axis_into_n_parts,
         )
         self.preprocess = jax2tf.convert(self.preprocess, with_gradient=False, native_serialization_platforms=['cpu'])

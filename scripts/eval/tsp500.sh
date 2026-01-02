@@ -5,5 +5,5 @@ python -m decoding.tsp \
     --runs 8 --batch_size 16 \
     --random_two_opt_steps_range "(125, 375)" \
     --threads_over_batches 8 \
-    --argument_level 1 \
+    --augment_level 1 \
     --heatmap_dtype uint8 --topk 5000

@@ -5,4 +5,4 @@ python -m decoding.tsp \
     --runs 8 --batch_size 128 \
     --random_two_opt_steps_range "(25, 75)" \
     --threads_over_batches 2 \
-    --argument_level 1 
+    --augment_level 1 

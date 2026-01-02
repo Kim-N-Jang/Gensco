@@ -16,7 +16,7 @@ def load_ckpt(ckpt_path: str | None):
     model_config = ckpt['model_config']
     train_config: TrainConfig = ckpt['train_config']
     try:
-        opt_state_target = train_config.init_opimizer().init(params)
+        opt_state_target = train_config.init_optimizer().init(params)
         opt_state = from_state_dict(opt_state_target, opt_state)
         del opt_state_target
     except:
