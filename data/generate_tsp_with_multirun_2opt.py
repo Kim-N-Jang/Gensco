@@ -76,8 +76,8 @@ def generate_and_save(
             runs, generator, num_workers,
         ) for i in tqdm.tqdm(range(num_instances // batch_size))
     ]
-    tours = np.concat([result[0] for result in results_list], axis=0)
-    costs = np.concat([result[1] for result in results_list], axis=0)
+    tours = np.concatenate([result[0] for result in results_list], axis=0)
+    costs = np.concatenate([result[1] for result in results_list], axis=0)
     mean_cost = costs.mean().item()
     print(f'Mean Cost: {mean_cost:.6f}')
 
