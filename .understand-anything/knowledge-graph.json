@@ -1,0 +1,6351 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "GenSCO",
+    "languages": [
+      "python",
+      "cpp",
+      "shell",
+      "markdown",
+      "json",
+      "makefile"
+    ],
+    "frameworks": [
+      "JAX",
+      "Triton"
+    ],
+    "description": "NeurIPS 2025 공식 JAX 구현으로, diffusion 기반 조합 최적화(TSP, MIS, MCL)의 추론 시간 확장을 위해 생성(generation)을 탐색 연산자(search operator)로 활용하는 GenSCO 프레임워크.",
+    "analyzedAt": "2026-06-21T00:00:00Z",
+    "gitCommitHash": "57f7ef7f43e43dd6a792a8790ac5e40adce0e1ee"
+  },
+  "nodes": [
+    {
+      "id": "file:data/generate_tsp_with_multirun_2opt.py",
+      "type": "file",
+      "name": "generate_tsp_with_multirun_2opt.py",
+      "filePath": "data/generate_tsp_with_multirun_2opt.py",
+      "summary": "TSP 데이터셋 생성 스크립트로, 멀티런 2-opt 로컬 서치를 CPU에서 병렬로 실행하여 최적화된 투어를 생성하고 .npz 형식으로 저장한다.",
+      "tags": [
+        "데이터생성",
+        "tsp",
+        "utility",
+        "script"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:data/generate_tsp_with_multirun_2opt.py:tsp_two_opt_multirun",
+      "type": "function",
+      "name": "tsp_two_opt_multirun",
+      "filePath": "data/generate_tsp_with_multirun_2opt.py",
+      "lineRange": [
+        11,
+        52
+      ],
+      "summary": "여러 랜덤 초기 투어에 대해 2-opt 로컬 서치를 반복 실행하고 배치 단위로 최선의 투어와 비용을 반환한다.",
+      "tags": [
+        "tsp",
+        "2-opt",
+        "최적화",
+        "배치처리"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:data/generate_tsp_with_multirun_2opt.py:generate_and_save",
+      "type": "function",
+      "name": "generate_and_save",
+      "filePath": "data/generate_tsp_with_multirun_2opt.py",
+      "lineRange": [
+        55,
+        86
+      ],
+      "summary": "랜덤 TSP 인스턴스를 생성하고 2-opt 멀티런으로 최적 투어를 구한 뒤 압축 numpy 파일로 저장한다.",
+      "tags": [
+        "데이터생성",
+        "tsp",
+        "파일IO"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:data/solve_tsp_with_multirun_2opt.py",
+      "type": "file",
+      "name": "solve_tsp_with_multirun_2opt.py",
+      "filePath": "data/solve_tsp_with_multirun_2opt.py",
+      "summary": "기존 TSP 데이터셋에 멀티런 2-opt 로컬 서치를 적용해 투어를 개선하고 결과를 저장하는 스크립트 진입점이다.",
+      "tags": [
+        "tsp",
+        "script",
+        "entry-point",
+        "2-opt"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:decoding/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "decoding/__init__.py",
+      "summary": "decoding 패키지의 초기화 파일로 continuous_sampling 모듈을 노출하는 barrel 역할을 한다.",
+      "tags": [
+        "barrel",
+        "entry-point",
+        "decoding"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:decoding/continuous_sampling.py",
+      "type": "file",
+      "name": "continuous_sampling.py",
+      "filePath": "decoding/continuous_sampling.py",
+      "summary": "Diffusion 기반 연속 샘플링 알고리즘(Euler, DPM++ 2M)을 JAX로 구현하며, 생성 탐색 루프의 핵심 샘플러를 제공한다.",
+      "tags": [
+        "diffusion",
+        "샘플링",
+        "jax",
+        "수치최적화"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "jax.lax.broadcast_in_dim을 활용하여 timestep 브로드캐스팅을 XLA 친화적으로 처리한다."
+    },
+    {
+      "id": "function:decoding/continuous_sampling.py:sample_euler",
+      "type": "function",
+      "name": "sample_euler",
+      "filePath": "decoding/continuous_sampling.py",
+      "lineRange": [
+        14,
+        40
+      ],
+      "summary": "Euler 방식의 diffusion 역확산 스텝을 구현하며, 선택적으로 denoised 히스토리를 반환할 수 있다.",
+      "tags": [
+        "diffusion",
+        "euler",
+        "샘플링"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:decoding/continuous_sampling.py:sample_dpmpp_2m",
+      "type": "function",
+      "name": "sample_dpmpp_2m",
+      "filePath": "decoding/continuous_sampling.py",
+      "lineRange": [
+        43,
+        79
+      ],
+      "summary": "DPM++ 2M 고차 diffusion 샘플러를 구현하여 더 적은 스텝으로 고품질 샘플을 생성한다.",
+      "tags": [
+        "diffusion",
+        "dpmpp",
+        "샘플링",
+        "수치최적화"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:decoding/extra/tsp_flow_labeling.py",
+      "type": "file",
+      "name": "tsp_flow_labeling.py",
+      "filePath": "decoding/extra/tsp_flow_labeling.py",
+      "summary": "플로우 레이블링 기반 TSP 디코딩 변형으로, GPU 2-opt 및 랜덤 2-opt와 멀티스레드 배치 처리를 결합한 고급 탐색 알고리즘을 구현한다.",
+      "tags": [
+        "tsp",
+        "decoding",
+        "flow-labeling",
+        "멀티스레드"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:decoding/extra/tsp_flow_labeling.py:tsp_flow_searching_decode",
+      "type": "function",
+      "name": "tsp_flow_searching_decode",
+      "filePath": "decoding/extra/tsp_flow_labeling.py",
+      "lineRange": [
+        33,
+        193
+      ],
+      "summary": "플로우 레이블을 기반으로 TSP 솔루션을 탐색적으로 디코딩하며, GPU/CPU 2-opt와 멀티스레드 배치 처리를 통해 추론 시간 스케일링을 수행한다.",
+      "tags": [
+        "tsp",
+        "decoding",
+        "탐색",
+        "멀티스레드"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:decoding/gpu_heuristics/tsp.py",
+      "type": "file",
+      "name": "tsp.py",
+      "filePath": "decoding/gpu_heuristics/tsp.py",
+      "summary": "JAX/XLA 기반 GPU 가속 TSP 2-opt 후처리 구현으로, fori_loop를 활용한 벡터화 argmax 2-opt를 제공한다.",
+      "tags": [
+        "tsp",
+        "2-opt",
+        "gpu",
+        "jax"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "jax.lax.fori_loop를 사용하여 GPU에서 반복적인 2-opt 업데이트를 XLA 그래프 내에서 실행한다."
+    },
+    {
+      "id": "function:decoding/gpu_heuristics/tsp.py:two_opt",
+      "type": "function",
+      "name": "two_opt",
+      "filePath": "decoding/gpu_heuristics/tsp.py",
+      "lineRange": [
+        80,
+        89
+      ],
+      "summary": "batched GPU 2-opt의 공개 진입점으로, jit 및 vmap을 통해 배치 전체에 병렬 적용한다.",
+      "tags": [
+        "tsp",
+        "2-opt",
+        "gpu",
+        "jax"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:decoding/gpu_heuristics/tsp.py:_two_opt_post_processing_argmax_impl_unbatched",
+      "type": "function",
+      "name": "_two_opt_post_processing_argmax_impl_unbatched",
+      "filePath": "decoding/gpu_heuristics/tsp.py",
+      "lineRange": [
+        30,
+        77
+      ],
+      "summary": "단일 TSP 인스턴스에 대해 argmax 기반 2-opt 개선을 반복적으로 적용하는 내부 구현체다.",
+      "tags": [
+        "tsp",
+        "2-opt",
+        "내부구현"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:decoding/mcl.py",
+      "type": "file",
+      "name": "mcl.py",
+      "filePath": "decoding/mcl.py",
+      "summary": "Maximum Clique(MCL) 문제를 위한 flow 기반 diffusion 디코딩으로, 반복적인 flip 기반 탐색과 greedy insertion을 결합한다.",
+      "tags": [
+        "mcl",
+        "decoding",
+        "diffusion",
+        "조합최적화"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:decoding/mcl.py:mcl_flow_decode",
+      "type": "function",
+      "name": "mcl_flow_decode",
+      "filePath": "decoding/mcl.py",
+      "lineRange": [
+        15,
+        204
+      ],
+      "summary": "MCL 인스턴스에 대해 diffusion 샘플링과 greedy insertion을 반복적으로 적용하여 최대 클리크를 탐색한다.",
+      "tags": [
+        "mcl",
+        "decoding",
+        "탐색",
+        "멀티스레드"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:decoding/mis.py",
+      "type": "file",
+      "name": "mis.py",
+      "filePath": "decoding/mis.py",
+      "summary": "Maximum Independent Set(MIS) 문제를 위한 flow 기반 diffusion 디코딩으로, flip 기반 반복 탐색과 greedy insertion을 사용한다.",
+      "tags": [
+        "mis",
+        "decoding",
+        "diffusion",
+        "조합최적화"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:decoding/mis.py:mis_flow_decode",
+      "type": "function",
+      "name": "mis_flow_decode",
+      "filePath": "decoding/mis.py",
+      "lineRange": [
+        15,
+        202
+      ],
+      "summary": "MIS 인스턴스에 대해 diffusion 샘플링과 greedy insertion을 반복 적용하여 최대 독립 집합을 탐색한다.",
+      "tags": [
+        "mis",
+        "decoding",
+        "탐색",
+        "멀티스레드"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:decoding/tsp.py",
+      "type": "file",
+      "name": "tsp.py",
+      "filePath": "decoding/tsp.py",
+      "summary": "TSP를 위한 flow 기반 diffusion 디코딩으로, DPM++ 샘플러와 CPU 2-opt를 결합한 반복적 탐색을 수행한다.",
+      "tags": [
+        "tsp",
+        "decoding",
+        "diffusion",
+        "조합최적화"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:decoding/tsp.py:tsp_flow_searching_decode",
+      "type": "function",
+      "name": "tsp_flow_searching_decode",
+      "filePath": "decoding/tsp.py",
+      "lineRange": [
+        32,
+        189
+      ],
+      "summary": "TSP 인스턴스에 대해 DPM++ 샘플러로 heatmap을 생성하고, greedy insertion 및 2-opt 개선을 반복하여 최적 투어를 탐색한다.",
+      "tags": [
+        "tsp",
+        "decoding",
+        "탐색",
+        "멀티스레드"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:decoding/tsp_gpu_2opt.py",
+      "type": "file",
+      "name": "tsp_gpu_2opt.py",
+      "filePath": "decoding/tsp_gpu_2opt.py",
+      "summary": "GPU 가속 2-opt를 활용한 TSP flow 디코딩 변형으로, GPU와 CPU 2-opt를 순차적으로 결합하여 더 강력한 로컬 서치를 수행한다.",
+      "tags": [
+        "tsp",
+        "decoding",
+        "gpu",
+        "2-opt"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:decoding/tsp_gpu_2opt.py:tsp_flow_searching_decode",
+      "type": "function",
+      "name": "tsp_flow_searching_decode",
+      "filePath": "decoding/tsp_gpu_2opt.py",
+      "lineRange": [
+        33,
+        197
+      ],
+      "summary": "GPU 2-opt를 사전 단계로 포함하는 TSP 탐색 디코딩으로, jitted GPU 2-opt 후 CPU 랜덤 2-opt를 추가 적용한다.",
+      "tags": [
+        "tsp",
+        "decoding",
+        "gpu",
+        "멀티스레드"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:decoding/utils.py",
+      "type": "file",
+      "name": "utils.py",
+      "filePath": "decoding/utils.py",
+      "summary": "TSP 디코딩 공용 유틸리티로, heatmap 양자화 함수 및 좌표 기반 동적 증강(DynamicAugment) 클래스를 제공한다.",
+      "tags": [
+        "utility",
+        "heatmap",
+        "증강",
+        "tsp"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:decoding/utils.py:convert_heatmap_dtype",
+      "type": "function",
+      "name": "convert_heatmap_dtype",
+      "filePath": "decoding/utils.py",
+      "lineRange": [
+        31,
+        47
+      ],
+      "summary": "heatmap 텐서를 지정 dtype으로 변환하며, 정수형인 경우 양자화를 적용한다.",
+      "tags": [
+        "utility",
+        "heatmap",
+        "양자화"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:decoding/utils.py:CoordDynamicAugment",
+      "type": "class",
+      "name": "CoordDynamicAugment",
+      "filePath": "decoding/utils.py",
+      "lineRange": [
+        51,
+        93
+      ],
+      "summary": "TSP 좌표에 대해 회전/반사 기반 동적 데이터 증강을 수행하는 클래스로, 추론 시간 다양성을 높인다.",
+      "tags": [
+        "증강",
+        "tsp",
+        "데이터변환"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:helpers/coord_transform.py",
+      "type": "file",
+      "name": "coord_transform.py",
+      "filePath": "helpers/coord_transform.py",
+      "summary": "TSP 좌표 변환 유틸리티로, 회전·반사·정규화·거리행렬 계산 등 JAX 기반 좌표 처리 함수들을 제공한다.",
+      "tags": [
+        "utility",
+        "좌표변환",
+        "jax",
+        "tsp"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:helpers/coord_transform.py:normalize",
+      "type": "function",
+      "name": "normalize",
+      "filePath": "helpers/coord_transform.py",
+      "lineRange": [
+        30,
+        44
+      ],
+      "summary": "TSP 좌표를 중심화 및 스케일 정규화하는 함수로, 평균 또는 중앙값 기반 centering을 지원한다.",
+      "tags": [
+        "정규화",
+        "좌표변환",
+        "tsp"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:helpers/coord_transform.py:cdist",
+      "type": "function",
+      "name": "cdist",
+      "filePath": "helpers/coord_transform.py",
+      "lineRange": [
+        63,
+        67
+      ],
+      "summary": "배치 TSP 좌표에 대해 쌍별 유클리드 거리 행렬을 JAX jit/vmap으로 효율적으로 계산한다.",
+      "tags": [
+        "거리계산",
+        "jax",
+        "tsp"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:helpers/mis_transform.py",
+      "type": "file",
+      "name": "mis_transform.py",
+      "filePath": "helpers/mis_transform.py",
+      "summary": "MIS/MCL 그래프 문제를 위한 에지 리스트를 인접 행렬로 변환하는 JAX 유틸리티를 제공한다.",
+      "tags": [
+        "utility",
+        "mis",
+        "그래프변환",
+        "jax"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:helpers/tsp_transform.py",
+      "type": "file",
+      "name": "tsp_transform.py",
+      "filePath": "helpers/tsp_transform.py",
+      "summary": "TSP 투어 변환 유틸리티로, 2-opt 적용, 투어 비용 계산, 랜덤 셔플 등 JAX 기반 배치 처리 함수들을 포함한다.",
+      "tags": [
+        "utility",
+        "tsp",
+        "2-opt",
+        "jax"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:helpers/tsp_transform.py:tour_shuffle",
+      "type": "function",
+      "name": "tour_shuffle",
+      "filePath": "helpers/tsp_transform.py",
+      "lineRange": [
+        96,
+        124
+      ],
+      "summary": "JAX fori_loop를 사용하여 랜덤 2-opt 스텝을 반복 적용함으로써 투어를 무작위로 섞는다.",
+      "tags": [
+        "tsp",
+        "랜덤화",
+        "jax"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:helpers/tsp_transform.py:get_costs",
+      "type": "function",
+      "name": "get_costs",
+      "filePath": "helpers/tsp_transform.py",
+      "lineRange": [
+        65,
+        71
+      ],
+      "summary": "배치 TSP 투어와 거리 행렬로부터 JAX jit/vmap을 이용해 전체 투어 비용을 효율적으로 계산한다.",
+      "tags": [
+        "tsp",
+        "비용계산",
+        "jax"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:lib/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "lib/__init__.py",
+      "summary": "C++ 확장 모듈을 래핑하는 Python 바인딩 레이어로, TSP 2-opt, greedy insertion, MIS/MCL greedy insertion 등 CPU 가속 연산들을 파이썬으로 노출한다.",
+      "tags": [
+        "entry-point",
+        "c++-바인딩",
+        "tsp",
+        "mis"
+      ],
+      "complexity": "complex",
+      "languageNotes": "내부적으로 _impl 접미사 함수들은 C++ 확장 모듈에서 가져오며, Python 레이어는 복사/병렬화 인자를 처리하는 thin wrapper 역할을 한다."
+    },
+    {
+      "id": "function:lib/__init__.py:mis_edges2neighbors",
+      "type": "function",
+      "name": "mis_edges2neighbors",
+      "filePath": "lib/__init__.py",
+      "lineRange": [
+        63,
+        78
+      ],
+      "summary": "MIS/MCL 그래프의 에지 리스트를 이웃 리스트 형식으로 변환하며, dtype에 따라 두 가지 C++ 구현 중 하나를 선택한다.",
+      "tags": [
+        "mis",
+        "그래프변환",
+        "c++-바인딩"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:lib/__init__.py:mis_greedy_insert",
+      "type": "function",
+      "name": "mis_greedy_insert",
+      "filePath": "lib/__init__.py",
+      "lineRange": [
+        137,
+        155
+      ],
+      "summary": "이웃 리스트 기반 greedy 삽입으로 MIS 후보 솔루션을 배치 단위로 구성한다.",
+      "tags": [
+        "mis",
+        "greedy",
+        "c++-바인딩"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:lib/__init__.py:mcl_greedy_insert",
+      "type": "function",
+      "name": "mcl_greedy_insert",
+      "filePath": "lib/__init__.py",
+      "lineRange": [
+        158,
+        181
+      ],
+      "summary": "이웃 리스트 기반 greedy 삽입으로 MCL 후보 솔루션을 배치 단위로 구성한다.",
+      "tags": [
+        "mcl",
+        "greedy",
+        "c++-바인딩"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:lib/__init__.py:MISPartialInsertion",
+      "type": "class",
+      "name": "MISPartialInsertion",
+      "filePath": "lib/__init__.py",
+      "lineRange": [
+        101,
+        134
+      ],
+      "summary": "MIS 부분 삽입 상태를 유지하는 클래스로, 마스크된 노드를 점진적으로 후보 집합에 삽입하는 반복 연산을 캡슐화한다.",
+      "tags": [
+        "mis",
+        "상태관리",
+        "greedy"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:training/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "training/__init__.py",
+      "summary": "training 패키지 초기화 파일로, 체크포인트 유틸리티, 옵티마이저 초기화, Logger를 패키지 레벨로 노출하는 barrel이다.",
+      "tags": [
+        "barrel",
+        "entry-point",
+        "training"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:training/ckpt_utils.py",
+      "type": "file",
+      "name": "ckpt_utils.py",
+      "filePath": "training/ckpt_utils.py",
+      "summary": "JAX 학습 체크포인트의 저장 및 로드 유틸리티로, pickle 직렬화와 옵티마이저 상태 복원을 처리한다.",
+      "tags": [
+        "training",
+        "체크포인트",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:training/ckpt_utils.py:load_ckpt",
+      "type": "function",
+      "name": "load_ckpt",
+      "filePath": "training/ckpt_utils.py",
+      "lineRange": [
+        8,
+        25
+      ],
+      "summary": "pickle 파일에서 모델 파라미터, 옵티마이저 상태, 학습 설정을 로드하고 옵티마이저를 재초기화한다.",
+      "tags": [
+        "체크포인트",
+        "로드",
+        "training"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:training/ckpt_utils.py:save_ckpt",
+      "type": "function",
+      "name": "save_ckpt",
+      "filePath": "training/ckpt_utils.py",
+      "lineRange": [
+        28,
+        54
+      ],
+      "summary": "학습 체크포인트(파라미터, 옵티마이저 상태, 학습 설정)를 pickle 파일로 직렬화하여 저장하며, 다중 GPU 복제 해제를 지원한다.",
+      "tags": [
+        "체크포인트",
+        "저장",
+        "training"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:training/convert_ckpt.py",
+      "type": "file",
+      "name": "convert_ckpt.py",
+      "filePath": "training/convert_ckpt.py",
+      "summary": "학습 체크포인트의 파라미터 dtype을 변환하고 재저장하는 유틸리티 스크립트로, 모델을 다른 정밀도로 내보낼 때 사용한다.",
+      "tags": [
+        "training",
+        "체크포인트",
+        "dtype변환",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:training/convert_ckpt.py:load_convert_save",
+      "type": "function",
+      "name": "load_convert_save",
+      "filePath": "training/convert_ckpt.py",
+      "lineRange": [
+        7,
+        26
+      ],
+      "summary": "체크포인트를 로드하고 파라미터 dtype을 변환한 후 재저장하며, 선택적으로 학습 관련 메타데이터를 제거한다.",
+      "tags": [
+        "체크포인트",
+        "dtype변환",
+        "training"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:data/MCLDataloader.py",
+      "type": "file",
+      "name": "MCLDataloader.py",
+      "filePath": "data/MCLDataloader.py",
+      "summary": "MCL(최대 클리크 탐색) 문제용 데이터로더를 MISDataloader의 별칭으로 노출하는 단순 래퍼 모듈입니다.",
+      "tags": [
+        "데이터로더",
+        "mcl",
+        "배럴",
+        "re-export"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:data/MISDataloader.py",
+      "type": "file",
+      "name": "MISDataloader.py",
+      "filePath": "data/MISDataloader.py",
+      "summary": "MIS(최대 독립 집합) 문제용 그래프 데이터를 배치 단위로 무작위 샘플링하는 반복 가능 데이터로더 클래스를 제공합니다.",
+      "tags": [
+        "데이터로더",
+        "mis",
+        "배치-샘플링",
+        "그래프-데이터"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:data/MISDataloader.py:MISDataloader",
+      "type": "class",
+      "name": "MISDataloader",
+      "filePath": "data/MISDataloader.py",
+      "lineRange": [
+        5,
+        33
+      ],
+      "summary": "그래프 엣지, 레이블, 노드 수를 저장하고 무작위 인덱스로 배치를 생성하는 MIS/MCL 학습용 데이터 이터레이터입니다.",
+      "tags": [
+        "데이터로더",
+        "그래프",
+        "배치",
+        "이터레이터"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:data/TSPDataloader.py",
+      "type": "file",
+      "name": "TSPDataloader.py",
+      "filePath": "data/TSPDataloader.py",
+      "summary": "TSP(순회 세일즈맨 문제) 학습을 위해 JAX JIT 컴파일된 2-opt 기반 노이즈 생성, 좌표 증강, 타임스텝 샘플링 등을 통합한 고성능 데이터로더를 구현합니다.",
+      "tags": [
+        "데이터로더",
+        "tsp",
+        "데이터-증강",
+        "jax-jit"
+      ],
+      "complexity": "complex",
+      "languageNotes": "jax2tf와 tf.function을 결합하여 JAX 전처리 파이프라인을 TensorFlow 데이터 파이프라인으로 변환함으로써 CPU 병렬 워커를 활용합니다."
+    },
+    {
+      "id": "class:data/TSPDataloader.py:TSPDataloader",
+      "type": "class",
+      "name": "TSPDataloader",
+      "filePath": "data/TSPDataloader.py",
+      "lineRange": [
+        257,
+        390
+      ],
+      "summary": "좌표 회전/반사 증강 및 2-opt 셔플 노이즈를 JAX JIT으로 컴파일하여 TF 데이터셋 파이프라인과 통합하는 TSP 학습 데이터로더입니다.",
+      "tags": [
+        "데이터로더",
+        "tsp",
+        "데이터-증강",
+        "병렬-처리"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:data/TSPDataloader.py:apply_two_opt",
+      "type": "function",
+      "name": "apply_two_opt",
+      "filePath": "data/TSPDataloader.py",
+      "lineRange": [
+        13,
+        32
+      ],
+      "summary": "단일 또는 배치 TSP 투어에 2-opt 이동을 적용하여 두 노드 사이의 경로를 뒤집는 JAX 함수입니다.",
+      "tags": [
+        "2-opt",
+        "tsp",
+        "jax",
+        "최적화"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:data/TSPDataloader.py:tour_shuffle",
+      "type": "function",
+      "name": "tour_shuffle",
+      "filePath": "data/TSPDataloader.py",
+      "lineRange": [
+        35,
+        64
+      ],
+      "summary": "지정된 횟수만큼 무작위 2-opt 연산을 반복 적용하여 TSP 투어를 셔플하는 JAX lax.fori_loop 기반 함수입니다.",
+      "tags": [
+        "tsp",
+        "셔플",
+        "jax",
+        "노이즈-생성"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:data/TSPDataloader.py:preprocess_sol_type_edge",
+      "type": "function",
+      "name": "preprocess_sol_type_edge",
+      "filePath": "data/TSPDataloader.py",
+      "lineRange": [
+        165,
+        207
+      ],
+      "summary": "배치 TSP 솔루션에 노이즈 타입(shuffle/randperm/none)과 타임스텝 분포를 적용하여 확산 학습용 (현재 상태, 목표, 타임스텝) 쌍을 생성합니다.",
+      "tags": [
+        "전처리",
+        "diffusion",
+        "노이즈-생성",
+        "jax-jit"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:data/TSPDataloader.py:normalize",
+      "type": "function",
+      "name": "normalize",
+      "filePath": "data/TSPDataloader.py",
+      "lineRange": [
+        240,
+        254
+      ],
+      "summary": "TSP 좌표를 평균 또는 중앙값으로 중심화하고 평균 L2 노름으로 스케일링하는 정규화 함수입니다.",
+      "tags": [
+        "정규화",
+        "좌표",
+        "전처리",
+        "유틸리티"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:data/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "data/__init__.py",
+      "summary": "data 패키지의 TSPDataloader, MISDataloader, MCLDataloader를 외부로 노출하는 패키지 진입점입니다.",
+      "tags": [
+        "진입점",
+        "배럴",
+        "데이터로더",
+        "패키지"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:models/MCLModel.py",
+      "type": "file",
+      "name": "MCLModel.py",
+      "filePath": "models/MCLModel.py",
+      "summary": "MCL(최대 클리크 탐색) 모델을 MISModel의 별칭으로 정의하는 래퍼 모듈로, MIS와 MCL이 동일한 모델 구조를 공유함을 나타냅니다.",
+      "tags": [
+        "모델",
+        "mcl",
+        "배럴",
+        "re-export"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:models/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "models/__init__.py",
+      "summary": "models 패키지의 TSPModel, MISModel, MCLModel 및 각 Config 클래스를 통합 노출하는 패키지 진입점입니다.",
+      "tags": [
+        "진입점",
+        "배럴",
+        "모델",
+        "패키지"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:modules/functional/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "modules/functional/__init__.py",
+      "summary": "modules/functional 패키지의 coord_normalize 함수를 외부로 노출하는 패키지 진입점입니다.",
+      "tags": [
+        "진입점",
+        "배럴",
+        "좌표-변환",
+        "패키지"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:modules/functional/coord_transform.py",
+      "type": "file",
+      "name": "coord_transform.py",
+      "filePath": "modules/functional/coord_transform.py",
+      "summary": "JAX 기반의 좌표 정규화 유틸리티(평균/중앙값 중심화 및 L2 스케일링)와 반사 변환 함수를 제공합니다.",
+      "tags": [
+        "좌표-변환",
+        "정규화",
+        "유틸리티",
+        "jax"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:modules/functional/coord_transform.py:normalize",
+      "type": "function",
+      "name": "normalize",
+      "filePath": "modules/functional/coord_transform.py",
+      "lineRange": [
+        24,
+        37
+      ],
+      "summary": "입력 좌표를 평균 또는 중앙값으로 중심화하고 평균 L2 노름으로 정규화하는 함수로, TSP 학습 시 입력 특징 정규화에 사용됩니다.",
+      "tags": [
+        "정규화",
+        "좌표",
+        "전처리",
+        "유틸리티"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:training/TrainConfig.py",
+      "type": "file",
+      "name": "TrainConfig.py",
+      "filePath": "training/TrainConfig.py",
+      "summary": "학습률, 배치 크기, 옵티마이저 유형, 노이즈 방식 등 모든 학습 하이퍼파라미터를 dataclass로 관리하고 옵티마이저 초기화 메서드를 포함하는 학습 설정 클래스입니다.",
+      "tags": [
+        "설정",
+        "하이퍼파라미터",
+        "옵티마이저",
+        "dataclass"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:training/TrainConfig.py:TrainConfig",
+      "type": "class",
+      "name": "TrainConfig",
+      "filePath": "training/TrainConfig.py",
+      "lineRange": [
+        7,
+        38
+      ],
+      "summary": "학습에 필요한 모든 설정(학습률 스케줄, 배치 크기, 옵티마이저 타입, 노이즈 방식 등)을 담고 옵티마이저를 초기화하는 dataclass입니다.",
+      "tags": [
+        "설정",
+        "하이퍼파라미터",
+        "옵티마이저",
+        "dataclass"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:training/train_mcl.py",
+      "type": "file",
+      "name": "train_mcl.py",
+      "filePath": "training/train_mcl.py",
+      "summary": "MCL 학습 진입점으로, train_mis 함수를 재사용하여 MCL 데이터로더와 모델을 초기화하고 학습을 실행하는 스크립트입니다.",
+      "tags": [
+        "학습",
+        "mcl",
+        "진입점",
+        "스크립트"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:training/train_mis.py",
+      "type": "file",
+      "name": "train_mis.py",
+      "filePath": "training/train_mis.py",
+      "summary": "MIS/MCL 문제에 대한 확산 모델 학습 루프를 구현하며, JAX JIT 컴파일된 train_step 함수와 다중 디바이스 지원(pmap)을 포함합니다.",
+      "tags": [
+        "학습",
+        "mis",
+        "diffusion",
+        "jax-pmap"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:training/train_mis.py:train_mis",
+      "type": "function",
+      "name": "train_mis",
+      "filePath": "training/train_mis.py",
+      "lineRange": [
+        16,
+        147
+      ],
+      "summary": "MIS/MCL 확산 모델의 메인 학습 루프로, 멀티 디바이스 복제, JIT 컴파일된 gradient step, 체크포인트 저장, 로깅을 처리합니다.",
+      "tags": [
+        "학습-루프",
+        "diffusion",
+        "jax-pmap",
+        "체크포인트"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:training/train_tsp.py",
+      "type": "file",
+      "name": "train_tsp.py",
+      "filePath": "training/train_tsp.py",
+      "summary": "TSP 문제에 대한 확산 모델 학습 루프를 구현하며, adjacency matrix 기반 손실 함수와 다중 디바이스 지원(pmap)을 포함합니다.",
+      "tags": [
+        "학습",
+        "tsp",
+        "diffusion",
+        "jax-pmap"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:training/train_tsp.py:train_tsp",
+      "type": "function",
+      "name": "train_tsp",
+      "filePath": "training/train_tsp.py",
+      "lineRange": [
+        17,
+        94
+      ],
+      "summary": "TSP 확산 모델의 메인 학습 루프로, 인접 행렬 기반 손실 계산, 멀티 디바이스 복제, JIT 컴파일된 gradient step, 체크포인트 저장을 처리합니다.",
+      "tags": [
+        "학습-루프",
+        "diffusion",
+        "tsp",
+        "jax-pmap"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:models/MISModel.py",
+      "type": "file",
+      "name": "MISModel.py",
+      "filePath": "models/MISModel.py",
+      "summary": "최대 독립 집합(MIS) 문제를 위한 diffusion 기반 인코더-디코더 Transformer 모델과 설정 클래스를 정의한다. 그래프 인접 행렬을 입력받아 노드 선택 확률 로짓을 출력하는 sigmoid/softmax 헤드를 제공한다.",
+      "tags": [
+        "data-model",
+        "service",
+        "신경망-모델",
+        "diffusion",
+        "그래프-최적화"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Flax NNX 모듈로 구현되었으며 JAX/JIT 추론을 위해 bfloat16 dtype을 기본으로 사용한다. encode/decode 분리 설계로 추론 시간 탐색을 지원한다."
+    },
+    {
+      "id": "class:models/MISModel.py:MISModelConfig",
+      "type": "class",
+      "name": "MISModelConfig",
+      "filePath": "models/MISModel.py",
+      "lineRange": [
+        11,
+        55
+      ],
+      "summary": "MISModel의 하이퍼파라미터를 담는 dataclass로, 사전 정의된 설정 프리셋을 반환하는 정적 팩토리 메서드와 모델 인스턴스를 생성하는 construct_model을 포함한다.",
+      "tags": [
+        "data-model",
+        "factory",
+        "설정"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:models/MISModel.py:MISModel",
+      "type": "class",
+      "name": "MISModel",
+      "filePath": "models/MISModel.py",
+      "lineRange": [
+        59,
+        220
+      ],
+      "summary": "MIS 문제를 위한 인코더-디코더 Transformer 모델로, 그래프 인접 행렬을 조건으로 받아 timestep별 노드 선택 로짓을 생성하는 encode, decode 메서드를 구현한다.",
+      "tags": [
+        "data-model",
+        "신경망-모델",
+        "transformer",
+        "diffusion"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:models/MISModel.py:MISModel.encode",
+      "type": "function",
+      "name": "MISModel.encode",
+      "filePath": "models/MISModel.py",
+      "lineRange": [
+        154,
+        178
+      ],
+      "summary": "인접 행렬을 어텐션 바이어스로 활용하여 그래프 노드 특징을 인코딩하고 Transformer 인코더를 통과시킨 특징 벡터를 반환한다.",
+      "tags": [
+        "신경망-모델",
+        "인코더",
+        "transformer"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:models/MISModel.py:MISModel.decode",
+      "type": "function",
+      "name": "MISModel.decode",
+      "filePath": "models/MISModel.py",
+      "lineRange": [
+        180,
+        220
+      ],
+      "summary": "인코딩된 특징과 현재 선택 상태, timestep을 받아 Transformer 디코더를 통과시키고 sigmoid/softmax 헤드로 노드별 선택 로짓을 반환한다.",
+      "tags": [
+        "신경망-모델",
+        "디코더",
+        "diffusion"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:models/TSPModel.py",
+      "type": "file",
+      "name": "TSPModel.py",
+      "filePath": "models/TSPModel.py",
+      "summary": "여행자 판매원 문제(TSP)를 위한 diffusion 기반 인코더-디코더 Transformer 모델과 설정 클래스를 정의한다. 2D 좌표를 입력받아 tour 엣지 확률 행렬을 출력한다.",
+      "tags": [
+        "data-model",
+        "service",
+        "신경망-모델",
+        "diffusion",
+        "그래프-최적화"
+      ],
+      "complexity": "complex",
+      "languageNotes": "feature2logit 메서드에서 특징 벡터 내적으로 쌍별 유사도 행렬을 생성하는 독특한 출력 방식을 사용한다."
+    },
+    {
+      "id": "class:models/TSPModel.py:TSPModelConfig",
+      "type": "class",
+      "name": "TSPModelConfig",
+      "filePath": "models/TSPModel.py",
+      "lineRange": [
+        11,
+        75
+      ],
+      "summary": "TSPModel의 하이퍼파라미터를 담는 dataclass로, qk_norm, final_norm 등 다양한 변형 설정을 지원하는 사전 정의 프리셋을 제공한다.",
+      "tags": [
+        "data-model",
+        "factory",
+        "설정"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:models/TSPModel.py:TSPModel",
+      "type": "class",
+      "name": "TSPModel",
+      "filePath": "models/TSPModel.py",
+      "lineRange": [
+        79,
+        200
+      ],
+      "summary": "TSP 문제를 위한 인코더-디코더 Transformer 모델로, 노드 좌표를 인코딩하고 timestep 조건부 디코딩을 통해 tour 엣지 로짓 행렬을 생성한다.",
+      "tags": [
+        "data-model",
+        "신경망-모델",
+        "transformer",
+        "diffusion"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:models/TSPModel.py:TSPModel.encode",
+      "type": "function",
+      "name": "TSPModel.encode",
+      "filePath": "models/TSPModel.py",
+      "lineRange": [
+        148,
+        152
+      ],
+      "summary": "원시 노드 좌표 특징을 Linear projection한 뒤 Transformer 인코더를 통과시켜 노드 임베딩을 반환한다.",
+      "tags": [
+        "신경망-모델",
+        "인코더"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:models/TSPModel.py:TSPModel.decode",
+      "type": "function",
+      "name": "TSPModel.decode",
+      "filePath": "models/TSPModel.py",
+      "lineRange": [
+        154,
+        176
+      ],
+      "summary": "인코딩된 특징, timestep, 인접 행렬을 받아 디코더를 통과시키고 logit 또는 임베딩을 선택적으로 반환한다.",
+      "tags": [
+        "신경망-모델",
+        "디코더",
+        "diffusion"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:models/TSPModel.py:TSPModel.feature2logit",
+      "type": "function",
+      "name": "TSPModel.feature2logit",
+      "filePath": "models/TSPModel.py",
+      "lineRange": [
+        178,
+        200
+      ],
+      "summary": "특징 벡터 내적으로 N×N 쌍별 로짓 행렬을 생성하고 final_norm, softcap, 대각선 마스킹을 적용하여 TSP tour 확률 행렬을 반환한다.",
+      "tags": [
+        "신경망-모델",
+        "출력-헤드",
+        "유사도"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:modules/Linear.py",
+      "type": "file",
+      "name": "Linear.py",
+      "filePath": "modules/Linear.py",
+      "summary": "Xavier uniform 초기화를 적용한 Flax NNX Linear 레이어를 생성하는 팩토리 함수를 제공한다.",
+      "tags": [
+        "utility",
+        "신경망-레이어",
+        "팩토리"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:modules/Linear.py:Linear",
+      "type": "function",
+      "name": "Linear",
+      "filePath": "modules/Linear.py",
+      "lineRange": [
+        5,
+        18
+      ],
+      "summary": "Xavier uniform 커널 초기화와 작은 표준편차의 bias 초기화를 기본값으로 설정한 nnx.Linear 인스턴스를 반환하는 팩토리 함수다.",
+      "tags": [
+        "utility",
+        "팩토리",
+        "신경망-레이어"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:modules/MLPBlock.py",
+      "type": "file",
+      "name": "MLPBlock.py",
+      "filePath": "modules/MLPBlock.py",
+      "summary": "두 개의 Linear 레이어와 활성화 함수로 구성된 표준 MLP 블록 모듈을 정의한다. 숨겨진 차원과 출력 차원을 유연하게 지정할 수 있다.",
+      "tags": [
+        "utility",
+        "신경망-레이어",
+        "mlp"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:modules/MLPBlock.py:MLPBlock",
+      "type": "class",
+      "name": "MLPBlock",
+      "filePath": "modules/MLPBlock.py",
+      "lineRange": [
+        9,
+        53
+      ],
+      "summary": "embed → hidden → out 구조의 2층 MLP 모듈로, get_activation을 통한 동적 활성화 함수 선택과 nnx.Sequential 내부 구성을 사용한다.",
+      "tags": [
+        "신경망-레이어",
+        "mlp",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:modules/MultiHeadAttention.py",
+      "type": "file",
+      "name": "MultiHeadAttention.py",
+      "filePath": "modules/MultiHeadAttention.py",
+      "summary": "QKV packed 방식의 멀티헤드 어텐션 모듈과 cuDNN/Triton 백엔드를 자동 선택하는 attention_fn 래퍼를 구현한다.",
+      "tags": [
+        "신경망-레이어",
+        "어텐션",
+        "transformer",
+        "gpu-최적화"
+      ],
+      "complexity": "complex",
+      "languageNotes": "시퀀스 길이가 홀수이거나 특정 조건(softcap, kwargs)에서는 Triton 백엔드로 자동 폴백하며, 일반적인 경우 cuDNN dot_product_attention을 사용한다."
+    },
+    {
+      "id": "function:modules/MultiHeadAttention.py:attention_fn",
+      "type": "function",
+      "name": "attention_fn",
+      "filePath": "modules/MultiHeadAttention.py",
+      "lineRange": [
+        9,
+        74
+      ],
+      "summary": "cuDNN과 Triton 백엔드를 자동으로 선택하는 어텐션 함수로, softcap이나 추가 kwargs가 있을 경우 Triton으로 폴백하고 홀수 시퀀스 패딩을 처리한다.",
+      "tags": [
+        "어텐션",
+        "gpu-최적화",
+        "백엔드-선택"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:modules/MultiHeadAttention.py:MultiHeadAttention",
+      "type": "class",
+      "name": "MultiHeadAttention",
+      "filePath": "modules/MultiHeadAttention.py",
+      "lineRange": [
+        77,
+        172
+      ],
+      "summary": "QKV packed 또는 분리 모드를 지원하는 멀티헤드 어텐션 모듈로, QK 정규화 옵션과 커스텀 attention_fn 주입을 지원한다.",
+      "tags": [
+        "신경망-레이어",
+        "어텐션",
+        "transformer"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:modules/SwiGLU.py",
+      "type": "file",
+      "name": "SwiGLU.py",
+      "filePath": "modules/SwiGLU.py",
+      "summary": "XLA에 최적화된 SwiGLU 게이티드 선형 유닛 모듈을 구현한다. jax.remat을 활용한 메모리 효율적인 게이트 계산을 포함한다.",
+      "tags": [
+        "신경망-레이어",
+        "활성화-함수",
+        "gpu-최적화"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "xla_swiglu 함수는 @jax.jit으로 컴파일되고 내부 compute_gates에 @jax.remat을 적용하여 메모리 재계산(activation checkpointing)을 수행한다."
+    },
+    {
+      "id": "function:modules/SwiGLU.py:xla_swiglu",
+      "type": "function",
+      "name": "xla_swiglu",
+      "filePath": "modules/SwiGLU.py",
+      "lineRange": [
+        7,
+        20
+      ],
+      "summary": "XLA JIT 컴파일된 SwiGLU 연산으로, silu(xW) * xV 게이트를 remat으로 처리하여 메모리 사용량을 최소화한다.",
+      "tags": [
+        "활성화-함수",
+        "gpu-최적화",
+        "jax-jit"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:modules/SwiGLU.py:SwiGLU",
+      "type": "class",
+      "name": "SwiGLU",
+      "filePath": "modules/SwiGLU.py",
+      "lineRange": [
+        23,
+        85
+      ],
+      "summary": "embed_dim을 hidden_dim으로 투영하는 W, V, W2 가중치 행렬을 관리하고 xla_swiglu를 호출하는 Flax NNX 모듈이다.",
+      "tags": [
+        "신경망-레이어",
+        "활성화-함수"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:modules/TimestepEmbedder.py",
+      "type": "file",
+      "name": "TimestepEmbedder.py",
+      "filePath": "modules/TimestepEmbedder.py",
+      "summary": "Stable Diffusion 3.5 스타일의 sinusoidal timestep 임베딩 모듈을 구현한다. 정수 timestep을 주파수 임베딩으로 변환한 뒤 MLP를 통과시킨다.",
+      "tags": [
+        "신경망-레이어",
+        "diffusion",
+        "임베딩"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "SD3.5 (Stability-AI/sd3.5)의 구현을 참고하여 작성되었으며, ensure_compile_time_eval로 주파수 벡터를 컴파일 시점에 고정한다."
+    },
+    {
+      "id": "class:modules/TimestepEmbedder.py:TimestepEmbedder",
+      "type": "class",
+      "name": "TimestepEmbedder",
+      "filePath": "modules/TimestepEmbedder.py",
+      "lineRange": [
+        12,
+        70
+      ],
+      "summary": "timestep을 sinusoidal 주파수 임베딩으로 변환 후 2층 MLP를 통해 최종 임베딩을 생성하는 Flax NNX 모듈이다.",
+      "tags": [
+        "신경망-레이어",
+        "diffusion",
+        "임베딩"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:modules/TimestepEmbedder.py:TimestepEmbedder.timestep_embedding",
+      "type": "function",
+      "name": "TimestepEmbedder.timestep_embedding",
+      "filePath": "modules/TimestepEmbedder.py",
+      "lineRange": [
+        42,
+        62
+      ],
+      "summary": "N개 timestep 인덱스를 받아 cosine/sine 주파수 성분으로 구성된 (N, dim) sinusoidal 위치 임베딩 텐서를 생성하는 정적 메서드다.",
+      "tags": [
+        "임베딩",
+        "sinusoidal",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:modules/TransformerEncoder.py",
+      "type": "file",
+      "name": "TransformerEncoder.py",
+      "filePath": "modules/TransformerEncoder.py",
+      "summary": "TransformerLayer를 num_layers개 쌓아 순차적으로 특징을 처리하는 Transformer 인코더 스택 모듈을 구현한다.",
+      "tags": [
+        "신경망-레이어",
+        "transformer",
+        "인코더"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:modules/TransformerEncoder.py:TransformerEncoder",
+      "type": "class",
+      "name": "TransformerEncoder",
+      "filePath": "modules/TransformerEncoder.py",
+      "lineRange": [
+        9,
+        45
+      ],
+      "summary": "TransformerLayer 인스턴스 리스트를 관리하고 attn_options를 전달하며 순차 forward pass를 수행하는 Flax NNX 모듈이다.",
+      "tags": [
+        "신경망-레이어",
+        "transformer",
+        "인코더"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:modules/TransformerLayer.py",
+      "type": "file",
+      "name": "TransformerLayer.py",
+      "filePath": "modules/TransformerLayer.py",
+      "summary": "Pre-LN Transformer 레이어를 구현하며, use_swiglu 플래그에 따라 FFN을 MLPBlock 또는 SwiGLU로 선택하고 remat layernorm을 지원한다.",
+      "tags": [
+        "신경망-레이어",
+        "transformer",
+        "어텐션"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "remat_layernorm=True 시 layernorm을 nnx.remat으로 감싸 activation checkpointing을 수행하여 GPU 메모리를 절약한다."
+    },
+    {
+      "id": "class:modules/TransformerLayer.py:TransformerLayer",
+      "type": "class",
+      "name": "TransformerLayer",
+      "filePath": "modules/TransformerLayer.py",
+      "lineRange": [
+        12,
+        88
+      ],
+      "summary": "LayerNorm → MultiHeadAttention → residual → LayerNorm → FFN(MLPBlock 또는 SwiGLU) → residual 구조의 Pre-LN Transformer 레이어 모듈이다.",
+      "tags": [
+        "신경망-레이어",
+        "transformer",
+        "어텐션"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:modules/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "modules/__init__.py",
+      "summary": "modules 패키지의 공개 API를 노출하는 배럴 파일로, TransformerEncoder, MLPBlock, TimestepEmbedder, Linear 네 가지 주요 모듈을 re-export한다.",
+      "tags": [
+        "barrel",
+        "entry-point",
+        "패키지-초기화"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:modules/get_activation.py",
+      "type": "file",
+      "name": "get_activation.py",
+      "filePath": "modules/get_activation.py",
+      "summary": "활성화 함수 이름 문자열을 받아 JAX 활성화 함수 객체를 반환하는 유틸리티 함수를 제공한다. silu/swish는 jax.remat으로 래핑하여 메모리 효율을 높인다.",
+      "tags": [
+        "utility",
+        "활성화-함수",
+        "팩토리"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:modules/get_activation.py:get_activation",
+      "type": "function",
+      "name": "get_activation",
+      "filePath": "modules/get_activation.py",
+      "lineRange": [
+        4,
+        11
+      ],
+      "summary": "활성화 함수 이름 문자열을 JAX 함수 객체로 변환하는 팩토리 함수로, silu는 remat 래핑을 적용한다.",
+      "tags": [
+        "utility",
+        "활성화-함수",
+        "팩토리"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:lib/interface.cpp",
+      "type": "file",
+      "name": "interface.cpp",
+      "filePath": "lib/interface.cpp",
+      "summary": "pybind11 모듈 진입점으로, TSP/MIS/MCL 알고리즘 함수들을 Python에 노출하는 PYBIND11_MODULE 매크로 블록을 포함한다.",
+      "tags": [
+        "entry-point",
+        "api-handler",
+        "pybind11"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:lib/interface.hpp",
+      "type": "file",
+      "name": "interface.hpp",
+      "filePath": "lib/interface.hpp",
+      "summary": "공통 pybind11 헤더와 네임스페이스 별칭(py = pybind11)을 설정하며, TSP/MIS 인터페이스 헤더를 한데 모은 집합 헤더 파일이다.",
+      "tags": [
+        "barrel",
+        "pybind11",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:lib/mcl.hpp",
+      "type": "file",
+      "name": "mcl.hpp",
+      "filePath": "lib/mcl.hpp",
+      "summary": "최대 클리크 문제(MCL) 핵심 알고리즘을 구현하며, 후보 노드 목록을 순회하며 부분 탐욕 삽입으로 클리크를 확장하는 템플릿 함수 partially_greedy_insert를 제공한다.",
+      "tags": [
+        "utility",
+        "graph-algorithm",
+        "mcl"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "C++ 템플릿을 사용하여 노드 인덱스 dtype을 추상화하며 헤더 전용으로 구현된다."
+    },
+    {
+      "id": "function:lib/mcl.hpp:partially_greedy_insert",
+      "type": "function",
+      "name": "partially_greedy_insert",
+      "filePath": "lib/mcl.hpp",
+      "lineRange": [
+        13,
+        51
+      ],
+      "summary": "MCL 문제에서 클리크 이웃 수 조건을 검사하며 후보 노드를 순차적으로 삽입하는 부분 탐욕 알고리즘.",
+      "tags": [
+        "graph-algorithm",
+        "mcl",
+        "greedy"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:lib/mcl_interface.hpp",
+      "type": "file",
+      "name": "mcl_interface.hpp",
+      "filePath": "lib/mcl_interface.hpp",
+      "summary": "MCL 알고리즘을 Python NumPy 배열과 연결하는 pybind11 인터페이스 함수 mcl_partially_greedy_insert_interface를 정의하며, 배치 처리와 병렬 실행을 지원한다.",
+      "tags": [
+        "api-handler",
+        "pybind11",
+        "mcl"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:lib/mcl_interface.hpp:mcl_partially_greedy_insert_interface",
+      "type": "function",
+      "name": "mcl_partially_greedy_insert_interface",
+      "filePath": "lib/mcl_interface.hpp",
+      "lineRange": [
+        13,
+        59
+      ],
+      "summary": "pybind11 NumPy 배열을 원시 포인터로 변환한 뒤 parallelize를 통해 배치 내 각 그래프에 대해 mcl::partially_greedy_insert를 병렬 실행한다.",
+      "tags": [
+        "api-handler",
+        "pybind11",
+        "parallel"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:lib/mis.hpp",
+      "type": "file",
+      "name": "mis.hpp",
+      "filePath": "lib/mis.hpp",
+      "summary": "최대 독립 집합(MIS) 문제의 핵심 알고리즘을 구현하며, 탐욕 삽입·마스크 초기화·엣지-이웃 변환·부분 마스킹 등 네 가지 핵심 함수를 제공한다.",
+      "tags": [
+        "graph-algorithm",
+        "mis",
+        "utility"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "헤더 전용 템플릿 구현으로, mis 네임스페이스 안에 네 개의 독립 함수를 정의한다."
+    },
+    {
+      "id": "function:lib/mis.hpp:partially_greedy_insert",
+      "type": "function",
+      "name": "partially_greedy_insert",
+      "filePath": "lib/mis.hpp",
+      "lineRange": [
+        13,
+        55
+      ],
+      "summary": "MIS 문제에서 마스크 배열로 유효 노드를 추적하며 후보 노드를 순차 삽입하는 부분 탐욕 알고리즘.",
+      "tags": [
+        "graph-algorithm",
+        "mis",
+        "greedy"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:lib/mis.hpp:edges2neighbors",
+      "type": "function",
+      "name": "edges2neighbors",
+      "filePath": "lib/mis.hpp",
+      "lineRange": [
+        59,
+        74
+      ],
+      "summary": "엣지 목록(COO 형식)으로부터 양방향 인접 리스트 벡터를 구성하는 변환 함수.",
+      "tags": [
+        "graph-algorithm",
+        "mis",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:lib/mis.hpp:init_insertion_state",
+      "type": "function",
+      "name": "init_insertion_state",
+      "filePath": "lib/mis.hpp",
+      "lineRange": [
+        78,
+        103
+      ],
+      "summary": "기존 솔루션을 기반으로 마스크 배열을 초기화하여 후속 부분 삽입 알고리즘이 올바른 상태에서 시작할 수 있도록 준비한다.",
+      "tags": [
+        "graph-algorithm",
+        "mis",
+        "initialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:lib/mis.hpp:partially_mask",
+      "type": "function",
+      "name": "partially_mask",
+      "filePath": "lib/mis.hpp",
+      "lineRange": [
+        107,
+        138
+      ],
+      "summary": "현재 솔루션에서 무작위로 일부 노드를 제거하여 diffusion 기반 재삽입을 위한 부분 마스킹을 수행한다.",
+      "tags": [
+        "graph-algorithm",
+        "mis",
+        "randomization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:lib/mis_interface.hpp",
+      "type": "file",
+      "name": "mis_interface.hpp",
+      "filePath": "lib/mis_interface.hpp",
+      "summary": "MIS 알고리즘 함수들을 Python NumPy 배열과 연결하는 pybind11 인터페이스 함수들을 정의하며, 배치 병렬 처리와 GIL 해제를 포함한다.",
+      "tags": [
+        "api-handler",
+        "pybind11",
+        "mis"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:lib/mis_interface.hpp:mis_partially_greedy_insert_interface",
+      "type": "function",
+      "name": "mis_partially_greedy_insert_interface",
+      "filePath": "lib/mis_interface.hpp",
+      "lineRange": [
+        28,
+        81
+      ],
+      "summary": "NumPy 배열 포인터를 추출하고 GIL을 해제한 뒤 parallelize로 배치 내 각 그래프에 mis::partially_greedy_insert를 병렬 실행하는 템플릿 인터페이스.",
+      "tags": [
+        "api-handler",
+        "pybind11",
+        "parallel"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:lib/mis_interface.hpp:mis_edges2neighbors_interface",
+      "type": "function",
+      "name": "mis_edges2neighbors_interface",
+      "filePath": "lib/mis_interface.hpp",
+      "lineRange": [
+        106,
+        146
+      ],
+      "summary": "배치 엣지 텐서를 받아 GIL 해제 상태에서 병렬로 각 그래프의 인접 리스트를 생성하고 batched_neighbors 벡터를 반환하는 인터페이스.",
+      "tags": [
+        "api-handler",
+        "pybind11",
+        "graph-algorithm"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:lib/mis_interface.hpp:mis_partially_mask_interface",
+      "type": "function",
+      "name": "mis_partially_mask_interface",
+      "filePath": "lib/mis_interface.hpp",
+      "lineRange": [
+        173,
+        208
+      ],
+      "summary": "배치 솔루션 배열에 대해 병렬로 mis::partially_mask를 적용하여 diffusion 재생성 전 부분 마스킹을 수행하는 pybind11 인터페이스.",
+      "tags": [
+        "api-handler",
+        "pybind11",
+        "parallel"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:lib/par_utils.hpp",
+      "type": "file",
+      "name": "par_utils.hpp",
+      "filePath": "lib/par_utils.hpp",
+      "summary": "C++ std::thread 기반의 범용 병렬화 유틸리티를 제공하며, Parallelizer 구조체와 parallelize 함수를 통해 작업 범위를 워커 스레드에 균등 분배한다.",
+      "tags": [
+        "utility",
+        "parallel",
+        "thread"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "C++23 이상에서는 static operator()를 지원하고, 미만 버전에서는 비-static operator()로 폴백하는 조건부 컴파일을 사용한다."
+    },
+    {
+      "id": "function:lib/par_utils.hpp:parallelize",
+      "type": "function",
+      "name": "parallelize",
+      "filePath": "lib/par_utils.hpp",
+      "lineRange": [
+        81,
+        96
+      ],
+      "summary": "workers 인자에 따라 단일 스레드(순차) 또는 Parallelizer를 통한 멀티 스레드 실행 중 하나를 선택하는 최상위 병렬화 헬퍼 함수.",
+      "tags": [
+        "utility",
+        "parallel",
+        "helper"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:lib/params.hpp",
+      "type": "file",
+      "name": "params.hpp",
+      "filePath": "lib/params.hpp",
+      "summary": "TSP 알고리즘의 전역 컴파일타임 파라미터를 정의하며, 2-opt 탐색 방식(Best/First)과 삽입 폴백 활성화 여부를 constexpr 상수로 설정한다.",
+      "tags": [
+        "configuration",
+        "tsp",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:lib/tsp.hpp",
+      "type": "file",
+      "name": "tsp.hpp",
+      "filePath": "lib/tsp.hpp",
+      "summary": "TSP(외판원 문제) 핵심 알고리즘을 구현하며, 2-opt 지역 탐색·무작위 2-opt·탐욕적 엣지 삽입·비용 평가 등 다양한 함수를 tsp 네임스페이스에 포함한다.",
+      "tags": [
+        "graph-algorithm",
+        "tsp",
+        "optimization"
+      ],
+      "complexity": "complex",
+      "languageNotes": "if constexpr를 활용하여 params.hpp의 TWO_OPT_TYPE 및 ENABLE_INSERTION_FALLBACK 상수에 따라 컴파일타임에 알고리즘 분기를 결정한다."
+    },
+    {
+      "id": "function:lib/tsp.hpp:find_best_two_opt",
+      "type": "function",
+      "name": "find_best_two_opt",
+      "filePath": "lib/tsp.hpp",
+      "lineRange": [
+        15,
+        39
+      ],
+      "summary": "투어 전체를 O(n²) 순회하여 비용 절감이 가장 큰 2-opt 교환 쌍 (i, j)와 절감량을 반환한다.",
+      "tags": [
+        "tsp",
+        "optimization",
+        "search"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:lib/tsp.hpp:two_opt",
+      "type": "function",
+      "name": "two_opt",
+      "filePath": "lib/tsp.hpp",
+      "lineRange": [
+        47,
+        63
+      ],
+      "summary": "지정된 스텝 수만큼 find_best_two_opt와 apply_two_opt를 반복 적용하여 투어를 지역 최적화하는 2-opt 루프.",
+      "tags": [
+        "tsp",
+        "optimization",
+        "local-search"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:lib/tsp.hpp:random_two_opt",
+      "type": "function",
+      "name": "random_two_opt",
+      "filePath": "lib/tsp.hpp",
+      "lineRange": [
+        66,
+        97
+      ],
+      "summary": "무작위로 선택한 (i, j) 쌍에 2-opt 교환을 반복 적용하여 투어를 무작위 방식으로 교란시키는 함수.",
+      "tags": [
+        "tsp",
+        "randomization",
+        "perturbation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:lib/tsp.hpp:greedy_insert",
+      "type": "function",
+      "name": "greedy_insert",
+      "filePath": "lib/tsp.hpp",
+      "lineRange": [
+        165,
+        287
+      ],
+      "summary": "후보 엣지 목록을 순차 처리하며 사이클 방지 조건을 검사하여 탐욕적으로 투어를 구성하고, 삽입 실패 시 fill_solution_naive 폴백을 통해 완전한 투어를 보장한다.",
+      "tags": [
+        "tsp",
+        "greedy",
+        "construction"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:lib/tsp.hpp:partially_greedy_insert",
+      "type": "function",
+      "name": "partially_greedy_insert",
+      "filePath": "lib/tsp.hpp",
+      "lineRange": [
+        290,
+        410
+      ],
+      "summary": "기존 부분 투어 상태를 입력받아 지정된 수의 엣지만 추가 삽입하는 부분 탐욕 삽입 함수로, diffusion 기반 재삽입 연산자의 핵심을 구성한다.",
+      "tags": [
+        "tsp",
+        "greedy",
+        "partial-insertion"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:lib/tsp.hpp:eval_cost",
+      "type": "function",
+      "name": "eval_cost",
+      "filePath": "lib/tsp.hpp",
+      "lineRange": [
+        413,
+        425
+      ],
+      "summary": "거리 행렬과 투어 배열을 이용하여 TSP 투어의 총 이동 비용을 계산하는 함수.",
+      "tags": [
+        "tsp",
+        "evaluation",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:lib/tsp.hpp:fill_solution_naive",
+      "type": "function",
+      "name": "fill_solution_naive",
+      "filePath": "lib/tsp.hpp",
+      "lineRange": [
+        428,
+        465
+      ],
+      "summary": "탐욕 삽입이 완전한 투어를 만들지 못했을 때 자유 노드들 사이의 모든 엣지를 후보로 partially_greedy_insert를 재호출하여 투어를 완성하는 폴백 함수.",
+      "tags": [
+        "tsp",
+        "fallback",
+        "construction"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:lib/tsp_interface.hpp",
+      "type": "file",
+      "name": "tsp_interface.hpp",
+      "filePath": "lib/tsp_interface.hpp",
+      "summary": "TSP 알고리즘을 Python NumPy 배열과 연결하는 pybind11 인터페이스 함수들을 정의하며, 단일·배치 모드 처리, GIL 해제, 병렬 실행을 지원한다.",
+      "tags": [
+        "api-handler",
+        "pybind11",
+        "tsp"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:lib/tsp_interface.hpp:tsp_two_opt_inplace_interface",
+      "type": "function",
+      "name": "tsp_two_opt_inplace_interface",
+      "filePath": "lib/tsp_interface.hpp",
+      "lineRange": [
+        21,
+        56
+      ],
+      "summary": "단일 또는 배치 투어 배열에 대해 tsp::two_opt를 병렬 in-place 실행하는 pybind11 인터페이스 함수.",
+      "tags": [
+        "api-handler",
+        "tsp",
+        "pybind11"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:lib/tsp_interface.hpp:tsp_random_two_opt_inplace_interface",
+      "type": "function",
+      "name": "tsp_random_two_opt_inplace_interface",
+      "filePath": "lib/tsp_interface.hpp",
+      "lineRange": [
+        60,
+        96
+      ],
+      "summary": "단일 또는 배치 투어에 대해 시드 기반 무작위 2-opt를 병렬로 in-place 적용하는 pybind11 인터페이스 함수.",
+      "tags": [
+        "api-handler",
+        "tsp",
+        "pybind11"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:lib/tsp_interface.hpp:tsp_double_two_opt_interface",
+      "type": "function",
+      "name": "tsp_double_two_opt_interface",
+      "filePath": "lib/tsp_interface.hpp",
+      "lineRange": [
+        100,
+        181
+      ],
+      "summary": "결정적 2-opt와 무작위 2-opt를 순차 적용하여 두 결과를 tuple로 반환하는 이중 2-opt 인터페이스 함수로, 배치 병렬 처리를 지원한다.",
+      "tags": [
+        "api-handler",
+        "tsp",
+        "pybind11"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:lib/tsp_interface.hpp:tsp_greedy_insert_interface",
+      "type": "function",
+      "name": "tsp_greedy_insert_interface",
+      "filePath": "lib/tsp_interface.hpp",
+      "lineRange": [
+        185,
+        223
+      ],
+      "summary": "후보 엣지 배열로부터 TSP 투어를 탐욕적으로 구성하는 tsp::greedy_insert의 배치 병렬 pybind11 인터페이스.",
+      "tags": [
+        "api-handler",
+        "tsp",
+        "pybind11"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:lib/tsp_interface.hpp:tsp_eval_cost",
+      "type": "function",
+      "name": "tsp_eval_cost",
+      "filePath": "lib/tsp_interface.hpp",
+      "lineRange": [
+        232,
+        277
+      ],
+      "summary": "투어와 거리 행렬을 입력받아 TSP 비용을 계산하는 tsp::eval_cost의 배치 병렬 pybind11 인터페이스.",
+      "tags": [
+        "api-handler",
+        "tsp",
+        "evaluation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:helpers/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "helpers/__init__.py",
+      "summary": "helpers 패키지의 진입점으로, 좌표 변환, 솔루션 변환, 인수 파싱 등 유틸리티 함수들을 하위 모듈에서 가져와 단일 네임스페이스로 재내보내는 배럴 파일이다.",
+      "tags": [
+        "entry-point",
+        "barrel",
+        "utility",
+        "패키지-초기화"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:helpers/maybe_eval.py",
+      "type": "file",
+      "name": "maybe_eval.py",
+      "filePath": "helpers/maybe_eval.py",
+      "summary": "문자열인 경우에만 Python eval()로 평가하고, 문자열이 아니거나 예외 목록에 포함된 경우에는 원본 값을 그대로 반환하는 조건부 평가 유틸리티를 제공한다.",
+      "tags": [
+        "utility",
+        "파싱",
+        "설정-처리"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:helpers/maybe_eval.py:maybe_eval",
+      "type": "function",
+      "name": "maybe_eval",
+      "filePath": "helpers/maybe_eval.py",
+      "lineRange": [
+        4,
+        9
+      ],
+      "summary": "입력이 문자열이 아니거나 should_keep 컬렉션에 포함되면 그대로 반환하고, 그 외 문자열은 eval()로 Python 표현식으로 평가하여 반환한다.",
+      "tags": [
+        "utility",
+        "파싱",
+        "조건부-평가"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:helpers/parse_bool.py",
+      "type": "file",
+      "name": "parse_bool.py",
+      "filePath": "helpers/parse_bool.py",
+      "summary": "'true'/'1'/'false'/'0' 문자열을 Python bool 값으로 변환하는 유틸리티를 제공하며, 유효하지 않은 입력에 대해 ValueError를 발생시킨다.",
+      "tags": [
+        "utility",
+        "파싱",
+        "설정-처리",
+        "검증"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:helpers/parse_bool.py:parse_bool",
+      "type": "function",
+      "name": "parse_bool",
+      "filePath": "helpers/parse_bool.py",
+      "lineRange": [
+        1,
+        7
+      ],
+      "summary": "문자열을 소문자로 변환하여 'true'/'1'이면 True, 'false'/'0'이면 False를 반환하고, 그 외 값은 ValueError를 발생시키는 불리언 파서이다.",
+      "tags": [
+        "utility",
+        "파싱",
+        "검증"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:helpers/solution_transform.py",
+      "type": "file",
+      "name": "solution_transform.py",
+      "filePath": "helpers/solution_transform.py",
+      "summary": "TSP 솔루션 배열 또는 엣지 목록을 인접 행렬로 변환하는 JAX 기반 유틸리티를 제공하며, jax.vmap을 활용해 배치 단위로 효율적으로 처리한다.",
+      "tags": [
+        "utility",
+        "그래프-처리",
+        "jax",
+        "솔루션-변환"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "jax.vmap을 사용해 배치 내 각 솔루션을 병렬로 벡터화 처리하며, JAX의 함수형 패턴에 따라 내부 구현 함수(_unbatched_impl)를 클로저로 정의한다."
+    },
+    {
+      "id": "function:helpers/solution_transform.py:sol2adj",
+      "type": "function",
+      "name": "sol2adj",
+      "filePath": "helpers/solution_transform.py",
+      "lineRange": [
+        6,
+        24
+      ],
+      "summary": "TSP 투어 순서 배열(sols)을 받아 각 인접 노드 쌍에 1을 설정하는 대칭 인접 행렬 배치로 변환하며, jax.vmap으로 배치 전체를 벡터화한다.",
+      "tags": [
+        "utility",
+        "그래프-처리",
+        "jax",
+        "솔루션-변환"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:helpers/solution_transform.py:edges2adj",
+      "type": "function",
+      "name": "edges2adj",
+      "filePath": "helpers/solution_transform.py",
+      "lineRange": [
+        27,
+        45
+      ],
+      "summary": "엣지 인덱스 쌍 배열(edges)을 받아 각 엣지 양방향으로 1을 설정하는 대칭 인접 행렬 배치로 변환하며, jax.vmap으로 배치 전체를 벡터화한다.",
+      "tags": [
+        "utility",
+        "그래프-처리",
+        "jax",
+        "솔루션-변환"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:helpers/with_invalid_kwargs_filtered.py",
+      "type": "file",
+      "name": "with_invalid_kwargs_filtered.py",
+      "filePath": "helpers/with_invalid_kwargs_filtered.py",
+      "summary": "함수의 시그니처를 검사하여 유효하지 않은 키워드 인수를 자동으로 걸러내는 래퍼 함수를 제공하며, 다양한 설정 딕셔너리를 여러 함수에 안전하게 전달할 때 활용된다.",
+      "tags": [
+        "utility",
+        "함수형-프로그래밍",
+        "데코레이터-패턴"
+      ],
+      "complexity": "simple",
+      "languageNotes": "inspect.signature를 사용해 런타임에 함수 파라미터를 검사하며, TypeVar로 반환 타입을 보존하는 제네릭 래퍼 패턴을 구현한다."
+    },
+    {
+      "id": "function:helpers/with_invalid_kwargs_filtered.py:with_invalid_kwargs_filtered",
+      "type": "function",
+      "name": "with_invalid_kwargs_filtered",
+      "filePath": "helpers/with_invalid_kwargs_filtered.py",
+      "lineRange": [
+        8,
+        12
+      ],
+      "summary": "inspect.signature로 대상 함수의 유효한 파라미터 목록을 파악하고, 호출 시 해당 목록에 없는 kwargs를 자동으로 필터링하는 래퍼 함수를 반환한다.",
+      "tags": [
+        "utility",
+        "함수형-프로그래밍",
+        "래퍼"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:training/Logger.py",
+      "type": "file",
+      "name": "Logger.py",
+      "filePath": "training/Logger.py",
+      "summary": "TensorBoard 기반 학습 메트릭 로거를 제공하며, Queue를 사용한 배치 집계 후 스칼라 값의 평균을 SummaryWriter로 기록하고 학습 재개(RESUME_LOG) 기능을 지원한다.",
+      "tags": [
+        "학습-로깅",
+        "tensorboard",
+        "utility",
+        "모니터링"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:training/Logger.py:Logger",
+      "type": "class",
+      "name": "Logger",
+      "filePath": "training/Logger.py",
+      "lineRange": [
+        12,
+        36
+      ],
+      "summary": "큐 기반 집계를 통해 TensorBoard에 학습 메트릭을 기록하는 로거 클래스로, 큐가 20개를 초과할 때 자동 플러시하며 학습 재개 시 이전 로그 디렉터리를 재사용할 수 있다.",
+      "tags": [
+        "학습-로깅",
+        "tensorboard",
+        "모니터링",
+        "큐"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:common/array_view.py",
+      "type": "file",
+      "name": "array_view.py",
+      "filePath": "common/array_view.py",
+      "summary": "JAX 배열의 stride 기반 뷰(ArrayView)를 제공하는 유틸리티 모듈로, AlphaFold3에서 채택된 구현을 기반으로 reshape, transpose, slice, broadcast 등 배열 조작 연산을 zero-copy 방식으로 지원한다.",
+      "tags": [
+        "utility",
+        "data-model",
+        "배열-추상화",
+        "jax"
+      ],
+      "complexity": "complex",
+      "languageNotes": "JAX pytree 노드로 등록된 frozen dataclass로, jax.jit 및 jax.vmap 등의 변환에서 올바르게 추적되도록 tree_flatten/tree_unflatten을 구현한다."
+    },
+    {
+      "id": "class:common/array_view.py:ArrayView",
+      "type": "class",
+      "name": "ArrayView",
+      "filePath": "common/array_view.py",
+      "lineRange": [
+        36,
+        378
+      ],
+      "summary": "JAX 배열의 stride 기반 뷰를 나타내는 불변 dataclass로, shape, strides, offset을 이용해 zero-copy 방식으로 reshape, transpose, slice 등을 지원하며 JAX pytree로 등록되어 있다.",
+      "tags": [
+        "data-model",
+        "배열-추상화",
+        "jax",
+        "utility"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:common/array_view.py:ArrayView.__post_init__",
+      "type": "function",
+      "name": "__post_init__",
+      "filePath": "common/array_view.py",
+      "lineRange": [
+        47,
+        66
+      ],
+      "summary": "ArrayView 초기화 시 shape/strides 기본값 설정 및 유효성 검증을 수행하고 base 배열을 1D로 평탄화한다.",
+      "tags": [
+        "validation",
+        "초기화"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:common/array_view.py:ArrayView.__jax_array__",
+      "type": "function",
+      "name": "__jax_array__",
+      "filePath": "common/array_view.py",
+      "lineRange": [
+        321,
+        378
+      ],
+      "summary": "ArrayView를 dense JAX 배열로 변환하는 메서드로, transpose-slice-reshape를 통해 XLA 융합을 유도하며 불가능한 경우 gather 연산으로 폴백한다.",
+      "tags": [
+        "변환",
+        "jax",
+        "성능"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:common/array_view.py:ArrayView.set",
+      "type": "function",
+      "name": "set",
+      "filePath": "common/array_view.py",
+      "lineRange": [
+        301,
+        319
+      ],
+      "summary": "ArrayView의 값을 새로운 값으로 갱신하는 메서드로, stride 정렬 여부에 따라 dynamic_update_slice 또는 scatter 방식을 선택한다.",
+      "tags": [
+        "배열-연산",
+        "jax"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:common/array_view.py:ArrayView._reshape",
+      "type": "function",
+      "name": "_reshape",
+      "filePath": "common/array_view.py",
+      "lineRange": [
+        154,
+        201
+      ],
+      "summary": "NumPy의 stride 기반 reshape 로직을 구현한 내부 메서드로, 메모리에서 연속적이지 않은 축의 결합을 거부하고 새로운 strides를 계산한다.",
+      "tags": [
+        "배열-연산",
+        "utility",
+        "내부-구현"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:common/array_view.py:as_array_view",
+      "type": "function",
+      "name": "as_array_view",
+      "filePath": "common/array_view.py",
+      "lineRange": [
+        381,
+        382
+      ],
+      "summary": "JAX 배열 또는 ArrayView를 받아 ArrayView로 반환하는 편의 함수.",
+      "tags": [
+        "utility",
+        "변환"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:common/jax_triton.py",
+      "type": "file",
+      "name": "jax_triton.py",
+      "filePath": "common/jax_triton.py",
+      "summary": "JAX에서 Triton GPU 커널을 호출할 수 있게 해주는 브리지 모듈로, Triton 커널의 컴파일(TTIR->PTX), JAX primitive 등록, 커널 캐싱, autotuner 지원을 포함한 triton_call 인터페이스를 제공한다.",
+      "tags": [
+        "utility",
+        "gpu-kernel",
+        "middleware",
+        "jax"
+      ],
+      "complexity": "complex",
+      "languageNotes": "jax_triton 오픈소스를 개인 사용 목적으로 수정한 버전으로, Triton 3.x MLIR 파이프라인(TTIR->TTGIR->LLIR->PTX)을 직접 제어한다."
+    },
+    {
+      "id": "function:common/jax_triton.py:triton_call",
+      "type": "function",
+      "name": "triton_call",
+      "filePath": "common/jax_triton.py",
+      "lineRange": [
+        604,
+        749
+      ],
+      "summary": "JAX 배열 인자와 함께 Triton JIT 커널을 호출하는 공개 인터페이스로, 스칼라/배열 인자를 분리하고 grid, num_warps, num_stages 등의 메타파라미터를 JAX primitive에 바인딩한다.",
+      "tags": [
+        "api-handler",
+        "gpu-kernel",
+        "jax",
+        "utility"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:common/jax_triton.py:get_or_create_triton_kernel",
+      "type": "function",
+      "name": "get_or_create_triton_kernel",
+      "filePath": "common/jax_triton.py",
+      "lineRange": [
+        255,
+        397
+      ],
+      "summary": "컴파일된 Triton 커널을 캐시에서 조회하거나 새로 컴파일하는 함수로, AST→TTIR→PTX 파이프라인을 실행하고 TritonKernel 객체를 반환한다.",
+      "tags": [
+        "factory",
+        "gpu-kernel",
+        "캐싱"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:common/jax_triton.py:triton_kernel_call_lowering",
+      "type": "function",
+      "name": "triton_kernel_call_lowering",
+      "filePath": "common/jax_triton.py",
+      "lineRange": [
+        400,
+        588
+      ],
+      "summary": "JAX MLIR lowering 콜백으로, Triton autotuner/heuristics를 처리하고 각 config에 대해 TritonKernelCall을 생성하여 HLO custom_call로 변환한다.",
+      "tags": [
+        "middleware",
+        "jax",
+        "gpu-kernel"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:common/jax_triton.py:compile_ttir_to_ptx_inplace",
+      "type": "function",
+      "name": "compile_ttir_to_ptx_inplace",
+      "filePath": "common/jax_triton.py",
+      "lineRange": [
+        182,
+        249
+      ],
+      "summary": "TTIR(Triton IR) 모듈을 PTX 어셈블리로 컴파일하는 함수로, CUDA 백엔드를 통해 TTGIR, LLIR 중간 표현을 거쳐 PTX를 생성한다.",
+      "tags": [
+        "gpu-kernel",
+        "컴파일"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:common/jax_triton.py:PtxCompilationResult",
+      "type": "class",
+      "name": "PtxCompilationResult",
+      "filePath": "common/jax_triton.py",
+      "lineRange": [
+        172,
+        179
+      ],
+      "summary": "PTX 컴파일 결과를 담는 데이터 클래스로, PTX 코드, 커널 이름, 공유 메모리 크기, 클러스터 차원 등을 포함한다.",
+      "tags": [
+        "data-model",
+        "gpu-kernel"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "type": "file",
+      "name": "fa_kernel_softcap_then_bias.py",
+      "filePath": "modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "summary": "FlashAttention의 Triton 구현으로, softcap 적용 후 bias를 더하는 변형 버전의 순전파(_fwd_kernel)와 역전파(_bwd_kernel, _bwd_kernel_one_col_block) 커널을 포함한다. 인과적/비인과적 attention, attention bias(vector/matrix), segment IDs, ALiBi를 지원한다.",
+      "tags": [
+        "gpu-kernel",
+        "attention",
+        "transformer",
+        "고성능-컴퓨팅"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Triton @triton.autotune과 @triton.heuristics를 활용하여 BLOCK_M, BLOCK_N, SEQUENCE_PARALLEL 등 최적 설정을 자동 탐색한다."
+    },
+    {
+      "id": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_fwd_kernel",
+      "type": "function",
+      "name": "_fwd_kernel",
+      "filePath": "modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "lineRange": [
+        79,
+        397
+      ],
+      "summary": "FlashAttention 순전파 Triton 커널로, Q/K/V 타일을 SRAM에 로드하여 softcap→bias→softmax를 융합 연산으로 처리하고 출력과 LSE를 기록한다.",
+      "tags": [
+        "gpu-kernel",
+        "attention",
+        "순전파"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_kernel",
+      "type": "function",
+      "name": "_bwd_kernel",
+      "filePath": "modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "lineRange": [
+        902,
+        1417
+      ],
+      "summary": "FlashAttention 역전파 Triton 커널로, dQ/dK/dV를 계산하며 SEQUENCE_PARALLEL 옵션에 따라 seqlen_k 차원에서 병렬화를 지원한다.",
+      "tags": [
+        "gpu-kernel",
+        "attention",
+        "역전파"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_preprocess_do_o_dot",
+      "type": "function",
+      "name": "_bwd_preprocess_do_o_dot",
+      "filePath": "modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "lineRange": [
+        400,
+        442
+      ],
+      "summary": "역전파 전처리 커널로, 출력 O와 gradient DO의 원소별 내적(delta)을 병렬로 계산하여 역전파 메인 커널에 전달한다.",
+      "tags": [
+        "gpu-kernel",
+        "역전파",
+        "전처리"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_kernel_one_col_block",
+      "type": "function",
+      "name": "_bwd_kernel_one_col_block",
+      "filePath": "modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "lineRange": [
+        477,
+        852
+      ],
+      "summary": "역전파에서 단일 K/V 열 블록에 대한 dQ/dK/dV 계산 서브루틴으로, atomic add 또는 비원자적 갱신 방식을 조건부로 선택한다.",
+      "tags": [
+        "gpu-kernel",
+        "역전파",
+        "내부-구현"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_store_dk_dv",
+      "type": "function",
+      "name": "_bwd_store_dk_dv",
+      "filePath": "modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "lineRange": [
+        445,
+        474
+      ],
+      "summary": "역전파에서 dK/dV를 EVEN_M, EVEN_N, EVEN_HEADDIM 조건에 따라 적절한 마스크로 메모리에 기록하는 헬퍼 커널.",
+      "tags": [
+        "gpu-kernel",
+        "역전파",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:handle_q_bound",
+      "type": "function",
+      "name": "handle_q_bound",
+      "filePath": "modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "lineRange": [
+        859,
+        875
+      ],
+      "summary": "segment ID 기반의 KV bound에서 Q 블록 범위(lower/upper bound)를 계산하는 헬퍼 Triton 함수.",
+      "tags": [
+        "gpu-kernel",
+        "utility",
+        "segment-ids"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:modules/functional/attention/triton/tanh.py",
+      "type": "file",
+      "name": "tanh.py",
+      "filePath": "modules/functional/attention/triton/tanh.py",
+      "summary": "Triton 커널 내에서 사용하는 근사 tanh 함수를 제공하는 모듈로, CUDA 컴퓨트 9.0 미만에서는 PTX inline asm을 사용한 근사 버전을, 9.0 이상에서는 libdevice의 정밀 tanh를 사용한다.",
+      "tags": [
+        "gpu-kernel",
+        "utility",
+        "수치-연산"
+      ],
+      "complexity": "simple",
+      "languageNotes": "PTX `tanh.approx.f32` 명령어를 tl.inline_asm_elementwise로 직접 호출하여 float32 연산을 수행한다."
+    },
+    {
+      "id": "function:modules/functional/attention/triton/tanh.py:approx_tanh",
+      "type": "function",
+      "name": "approx_tanh",
+      "filePath": "modules/functional/attention/triton/tanh.py",
+      "lineRange": [
+        7,
+        17
+      ],
+      "summary": "PTX inline assembly를 통해 float32에 대한 근사 tanh를 계산하는 Triton JIT 함수.",
+      "tags": [
+        "gpu-kernel",
+        "수치-연산",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:modules/functional/attention/triton/wrapper.py",
+      "type": "file",
+      "name": "wrapper.py",
+      "filePath": "modules/functional/attention/triton/wrapper.py",
+      "summary": "FlashAttention Triton 커널을 JAX custom_vjp로 감싸는 래퍼 모듈로, Q/K/V 분리 입력 및 QKV-packed 입력 모두를 지원하는 attention_fn 공개 인터페이스를 제공한다.",
+      "tags": [
+        "api-handler",
+        "attention",
+        "jax",
+        "middleware"
+      ],
+      "complexity": "complex",
+      "languageNotes": "jax.custom_vjp를 통해 순전파/역전파를 명시적으로 등록하고, ArrayView를 활용해 QKV-packed 텐서를 zero-copy로 슬라이싱한다."
+    },
+    {
+      "id": "function:modules/functional/attention/triton/wrapper.py:attention_fn",
+      "type": "function",
+      "name": "attention_fn",
+      "filePath": "modules/functional/attention/triton/wrapper.py",
+      "lineRange": [
+        381,
+        395
+      ],
+      "summary": "분리된 Q/K/V 또는 QKV-packed 텐서를 받아 적절한 attention 구현을 선택하여 호출하는 공개 인터페이스 함수.",
+      "tags": [
+        "api-handler",
+        "attention",
+        "entry-point"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:modules/functional/attention/triton/wrapper.py:qkv_unpacked_attention_fn",
+      "type": "function",
+      "name": "qkv_unpacked_attention_fn",
+      "filePath": "modules/functional/attention/triton/wrapper.py",
+      "lineRange": [
+        263,
+        270
+      ],
+      "summary": "분리된 Q/K/V 텐서를 입력으로 받는 custom_vjp attention 함수로, Triton 커널을 통해 순전파를 수행한다.",
+      "tags": [
+        "attention",
+        "jax",
+        "api-handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:modules/functional/attention/triton/wrapper.py:qkvpacked_attention_fn",
+      "type": "function",
+      "name": "qkvpacked_attention_fn",
+      "filePath": "modules/functional/attention/triton/wrapper.py",
+      "lineRange": [
+        349,
+        356
+      ],
+      "summary": "QKV-packed 텐서를 입력으로 받는 custom_vjp attention 함수로, ArrayView를 통해 Q/K/V를 슬라이싱한 후 Triton 커널을 호출한다.",
+      "tags": [
+        "attention",
+        "jax",
+        "api-handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:modules/functional/attention/triton/wrapper.py:_forward_impl",
+      "type": "function",
+      "name": "_forward_impl",
+      "filePath": "modules/functional/attention/triton/wrapper.py",
+      "lineRange": [
+        37,
+        127
+      ],
+      "summary": "FlashAttention 순전파의 실질적 구현으로, stride 파라미터를 계산하고 triton_call을 통해 _fwd_kernel을 호출하며 출력 텐서 O와 LSE를 반환한다.",
+      "tags": [
+        "attention",
+        "순전파",
+        "jax"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:modules/functional/attention/triton/wrapper.py:_backward_impl",
+      "type": "function",
+      "name": "_backward_impl",
+      "filePath": "modules/functional/attention/triton/wrapper.py",
+      "lineRange": [
+        130,
+        260
+      ],
+      "summary": "FlashAttention 역전파의 실질적 구현으로, _bwd_preprocess_do_o_dot 커널로 delta를 계산한 후 _bwd_kernel을 호출해 dQ/dK/dV를 반환한다.",
+      "tags": [
+        "attention",
+        "역전파",
+        "jax"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:modules/functional/attention/triton/wrapper.py:process_bias",
+      "type": "function",
+      "name": "process_bias",
+      "filePath": "modules/functional/attention/triton/wrapper.py",
+      "lineRange": [
+        17,
+        33
+      ],
+      "summary": "attention bias 텐서의 타입('none', 'vector', 'matrix')과 stride를 판별하여 커널 파라미터로 변환하는 헬퍼 함수.",
+      "tags": [
+        "utility",
+        "attention",
+        "전처리"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:training/init_optimizer.py",
+      "type": "file",
+      "name": "init_optimizer.py",
+      "filePath": "training/init_optimizer.py",
+      "summary": "옵티마이저 초기화 팩토리 파일로, warmup cosine decay 학습률 스케줄러를 생성하고 adamw, muon, muon_decay 세 가지 옵티마이저 타입 중 하나를 선택하여 반환한다.",
+      "tags": [
+        "factory",
+        "optimizer",
+        "training",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:training/init_optimizer.py:init_optimizer",
+      "type": "function",
+      "name": "init_optimizer",
+      "filePath": "training/init_optimizer.py",
+      "lineRange": [
+        6,
+        34
+      ],
+      "summary": "학습 스텝 수, 워밍업 스텝, 피크 학습률, 옵티마이저 타입 등을 인자로 받아 optax GradientTransformation 객체를 생성하여 반환하는 팩토리 함수.",
+      "tags": [
+        "factory",
+        "optimizer",
+        "training"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:training/optimizers/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "training/optimizers/__init__.py",
+      "summary": "training/optimizers 패키지의 배럴 파일로, muon.py에서 정의한 muon 옵티마이저 함수를 패키지 수준으로 re-export한다.",
+      "tags": [
+        "barrel",
+        "entry-point",
+        "optimizer"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:training/optimizers/muon.py",
+      "type": "file",
+      "name": "muon.py",
+      "filePath": "training/optimizers/muon.py",
+      "summary": "JAX 기반의 Muon 옵티마이저 전체 구현 파일로, Newton-Schulz 5회 반복 zero-power 정규화를 핵심으로 하여 2D 행렬 파라미터는 Muon으로, 나머지는 AdamW로 라우팅하는 하이브리드 optax.GradientTransformation을 생성한다.",
+      "tags": [
+        "optimizer",
+        "training",
+        "utility",
+        "service"
+      ],
+      "complexity": "complex",
+      "languageNotes": "optax의 커스텀 GradientTransformation 패턴(init_fn + update_fn)을 사용하며, jax.tree.map으로 pytree를 순회하여 파라미터를 동적으로 Muon/AdamW 경로로 분기한다. bfloat16으로 Newton-Schulz 반복 연산을 수행하여 메모리 효율을 높인다."
+    },
+    {
+      "id": "function:training/optimizers/muon.py:zeropower_via_newtonschulz5",
+      "type": "function",
+      "name": "zeropower_via_newtonschulz5",
+      "filePath": "training/optimizers/muon.py",
+      "lineRange": [
+        10,
+        36
+      ],
+      "summary": "Newton-Schulz 5차 다항식을 반복 적용하여 행렬을 zero-power(유사 직교) 공간으로 정규화하는 함수. QKV 행렬을 분할 처리하는 특수 케이스를 포함한다.",
+      "tags": [
+        "utility",
+        "optimization",
+        "linear-algebra"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "QKV 결합 행렬(shape[1] == shape[0]*3)을 감지하여 Q, K, V 각각에 재귀 적용한 뒤 concat하는 특수 경로를 포함한다."
+    },
+    {
+      "id": "function:training/optimizers/muon.py:if_dispatch_to_muon",
+      "type": "function",
+      "name": "if_dispatch_to_muon",
+      "filePath": "training/optimizers/muon.py",
+      "lineRange": [
+        39,
+        44
+      ],
+      "summary": "파라미터 텐서가 Muon 업데이트 대상인지 판별하는 술어 함수. None이 아니고 2차원 배열인 경우에만 True를 반환한다.",
+      "tags": [
+        "utility",
+        "optimizer",
+        "routing"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:training/optimizers/muon.py:merge",
+      "type": "function",
+      "name": "merge",
+      "filePath": "training/optimizers/muon.py",
+      "lineRange": [
+        47,
+        49
+      ],
+      "summary": "Muon과 AdamW 두 경로의 업데이트 값을 병합하는 헬퍼 함수. 하나는 반드시 None이어야 하며 비-None 값을 반환한다.",
+      "tags": [
+        "utility",
+        "optimizer"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:training/optimizers/muon.py:set_leaves_to_false",
+      "type": "function",
+      "name": "set_leaves_to_false",
+      "filePath": "training/optimizers/muon.py",
+      "lineRange": [
+        52,
+        73
+      ],
+      "summary": "pytree의 리프 노드 중 지정된 키에 해당하는 값을 False로 설정하는 함수로, adamw_param_keys에 명시된 파라미터를 AdamW 경로로 강제 라우팅할 때 사용된다.",
+      "tags": [
+        "utility",
+        "optimizer",
+        "pytree"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:training/optimizers/muon.py:multiplied_by_adjustment_ratio_for_muon",
+      "type": "function",
+      "name": "multiplied_by_adjustment_ratio_for_muon",
+      "filePath": "training/optimizers/muon.py",
+      "lineRange": [
+        76,
+        81
+      ],
+      "summary": "arXiv 2502.16982 논문에서 제안된 학습률 조정 비율(0.2 * sqrt(max_dim))을 파라미터에 곱하는 함수.",
+      "tags": [
+        "utility",
+        "optimizer",
+        "scaling"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:training/optimizers/muon.py:muon",
+      "type": "function",
+      "name": "muon",
+      "filePath": "training/optimizers/muon.py",
+      "lineRange": [
+        84,
+        186
+      ],
+      "summary": "Muon 옵티마이저의 메인 팩토리 함수. 2D 파라미터는 momentum 기반 Newton-Schulz 정규화로, 지정된 키의 파라미터는 AdamW로 처리하는 하이브리드 optax.GradientTransformation을 생성하여 반환한다.",
+      "tags": [
+        "optimizer",
+        "factory",
+        "training"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:scripts/eval/mcl_rb_large.sh",
+      "type": "file",
+      "name": "mcl_rb_large.sh",
+      "filePath": "scripts/eval/mcl_rb_large.sh",
+      "summary": "MCL(최대 클리크 탐색) 대규모 RB 그래프 데이터셋(mcl_rb_large_mlbench.npz)에 대한 평가 실행 스크립트로, 500 사이클과 배치 크기 100으로 decoding.mcl 모듈을 호출한다.",
+      "tags": [
+        "평가",
+        "mcl",
+        "실행-스크립트",
+        "조합-최적화"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/eval/mcl_rb_small.sh",
+      "type": "file",
+      "name": "mcl_rb_small.sh",
+      "filePath": "scripts/eval/mcl_rb_small.sh",
+      "summary": "MCL(최대 클리크 탐색) 소규모 RB 그래프 데이터셋(mcl_rb_small_testset_mlbench.npz)에 대한 평가 실행 스크립트로, 500 사이클과 배치 크기 100으로 decoding.mcl 모듈을 호출한다.",
+      "tags": [
+        "평가",
+        "mcl",
+        "실행-스크립트",
+        "조합-최적화"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/eval/mis_er.sh",
+      "type": "file",
+      "name": "mis_er.sh",
+      "filePath": "scripts/eval/mis_er.sh",
+      "summary": "MIS(최대 독립 집합) Erdos-Renyi(ER) 그래프 데이터셋(er_700_800_test.npz)에 대한 평가 실행 스크립트로, 배치 크기 32와 4개 스레드로 decoding.mis 모듈을 호출한다.",
+      "tags": [
+        "평가",
+        "mis",
+        "실행-스크립트",
+        "조합-최적화"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/eval/mis_rb.sh",
+      "type": "file",
+      "name": "mis_rb.sh",
+      "filePath": "scripts/eval/mis_rb.sh",
+      "summary": "MIS(최대 독립 집합) RB 그래프 데이터셋(rb_200_300_test.npz)에 대한 평가 실행 스크립트로, 배치 크기 100과 5개 스레드로 decoding.mis 모듈을 호출한다.",
+      "tags": [
+        "평가",
+        "mis",
+        "실행-스크립트",
+        "조합-최적화"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/eval/tsp100.sh",
+      "type": "file",
+      "name": "tsp100.sh",
+      "filePath": "scripts/eval/tsp100.sh",
+      "summary": "TSP 100 노드 인스턴스(tsp100_concorde_7.75585.npz) 평가 스크립트로, 2-opt 로컬 탐색과 augment_level 1을 적용하여 decoding.tsp 모듈을 호출하며 배치 크기 128을 사용한다.",
+      "tags": [
+        "평가",
+        "tsp",
+        "실행-스크립트",
+        "조합-최적화"
+      ],
+      "complexity": "simple",
+      "languageNotes": "TSP 파일명에 Concorde 솔버의 최적 투어 길이(7.75585)가 포함되어 있어 기준값(baseline)으로 활용됨을 알 수 있다."
+    },
+    {
+      "id": "file:scripts/eval/tsp1000.sh",
+      "type": "file",
+      "name": "tsp1000.sh",
+      "filePath": "scripts/eval/tsp1000.sh",
+      "summary": "TSP 1000 노드 대규모 인스턴스(tsp1000_concorde_23.11812.npz) 평가 스크립트로, 20 two_opt_steps, topk 20000, uint8 heatmap을 적용하여 대규모 그래프에 최적화된 설정으로 실행된다.",
+      "tags": [
+        "평가",
+        "tsp",
+        "실행-스크립트",
+        "대규모-그래프"
+      ],
+      "complexity": "simple",
+      "languageNotes": "tsp100/tsp500 대비 two_opt_steps(20)와 topk(20000)가 크게 증가하고 batch_size(16)는 감소하여 대규모 인스턴스의 메모리-정확도 트레이드오프를 반영한다."
+    },
+    {
+      "id": "file:scripts/eval/tsp500.sh",
+      "type": "file",
+      "name": "tsp500.sh",
+      "filePath": "scripts/eval/tsp500.sh",
+      "summary": "TSP 500 노드 중간 규모 인스턴스(tsp500_concorde_16.54581.npz) 평가 스크립트로, 10 two_opt_steps, topk 5000, 8개 스레드를 사용하여 중간 규모 그래프에 맞게 조정된 설정으로 실행된다.",
+      "tags": [
+        "평가",
+        "tsp",
+        "실행-스크립트",
+        "조합-최적화"
+      ],
+      "complexity": "simple",
+      "languageNotes": "tsp1000 대비 two_opt_steps(10)와 topk(5000)가 절반으로 줄고 threads_over_batches(8)는 두 배로 늘어나 규모에 따른 병렬처리 전략의 차이를 보여준다."
+    },
+    {
+      "id": "file:scripts/train/mcl_rb_large.sh",
+      "type": "file",
+      "name": "mcl_rb_large.sh",
+      "filePath": "scripts/train/mcl_rb_large.sh",
+      "summary": "MCL(Maximum Clique) 문제의 대규모 RB 그래프 데이터셋(mcl_rb_large)을 대상으로 diffusion 모델 학습을 실행하는 쉘 스크립트로, Muon 옵티마이저와 target_disruption 0.2를 사용하여 38.4만 스텝 훈련을 시작한다.",
+      "tags": [
+        "학습-스크립트",
+        "최대클리크",
+        "rb-그래프",
+        "훈련-실행기",
+        "하이퍼파라미터"
+      ],
+      "complexity": "simple",
+      "languageNotes": "XLA_PYTHON_CLIENT_MEM_FRACTION=0.9로 GPU 메모리의 90%를 JAX/XLA에 사전 할당하여 메모리 단편화를 방지한다."
+    },
+    {
+      "id": "file:scripts/train/mcl_rb_small.sh",
+      "type": "file",
+      "name": "mcl_rb_small.sh",
+      "filePath": "scripts/train/mcl_rb_small.sh",
+      "summary": "MCL 문제의 소규모 RB 그래프 데이터셋(mcl_rb_small)을 대상으로 diffusion 모델 학습을 실행하는 쉘 스크립트로, mcl_rb_large.sh와 동일한 하이퍼파라미터 구조를 사용하되 소규모 데이터셋과 별도의 로그/체크포인트 경로를 지정한다.",
+      "tags": [
+        "학습-스크립트",
+        "최대클리크",
+        "rb-그래프",
+        "훈련-실행기",
+        "하이퍼파라미터"
+      ],
+      "complexity": "simple",
+      "languageNotes": "mcl_rb_large.sh와 구조가 동일하며 --data, --logdir, --savedir 경로만 소규모 데이터셋에 맞게 변경되었다."
+    },
+    {
+      "id": "file:scripts/train/mis_er.sh",
+      "type": "file",
+      "name": "mis_er.sh",
+      "filePath": "scripts/train/mis_er.sh",
+      "summary": "MIS(Maximum Independent Set) 문제에서 Erdős–Rényi(ER) 랜덤 그래프 데이터셋(er_700_800)을 대상으로 diffusion 모델 학습을 시작하는 쉘 스크립트로, 그래프 인접 행렬과 레이블 파일을 별도로 지정한다.",
+      "tags": [
+        "학습-스크립트",
+        "최대독립집합",
+        "er-그래프",
+        "훈련-실행기",
+        "하이퍼파라미터"
+      ],
+      "complexity": "simple",
+      "languageNotes": "--data와 --label을 각각 별도 파일로 지정하는 MIS 전용 인터페이스를 사용하며, target_disruption은 0.1로 MCL(0.2)보다 낮게 설정된다."
+    },
+    {
+      "id": "file:scripts/train/mis_rb.sh",
+      "type": "file",
+      "name": "mis_rb.sh",
+      "filePath": "scripts/train/mis_rb.sh",
+      "summary": "MIS 문제에서 RB 그래프 데이터셋(rb_200_300)을 대상으로 diffusion 모델 학습을 실행하는 쉘 스크립트로, mis_er.sh보다 낮은 학습률(5e-4)과 적은 훈련 스텝(21.1만)을 사용한다.",
+      "tags": [
+        "학습-스크립트",
+        "최대독립집합",
+        "rb-그래프",
+        "훈련-실행기",
+        "하이퍼파라미터"
+      ],
+      "complexity": "simple",
+      "languageNotes": "peak_lr이 1e-3 대신 5e-4, num_steps가 384000 대신 211000으로 RB 그래프의 특성에 맞게 조정되었다."
+    },
+    {
+      "id": "file:scripts/train/tsp100.sh",
+      "type": "file",
+      "name": "tsp100.sh",
+      "filePath": "scripts/train/tsp100.sh",
+      "summary": "TSP(Travelling Salesman Problem) 100-노드 인스턴스 학습을 시작하는 쉘 스크립트로, LKH 솔버로 생성된 128만 개 데이터셋을 사용하며 TSP 커리큘럼 학습(100→500→1000)의 첫 번째 단계이다.",
+      "tags": [
+        "학습-스크립트",
+        "외판원문제",
+        "tsp-100",
+        "훈련-실행기",
+        "커리큘럼-학습"
+      ],
+      "complexity": "simple",
+      "languageNotes": "batch_size=1024로 그래프 문제들(256) 대비 크게 설정되었으며, num_warmup_steps=0으로 워밍업 없이 학습한다. target_disruption을 \"(40, 41)\" 범위 튜플로 지정하는 것이 TSP 특유의 방식이다."
+    },
+    {
+      "id": "file:scripts/train/tsp1000.sh",
+      "type": "file",
+      "name": "tsp1000.sh",
+      "filePath": "scripts/train/tsp1000.sh",
+      "summary": "TSP 1000-노드 인스턴스 학습을 시작하는 쉘 스크립트로, --ckpt와 --ignore_ckpt_train_config 플래그를 통해 tsp500 체크포인트에서 미세조정하는 커리큘럼 학습의 세 번째 단계를 구현한다.",
+      "tags": [
+        "학습-스크립트",
+        "외판원문제",
+        "tsp-1000",
+        "커리큘럼-학습",
+        "미세조정"
+      ],
+      "complexity": "simple",
+      "languageNotes": "--ckpt ckpts/tsp500.ckpt와 --ignore_ckpt_train_config를 함께 사용하여 이전 체크포인트의 모델 가중치는 재사용하되 훈련 설정(스텝 수 등)은 현재 스크립트의 값을 따르도록 한다. batch_size=64로 메모리 제약이 크다."
+    },
+    {
+      "id": "file:scripts/train/tsp500.sh",
+      "type": "file",
+      "name": "tsp500.sh",
+      "filePath": "scripts/train/tsp500.sh",
+      "summary": "TSP 500-노드 인스턴스 학습을 시작하는 쉘 스크립트로, tsp100 체크포인트에서 미세조정하는 커리큘럼 학습의 두 번째 단계이며 이후 tsp1000 학습의 기반이 된다.",
+      "tags": [
+        "학습-스크립트",
+        "외판원문제",
+        "tsp-500",
+        "커리큘럼-학습",
+        "미세조정"
+      ],
+      "complexity": "simple",
+      "languageNotes": "--ckpt ckpts/tsp100.ckpt로부터 warm-start하며, tsp1000.sh가 이 스크립트의 체크포인트(ckpts/tsp500.ckpt)를 다시 참조하는 3단계 커리큘럼 구조를 형성한다."
+    },
+    {
+      "id": "file:.understand-anything/.understandignore",
+      "type": "file",
+      "name": ".understandignore",
+      "filePath": ".understand-anything/.understandignore",
+      "summary": "분석 제외 패턴을 정의하는 설정 파일로, .gitignore 문법을 따르며 logs, ckpts, datasets 등 대용량 디렉터리와 빌드 아티팩트를 선택적으로 무시할 수 있도록 주석 처리된 제안 목록을 포함한다.",
+      "tags": [
+        "configuration",
+        "분석-설정",
+        "파일-필터링",
+        "빌드-아티팩트"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:.understand-anything/config.json",
+      "type": "config",
+      "name": "config.json",
+      "filePath": ".understand-anything/config.json",
+      "summary": "Understand-Anything 플러그인의 출력 언어를 한국어(ko)로 지정하는 단일 설정 항목을 담은 최소 구성 파일이다.",
+      "tags": [
+        "configuration",
+        "언어-설정",
+        "understand-anything"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:data/mcl_convert_fmt.py",
+      "type": "file",
+      "name": "mcl_convert_fmt.py",
+      "filePath": "data/mcl_convert_fmt.py",
+      "summary": "Maximum Clique(MCL) 문제용 그래프 데이터를 파싱하여 NumPy 배열로 변환하고 압축 저장(.npz)하는 전처리 스크립트로, 자기 루프 제거·중복 엣지 제거·방향 무작위화 등 엣지 정제 로직을 포함한다.",
+      "tags": [
+        "데이터-전처리",
+        "utility",
+        "script",
+        "graph-data"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "partial을 활용한 함수형 스타일과 np.pad를 이용한 배치 패딩이 특징적이며, __main__ 블록에서 argparse를 통해 CLI로 직접 실행 가능하다."
+    },
+    {
+      "id": "function:data/mcl_convert_fmt.py:remove_self_loop",
+      "type": "function",
+      "name": "remove_self_loop",
+      "filePath": "data/mcl_convert_fmt.py",
+      "lineRange": [
+        6,
+        7
+      ],
+      "summary": "엣지 배열에서 출발 노드와 도착 노드가 동일한 자기 루프 엣지를 필터링하여 제거한다.",
+      "tags": [
+        "utility",
+        "그래프-전처리",
+        "엣지-정제"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:data/mcl_convert_fmt.py:remove_replicated",
+      "type": "function",
+      "name": "remove_replicated",
+      "filePath": "data/mcl_convert_fmt.py",
+      "lineRange": [
+        10,
+        16
+      ],
+      "summary": "엣지를 정렬 후 고유 ID로 인코딩하여 중복 엣지를 제거하고, 유일한 엣지 집합만 반환한다.",
+      "tags": [
+        "utility",
+        "그래프-전처리",
+        "엣지-정제"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:data/mcl_convert_fmt.py:parse_instance",
+      "type": "function",
+      "name": "parse_instance",
+      "filePath": "data/mcl_convert_fmt.py",
+      "lineRange": [
+        19,
+        44
+      ],
+      "summary": "단일 MCL 인스턴스 문자열을 파싱하여 엣지 배열과 레이블 배열로 변환하며, replicated_format 여부에 따라 두 가지 파싱 경로를 지원한다.",
+      "tags": [
+        "파싱",
+        "데이터-변환",
+        "그래프-데이터"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:data/mcl_convert_fmt.py:convert_instances",
+      "type": "function",
+      "name": "convert_instances",
+      "filePath": "data/mcl_convert_fmt.py",
+      "lineRange": [
+        62,
+        85
+      ],
+      "summary": "인스턴스 목록을 받아 최대 엣지 수와 최대 노드 수 기준으로 패딩을 적용하고, 배치 형태의 numpy 배열(num_nodes, edges, labels)을 반환한다.",
+      "tags": [
+        "데이터-변환",
+        "배치-처리",
+        "패딩"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:data/mcl_convert_fmt.py:parse_convert_and_save",
+      "type": "function",
+      "name": "parse_convert_and_save",
+      "filePath": "data/mcl_convert_fmt.py",
+      "lineRange": [
+        88,
+        91
+      ],
+      "summary": "여러 소스 파일을 파싱·변환한 후 압축된 NumPy 파일(.npz)로 저장하는 최상위 파이프라인 함수다.",
+      "tags": [
+        "데이터-파이프라인",
+        "저장",
+        "entry-point"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:data/mis_convert_fmt.py",
+      "type": "file",
+      "name": "mis_convert_fmt.py",
+      "filePath": "data/mis_convert_fmt.py",
+      "summary": "Maximum Independent Set(MIS) 문제용 gpickle 형식의 NetworkX 그래프 파일을 읽어 NumPy 배열로 변환하고 압축 저장(.npz)하는 전처리 스크립트다.",
+      "tags": [
+        "데이터-전처리",
+        "utility",
+        "script",
+        "graph-data"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "NetworkX 그래프 객체를 pickle로 직접 로드하며, 파일명에서 정규식으로 ID를 추출하는 get_id 헬퍼 함수가 포함되어 있다."
+    },
+    {
+      "id": "function:data/mis_convert_fmt.py:convert_single",
+      "type": "function",
+      "name": "convert_single",
+      "filePath": "data/mis_convert_fmt.py",
+      "lineRange": [
+        7,
+        10
+      ],
+      "summary": "단일 NetworkX 그래프를 (노드 수, 엣지 배열) 튜플로 변환한다.",
+      "tags": [
+        "데이터-변환",
+        "그래프-데이터",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:data/mis_convert_fmt.py:convert",
+      "type": "function",
+      "name": "convert",
+      "filePath": "data/mis_convert_fmt.py",
+      "lineRange": [
+        29,
+        51
+      ],
+      "summary": "디렉터리 내 모든 gpickle 파일을 로드하여 패딩 후 배치 numpy 배열로 변환하고 압축 저장하는 메인 변환 함수다.",
+      "tags": [
+        "데이터-파이프라인",
+        "배치-처리",
+        "저장"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:install.sh",
+      "type": "file",
+      "name": "install.sh",
+      "filePath": "install.sh",
+      "summary": "JAX(CUDA 12), Flax, Optax, Triton, TensorFlow, PyTorch, NumPy 등 프로젝트 실행에 필요한 핵심 Python 패키지를 특정 버전으로 일괄 설치하는 셸 스크립트다.",
+      "tags": [
+        "설치",
+        "환경-설정",
+        "dependencies",
+        "script"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "resource:lib/Makefile",
+      "type": "resource",
+      "name": "Makefile",
+      "filePath": "lib/Makefile",
+      "summary": "pybind11을 이용해 C++ 확장 모듈(interface.cpp)을 clang++으로 컴파일하여 Python 공유 라이브러리(.so)를 생성하는 빌드 정의 파일이다.",
+      "tags": [
+        "빌드-시스템",
+        "infrastructure",
+        "cpp-binding",
+        "pybind11"
+      ],
+      "complexity": "simple",
+      "languageNotes": "clang++ -O3으로 고최적화 컴파일하며, python3-config를 통해 플랫폼별 확장자를 동적으로 결정한다."
+    },
+    {
+      "id": "file:modules/functional/attention/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "modules/functional/attention/__init__.py",
+      "summary": "attention 서브패키지의 진입점 역할을 하는 빈 초기화 파일로, 패키지 네임스페이스만 선언한다.",
+      "tags": [
+        "entry-point",
+        "barrel",
+        "패키지-초기화"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:modules/functional/attention/triton/get_block_bound.py",
+      "type": "file",
+      "name": "get_block_bound.py",
+      "filePath": "modules/functional/attention/triton/get_block_bound.py",
+      "summary": "JAX와 Triton을 활용하여 세그먼트 기반 어텐션의 KV/Q 블록 경계(bound)를 효율적으로 계산하는 유틸리티 모듈로, 가변 길이 시퀀스에서 블록 단위 어텐션 마스크를 최적화한다.",
+      "tags": [
+        "attention",
+        "triton",
+        "jax",
+        "utility",
+        "최적화"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "jax.vmap과 partial을 중첩하여 배치 차원 병렬 처리를 구현하며, 세그먼트 ID를 기반으로 블록 하한·상한을 jnp.nonzero로 동적 계산한다."
+    },
+    {
+      "id": "function:modules/functional/attention/triton/get_block_bound.py:get_block_bound",
+      "type": "function",
+      "name": "get_block_bound",
+      "filePath": "modules/functional/attention/triton/get_block_bound.py",
+      "lineRange": [
+        7,
+        47
+      ],
+      "summary": "세그먼트 ID 배열을 입력받아 블록 단위의 KV 경계와 선택적 Q 경계를 계산하여 반환하는 핵심 함수로, 세그먼트 기반 어텐션의 효율적 구현을 지원한다.",
+      "tags": [
+        "attention",
+        "triton",
+        "jax",
+        "최적화",
+        "블록-마스킹"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "README.md",
+      "summary": "GenSCO 프로젝트의 공식 개요 문서로, NeurIPS 2025 논문 소개, 설치 방법, 체크포인트 다운로드, 학습 스크립트 위치, 데이터 전처리 방법 등을 안내한다.",
+      "tags": [
+        "documentation",
+        "entry-point",
+        "overview",
+        "논문-참조"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:data/generate_tsp_with_multirun_2opt.py",
+      "target": "function:data/generate_tsp_with_multirun_2opt.py:tsp_two_opt_multirun",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:data/generate_tsp_with_multirun_2opt.py",
+      "target": "function:data/generate_tsp_with_multirun_2opt.py:generate_and_save",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:data/generate_tsp_with_multirun_2opt.py",
+      "target": "function:data/generate_tsp_with_multirun_2opt.py:tsp_two_opt_multirun",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:data/generate_tsp_with_multirun_2opt.py",
+      "target": "function:data/generate_tsp_with_multirun_2opt.py:generate_and_save",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:data/generate_tsp_with_multirun_2opt.py",
+      "target": "file:helpers/coord_transform.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:data/generate_tsp_with_multirun_2opt.py",
+      "target": "file:lib/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:data/solve_tsp_with_multirun_2opt.py",
+      "target": "file:data/generate_tsp_with_multirun_2opt.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:data/solve_tsp_with_multirun_2opt.py",
+      "target": "file:helpers/coord_transform.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:data/solve_tsp_with_multirun_2opt.py",
+      "target": "file:lib/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/__init__.py",
+      "target": "file:decoding/continuous_sampling.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/continuous_sampling.py",
+      "target": "function:decoding/continuous_sampling.py:sample_euler",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:decoding/continuous_sampling.py",
+      "target": "function:decoding/continuous_sampling.py:sample_dpmpp_2m",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:decoding/continuous_sampling.py",
+      "target": "function:decoding/continuous_sampling.py:sample_euler",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:decoding/continuous_sampling.py",
+      "target": "function:decoding/continuous_sampling.py:sample_dpmpp_2m",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:decoding/extra/tsp_flow_labeling.py",
+      "target": "function:decoding/extra/tsp_flow_labeling.py:tsp_flow_searching_decode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:decoding/extra/tsp_flow_labeling.py",
+      "target": "function:decoding/extra/tsp_flow_labeling.py:tsp_flow_searching_decode",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:decoding/extra/tsp_flow_labeling.py",
+      "target": "file:decoding/continuous_sampling.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/extra/tsp_flow_labeling.py",
+      "target": "file:decoding/gpu_heuristics/tsp.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/extra/tsp_flow_labeling.py",
+      "target": "file:decoding/utils.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/extra/tsp_flow_labeling.py",
+      "target": "file:helpers/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/extra/tsp_flow_labeling.py",
+      "target": "file:helpers/coord_transform.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/extra/tsp_flow_labeling.py",
+      "target": "file:helpers/tsp_transform.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/extra/tsp_flow_labeling.py",
+      "target": "file:lib/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/extra/tsp_flow_labeling.py",
+      "target": "file:models/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/extra/tsp_flow_labeling.py",
+      "target": "file:models/TSPModel.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/extra/tsp_flow_labeling.py",
+      "target": "file:training/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/gpu_heuristics/tsp.py",
+      "target": "function:decoding/gpu_heuristics/tsp.py:two_opt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:decoding/gpu_heuristics/tsp.py",
+      "target": "function:decoding/gpu_heuristics/tsp.py:_two_opt_post_processing_argmax_impl_unbatched",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:decoding/gpu_heuristics/tsp.py",
+      "target": "function:decoding/gpu_heuristics/tsp.py:two_opt",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:decoding/gpu_heuristics/tsp.py",
+      "target": "function:decoding/gpu_heuristics/tsp.py:_two_opt_post_processing_argmax_impl_unbatched",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:decoding/mcl.py",
+      "target": "function:decoding/mcl.py:mcl_flow_decode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:decoding/mcl.py",
+      "target": "function:decoding/mcl.py:mcl_flow_decode",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:decoding/mcl.py",
+      "target": "file:decoding/continuous_sampling.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/mcl.py",
+      "target": "file:helpers/mis_transform.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/mcl.py",
+      "target": "file:lib/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/mcl.py",
+      "target": "file:models/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/mcl.py",
+      "target": "file:models/MISModel.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/mcl.py",
+      "target": "file:training/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/mis.py",
+      "target": "function:decoding/mis.py:mis_flow_decode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:decoding/mis.py",
+      "target": "function:decoding/mis.py:mis_flow_decode",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:decoding/mis.py",
+      "target": "file:decoding/continuous_sampling.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/mis.py",
+      "target": "file:helpers/mis_transform.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/mis.py",
+      "target": "file:lib/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/mis.py",
+      "target": "file:models/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/mis.py",
+      "target": "file:models/MISModel.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/mis.py",
+      "target": "file:training/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp.py",
+      "target": "function:decoding/tsp.py:tsp_flow_searching_decode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:decoding/tsp.py",
+      "target": "function:decoding/tsp.py:tsp_flow_searching_decode",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:decoding/tsp.py",
+      "target": "file:decoding/continuous_sampling.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp.py",
+      "target": "file:decoding/utils.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp.py",
+      "target": "file:helpers/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp.py",
+      "target": "file:helpers/coord_transform.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp.py",
+      "target": "file:helpers/tsp_transform.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp.py",
+      "target": "file:lib/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp.py",
+      "target": "file:models/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp.py",
+      "target": "file:models/TSPModel.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp.py",
+      "target": "file:training/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp_gpu_2opt.py",
+      "target": "function:decoding/tsp_gpu_2opt.py:tsp_flow_searching_decode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:decoding/tsp_gpu_2opt.py",
+      "target": "function:decoding/tsp_gpu_2opt.py:tsp_flow_searching_decode",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:decoding/tsp_gpu_2opt.py",
+      "target": "file:decoding/continuous_sampling.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp_gpu_2opt.py",
+      "target": "file:decoding/gpu_heuristics/tsp.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp_gpu_2opt.py",
+      "target": "file:decoding/utils.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp_gpu_2opt.py",
+      "target": "file:helpers/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp_gpu_2opt.py",
+      "target": "file:helpers/coord_transform.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp_gpu_2opt.py",
+      "target": "file:helpers/tsp_transform.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp_gpu_2opt.py",
+      "target": "file:lib/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp_gpu_2opt.py",
+      "target": "file:models/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp_gpu_2opt.py",
+      "target": "file:models/TSPModel.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/tsp_gpu_2opt.py",
+      "target": "file:training/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:decoding/utils.py",
+      "target": "function:decoding/utils.py:convert_heatmap_dtype",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:decoding/utils.py",
+      "target": "class:decoding/utils.py:CoordDynamicAugment",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:decoding/utils.py",
+      "target": "function:decoding/utils.py:convert_heatmap_dtype",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:decoding/utils.py",
+      "target": "class:decoding/utils.py:CoordDynamicAugment",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:helpers/coord_transform.py",
+      "target": "function:helpers/coord_transform.py:normalize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:helpers/coord_transform.py",
+      "target": "function:helpers/coord_transform.py:cdist",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:helpers/coord_transform.py",
+      "target": "function:helpers/coord_transform.py:normalize",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:helpers/coord_transform.py",
+      "target": "function:helpers/coord_transform.py:cdist",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:helpers/tsp_transform.py",
+      "target": "function:helpers/tsp_transform.py:tour_shuffle",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:helpers/tsp_transform.py",
+      "target": "function:helpers/tsp_transform.py:get_costs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:helpers/tsp_transform.py",
+      "target": "function:helpers/tsp_transform.py:tour_shuffle",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:helpers/tsp_transform.py",
+      "target": "function:helpers/tsp_transform.py:get_costs",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:lib/__init__.py",
+      "target": "function:lib/__init__.py:mis_edges2neighbors",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/__init__.py",
+      "target": "function:lib/__init__.py:mis_greedy_insert",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/__init__.py",
+      "target": "function:lib/__init__.py:mcl_greedy_insert",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/__init__.py",
+      "target": "class:lib/__init__.py:MISPartialInsertion",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/__init__.py",
+      "target": "function:lib/__init__.py:mis_edges2neighbors",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:lib/__init__.py",
+      "target": "function:lib/__init__.py:mis_greedy_insert",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:lib/__init__.py",
+      "target": "function:lib/__init__.py:mcl_greedy_insert",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:lib/__init__.py",
+      "target": "class:lib/__init__.py:MISPartialInsertion",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/__init__.py",
+      "target": "file:training/ckpt_utils.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/__init__.py",
+      "target": "file:training/init_optimizer.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/__init__.py",
+      "target": "file:training/Logger.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/ckpt_utils.py",
+      "target": "function:training/ckpt_utils.py:load_ckpt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:training/ckpt_utils.py",
+      "target": "function:training/ckpt_utils.py:save_ckpt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:training/ckpt_utils.py",
+      "target": "function:training/ckpt_utils.py:load_ckpt",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/ckpt_utils.py",
+      "target": "function:training/ckpt_utils.py:save_ckpt",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/ckpt_utils.py",
+      "target": "file:training/TrainConfig.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/convert_ckpt.py",
+      "target": "function:training/convert_ckpt.py:load_convert_save",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:training/convert_ckpt.py",
+      "target": "function:training/convert_ckpt.py:load_convert_save",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/convert_ckpt.py",
+      "target": "file:training/ckpt_utils.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:training/convert_ckpt.py:load_convert_save",
+      "target": "function:training/ckpt_utils.py:load_ckpt",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:training/convert_ckpt.py:load_convert_save",
+      "target": "function:training/ckpt_utils.py:save_ckpt",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:decoding/mcl.py:mcl_flow_decode",
+      "target": "function:decoding/continuous_sampling.py:sample_euler",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:decoding/mis.py:mis_flow_decode",
+      "target": "function:decoding/continuous_sampling.py:sample_euler",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:decoding/tsp.py:tsp_flow_searching_decode",
+      "target": "function:decoding/continuous_sampling.py:sample_dpmpp_2m",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:decoding/tsp_gpu_2opt.py:tsp_flow_searching_decode",
+      "target": "function:decoding/continuous_sampling.py:sample_dpmpp_2m",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:decoding/extra/tsp_flow_labeling.py:tsp_flow_searching_decode",
+      "target": "function:decoding/continuous_sampling.py:sample_dpmpp_2m",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:decoding/tsp_gpu_2opt.py:tsp_flow_searching_decode",
+      "target": "function:decoding/gpu_heuristics/tsp.py:two_opt",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:decoding/extra/tsp_flow_labeling.py:tsp_flow_searching_decode",
+      "target": "function:decoding/gpu_heuristics/tsp.py:two_opt",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:decoding/tsp.py:tsp_flow_searching_decode",
+      "target": "function:decoding/utils.py:convert_heatmap_dtype",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:decoding/tsp_gpu_2opt.py:tsp_flow_searching_decode",
+      "target": "function:decoding/utils.py:convert_heatmap_dtype",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:decoding/tsp.py:tsp_flow_searching_decode",
+      "target": "function:helpers/coord_transform.py:normalize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:data/generate_tsp_with_multirun_2opt.py:tsp_two_opt_multirun",
+      "target": "function:helpers/coord_transform.py:cdist",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:data/MCLDataloader.py",
+      "target": "file:data/MISDataloader.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:data/__init__.py",
+      "target": "file:data/MCLDataloader.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:data/__init__.py",
+      "target": "file:data/MISDataloader.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:data/__init__.py",
+      "target": "file:data/TSPDataloader.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/MCLModel.py",
+      "target": "file:models/MISModel.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/__init__.py",
+      "target": "file:models/MCLModel.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/__init__.py",
+      "target": "file:models/MISModel.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/__init__.py",
+      "target": "file:models/TSPModel.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/functional/__init__.py",
+      "target": "file:modules/functional/coord_transform.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/TrainConfig.py",
+      "target": "file:training/init_optimizer.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mcl.py",
+      "target": "file:data/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mcl.py",
+      "target": "file:data/MCLDataloader.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mcl.py",
+      "target": "file:models/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mcl.py",
+      "target": "file:models/MCLModel.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mcl.py",
+      "target": "file:training/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mcl.py",
+      "target": "file:training/train_mis.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mcl.py",
+      "target": "file:training/TrainConfig.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mis.py",
+      "target": "file:data/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mis.py",
+      "target": "file:data/MISDataloader.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mis.py",
+      "target": "file:helpers/mis_transform.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mis.py",
+      "target": "file:models/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mis.py",
+      "target": "file:models/MISModel.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mis.py",
+      "target": "file:training/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mis.py",
+      "target": "file:training/Logger.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_mis.py",
+      "target": "file:training/TrainConfig.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_tsp.py",
+      "target": "file:data/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_tsp.py",
+      "target": "file:data/TSPDataloader.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_tsp.py",
+      "target": "file:helpers/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_tsp.py",
+      "target": "file:models/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_tsp.py",
+      "target": "file:models/TSPModel.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_tsp.py",
+      "target": "file:modules/functional/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_tsp.py",
+      "target": "file:training/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_tsp.py",
+      "target": "file:training/Logger.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/train_tsp.py",
+      "target": "file:training/TrainConfig.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:data/MISDataloader.py",
+      "target": "class:data/MISDataloader.py:MISDataloader",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:data/MISDataloader.py",
+      "target": "class:data/MISDataloader.py:MISDataloader",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:data/TSPDataloader.py",
+      "target": "function:data/TSPDataloader.py:apply_two_opt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:data/TSPDataloader.py",
+      "target": "function:data/TSPDataloader.py:tour_shuffle",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:data/TSPDataloader.py",
+      "target": "function:data/TSPDataloader.py:preprocess_sol_type_edge",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:data/TSPDataloader.py",
+      "target": "function:data/TSPDataloader.py:normalize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:data/TSPDataloader.py",
+      "target": "class:data/TSPDataloader.py:TSPDataloader",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:data/TSPDataloader.py",
+      "target": "class:data/TSPDataloader.py:TSPDataloader",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/TrainConfig.py",
+      "target": "class:training/TrainConfig.py:TrainConfig",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:training/TrainConfig.py",
+      "target": "class:training/TrainConfig.py:TrainConfig",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/train_mis.py",
+      "target": "function:training/train_mis.py:train_mis",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:training/train_mis.py",
+      "target": "function:training/train_mis.py:train_mis",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/train_tsp.py",
+      "target": "function:training/train_tsp.py:train_tsp",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:training/train_tsp.py",
+      "target": "function:training/train_tsp.py:train_tsp",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/functional/coord_transform.py",
+      "target": "function:modules/functional/coord_transform.py:normalize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/coord_transform.py",
+      "target": "function:modules/functional/coord_transform.py:normalize",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/train_mcl.py",
+      "target": "function:training/train_mis.py:train_mis",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:training/train_tsp.py:train_tsp",
+      "target": "function:modules/functional/coord_transform.py:normalize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:models/MISModel.py",
+      "target": "class:models/MISModel.py:MISModelConfig",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:models/MISModel.py",
+      "target": "class:models/MISModel.py:MISModel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:models/MISModel.py",
+      "target": "function:models/MISModel.py:MISModel.encode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:models/MISModel.py",
+      "target": "function:models/MISModel.py:MISModel.decode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:models/MISModel.py",
+      "target": "file:modules/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/MISModel.py",
+      "target": "file:modules/Linear.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/MISModel.py",
+      "target": "file:modules/MLPBlock.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/MISModel.py",
+      "target": "file:modules/TimestepEmbedder.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/MISModel.py",
+      "target": "file:modules/TransformerEncoder.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/TSPModel.py",
+      "target": "class:models/TSPModel.py:TSPModelConfig",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:models/TSPModel.py",
+      "target": "class:models/TSPModel.py:TSPModel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:models/TSPModel.py",
+      "target": "function:models/TSPModel.py:TSPModel.encode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:models/TSPModel.py",
+      "target": "function:models/TSPModel.py:TSPModel.decode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:models/TSPModel.py",
+      "target": "function:models/TSPModel.py:TSPModel.feature2logit",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:models/TSPModel.py",
+      "target": "file:helpers/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/TSPModel.py",
+      "target": "file:helpers/with_invalid_kwargs_filtered.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/TSPModel.py",
+      "target": "file:modules/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/TSPModel.py",
+      "target": "file:modules/Linear.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/TSPModel.py",
+      "target": "file:modules/MLPBlock.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/TSPModel.py",
+      "target": "file:modules/TimestepEmbedder.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:models/TSPModel.py",
+      "target": "file:modules/TransformerEncoder.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/Linear.py",
+      "target": "function:modules/Linear.py:Linear",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/Linear.py",
+      "target": "function:modules/Linear.py:Linear",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/MLPBlock.py",
+      "target": "class:modules/MLPBlock.py:MLPBlock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/MLPBlock.py",
+      "target": "class:modules/MLPBlock.py:MLPBlock",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/MLPBlock.py",
+      "target": "file:modules/get_activation.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/MultiHeadAttention.py",
+      "target": "function:modules/MultiHeadAttention.py:attention_fn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/MultiHeadAttention.py",
+      "target": "class:modules/MultiHeadAttention.py:MultiHeadAttention",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/MultiHeadAttention.py",
+      "target": "class:modules/MultiHeadAttention.py:MultiHeadAttention",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/MultiHeadAttention.py",
+      "target": "file:modules/functional/attention/triton/wrapper.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "function:modules/MultiHeadAttention.py:attention_fn",
+      "target": "function:modules/functional/attention/triton/wrapper.py:attention_fn",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/SwiGLU.py",
+      "target": "function:modules/SwiGLU.py:xla_swiglu",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/SwiGLU.py",
+      "target": "class:modules/SwiGLU.py:SwiGLU",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/SwiGLU.py",
+      "target": "class:modules/SwiGLU.py:SwiGLU",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/TimestepEmbedder.py",
+      "target": "class:modules/TimestepEmbedder.py:TimestepEmbedder",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/TimestepEmbedder.py",
+      "target": "function:modules/TimestepEmbedder.py:TimestepEmbedder.timestep_embedding",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/TimestepEmbedder.py",
+      "target": "class:modules/TimestepEmbedder.py:TimestepEmbedder",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/TransformerEncoder.py",
+      "target": "class:modules/TransformerEncoder.py:TransformerEncoder",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/TransformerEncoder.py",
+      "target": "class:modules/TransformerEncoder.py:TransformerEncoder",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/TransformerEncoder.py",
+      "target": "file:modules/TransformerLayer.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/TransformerLayer.py",
+      "target": "class:modules/TransformerLayer.py:TransformerLayer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/TransformerLayer.py",
+      "target": "class:modules/TransformerLayer.py:TransformerLayer",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/TransformerLayer.py",
+      "target": "file:modules/MLPBlock.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/TransformerLayer.py",
+      "target": "file:modules/MultiHeadAttention.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/TransformerLayer.py",
+      "target": "file:modules/SwiGLU.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/__init__.py",
+      "target": "file:modules/Linear.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/__init__.py",
+      "target": "file:modules/MLPBlock.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/__init__.py",
+      "target": "file:modules/TimestepEmbedder.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/__init__.py",
+      "target": "file:modules/TransformerEncoder.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/get_activation.py",
+      "target": "function:modules/get_activation.py:get_activation",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/get_activation.py",
+      "target": "function:modules/get_activation.py:get_activation",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:lib/interface.cpp",
+      "target": "file:lib/interface.hpp",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:lib/interface.cpp",
+      "target": "file:lib/mcl_interface.hpp",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:lib/interface.cpp",
+      "target": "file:lib/mis_interface.hpp",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:lib/interface.hpp",
+      "target": "file:lib/mis_interface.hpp",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:lib/interface.hpp",
+      "target": "file:lib/par_utils.hpp",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:lib/interface.hpp",
+      "target": "file:lib/tsp_interface.hpp",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:lib/interface.hpp",
+      "target": "file:lib/tsp.hpp",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:lib/mcl_interface.hpp",
+      "target": "file:lib/mcl.hpp",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:lib/mis_interface.hpp",
+      "target": "file:lib/mis.hpp",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:lib/mis_interface.hpp",
+      "target": "file:lib/par_utils.hpp",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:lib/tsp.hpp",
+      "target": "file:lib/params.hpp",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:lib/tsp_interface.hpp",
+      "target": "file:lib/par_utils.hpp",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:lib/tsp_interface.hpp",
+      "target": "file:lib/tsp.hpp",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:lib/mcl.hpp",
+      "target": "function:lib/mcl.hpp:partially_greedy_insert",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/mcl_interface.hpp",
+      "target": "function:lib/mcl_interface.hpp:mcl_partially_greedy_insert_interface",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/mis.hpp",
+      "target": "function:lib/mis.hpp:partially_greedy_insert",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/mis.hpp",
+      "target": "function:lib/mis.hpp:edges2neighbors",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/mis.hpp",
+      "target": "function:lib/mis.hpp:init_insertion_state",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/mis.hpp",
+      "target": "function:lib/mis.hpp:partially_mask",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/mis_interface.hpp",
+      "target": "function:lib/mis_interface.hpp:mis_partially_greedy_insert_interface",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/mis_interface.hpp",
+      "target": "function:lib/mis_interface.hpp:mis_edges2neighbors_interface",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/mis_interface.hpp",
+      "target": "function:lib/mis_interface.hpp:mis_partially_mask_interface",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/par_utils.hpp",
+      "target": "function:lib/par_utils.hpp:parallelize",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/tsp.hpp",
+      "target": "function:lib/tsp.hpp:find_best_two_opt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/tsp.hpp",
+      "target": "function:lib/tsp.hpp:two_opt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/tsp.hpp",
+      "target": "function:lib/tsp.hpp:random_two_opt",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/tsp.hpp",
+      "target": "function:lib/tsp.hpp:greedy_insert",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/tsp.hpp",
+      "target": "function:lib/tsp.hpp:partially_greedy_insert",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/tsp.hpp",
+      "target": "function:lib/tsp.hpp:eval_cost",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/tsp.hpp",
+      "target": "function:lib/tsp.hpp:fill_solution_naive",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/tsp_interface.hpp",
+      "target": "function:lib/tsp_interface.hpp:tsp_two_opt_inplace_interface",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/tsp_interface.hpp",
+      "target": "function:lib/tsp_interface.hpp:tsp_random_two_opt_inplace_interface",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/tsp_interface.hpp",
+      "target": "function:lib/tsp_interface.hpp:tsp_double_two_opt_interface",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/tsp_interface.hpp",
+      "target": "function:lib/tsp_interface.hpp:tsp_greedy_insert_interface",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:lib/tsp_interface.hpp",
+      "target": "function:lib/tsp_interface.hpp:tsp_eval_cost",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "function:lib/mcl_interface.hpp:mcl_partially_greedy_insert_interface",
+      "target": "function:lib/mcl.hpp:partially_greedy_insert",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/mcl_interface.hpp:mcl_partially_greedy_insert_interface",
+      "target": "function:lib/par_utils.hpp:parallelize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/mis_interface.hpp:mis_partially_greedy_insert_interface",
+      "target": "function:lib/mis.hpp:partially_greedy_insert",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/mis_interface.hpp:mis_partially_greedy_insert_interface",
+      "target": "function:lib/par_utils.hpp:parallelize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/mis_interface.hpp:mis_edges2neighbors_interface",
+      "target": "function:lib/mis.hpp:edges2neighbors",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/mis_interface.hpp:mis_edges2neighbors_interface",
+      "target": "function:lib/par_utils.hpp:parallelize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/mis_interface.hpp:mis_partially_mask_interface",
+      "target": "function:lib/mis.hpp:partially_mask",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/mis_interface.hpp:mis_partially_mask_interface",
+      "target": "function:lib/par_utils.hpp:parallelize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/tsp_interface.hpp:tsp_two_opt_inplace_interface",
+      "target": "function:lib/tsp.hpp:two_opt",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/tsp_interface.hpp:tsp_two_opt_inplace_interface",
+      "target": "function:lib/par_utils.hpp:parallelize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/tsp_interface.hpp:tsp_random_two_opt_inplace_interface",
+      "target": "function:lib/tsp.hpp:random_two_opt",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/tsp_interface.hpp:tsp_random_two_opt_inplace_interface",
+      "target": "function:lib/par_utils.hpp:parallelize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/tsp_interface.hpp:tsp_double_two_opt_interface",
+      "target": "function:lib/tsp.hpp:two_opt",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/tsp_interface.hpp:tsp_double_two_opt_interface",
+      "target": "function:lib/tsp.hpp:random_two_opt",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/tsp_interface.hpp:tsp_double_two_opt_interface",
+      "target": "function:lib/par_utils.hpp:parallelize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/tsp_interface.hpp:tsp_greedy_insert_interface",
+      "target": "function:lib/tsp.hpp:greedy_insert",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/tsp_interface.hpp:tsp_greedy_insert_interface",
+      "target": "function:lib/par_utils.hpp:parallelize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/tsp_interface.hpp:tsp_eval_cost",
+      "target": "function:lib/tsp.hpp:eval_cost",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/tsp_interface.hpp:tsp_eval_cost",
+      "target": "function:lib/par_utils.hpp:parallelize",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/tsp.hpp:two_opt",
+      "target": "function:lib/tsp.hpp:find_best_two_opt",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/tsp.hpp:greedy_insert",
+      "target": "function:lib/tsp.hpp:fill_solution_naive",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:lib/tsp.hpp:fill_solution_naive",
+      "target": "function:lib/tsp.hpp:partially_greedy_insert",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:helpers/__init__.py",
+      "target": "file:helpers/coord_transform.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:helpers/__init__.py",
+      "target": "file:helpers/maybe_eval.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:helpers/__init__.py",
+      "target": "file:helpers/parse_bool.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:helpers/__init__.py",
+      "target": "file:helpers/solution_transform.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:helpers/__init__.py",
+      "target": "file:helpers/with_invalid_kwargs_filtered.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/Logger.py",
+      "target": "file:helpers/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/Logger.py",
+      "target": "file:helpers/parse_bool.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:helpers/__init__.py",
+      "target": "file:helpers/maybe_eval.py",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:helpers/__init__.py",
+      "target": "file:helpers/parse_bool.py",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:helpers/__init__.py",
+      "target": "file:helpers/solution_transform.py",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:helpers/__init__.py",
+      "target": "file:helpers/with_invalid_kwargs_filtered.py",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:helpers/maybe_eval.py",
+      "target": "function:helpers/maybe_eval.py:maybe_eval",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:helpers/maybe_eval.py",
+      "target": "function:helpers/maybe_eval.py:maybe_eval",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:helpers/parse_bool.py",
+      "target": "function:helpers/parse_bool.py:parse_bool",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:helpers/parse_bool.py",
+      "target": "function:helpers/parse_bool.py:parse_bool",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:helpers/solution_transform.py",
+      "target": "function:helpers/solution_transform.py:sol2adj",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:helpers/solution_transform.py",
+      "target": "function:helpers/solution_transform.py:sol2adj",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:helpers/solution_transform.py",
+      "target": "function:helpers/solution_transform.py:edges2adj",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:helpers/solution_transform.py",
+      "target": "function:helpers/solution_transform.py:edges2adj",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:helpers/with_invalid_kwargs_filtered.py",
+      "target": "function:helpers/with_invalid_kwargs_filtered.py:with_invalid_kwargs_filtered",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:helpers/with_invalid_kwargs_filtered.py",
+      "target": "function:helpers/with_invalid_kwargs_filtered.py:with_invalid_kwargs_filtered",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/Logger.py",
+      "target": "class:training/Logger.py:Logger",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:training/Logger.py",
+      "target": "class:training/Logger.py:Logger",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/Logger.py",
+      "target": "function:helpers/parse_bool.py:parse_bool",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:common/array_view.py",
+      "target": "class:common/array_view.py:ArrayView",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:common/array_view.py",
+      "target": "function:common/array_view.py:as_array_view",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:common/array_view.py",
+      "target": "function:common/array_view.py:ArrayView.__post_init__",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:common/array_view.py",
+      "target": "function:common/array_view.py:ArrayView.__jax_array__",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:common/array_view.py",
+      "target": "function:common/array_view.py:ArrayView.set",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:common/array_view.py",
+      "target": "function:common/array_view.py:ArrayView._reshape",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "class:common/array_view.py:ArrayView",
+      "target": "function:common/array_view.py:ArrayView.__post_init__",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "class:common/array_view.py:ArrayView",
+      "target": "function:common/array_view.py:ArrayView.__jax_array__",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "class:common/array_view.py:ArrayView",
+      "target": "function:common/array_view.py:ArrayView.set",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "class:common/array_view.py:ArrayView",
+      "target": "function:common/array_view.py:ArrayView._reshape",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:common/array_view.py",
+      "target": "class:common/array_view.py:ArrayView",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:common/array_view.py",
+      "target": "function:common/array_view.py:as_array_view",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:common/jax_triton.py",
+      "target": "class:common/jax_triton.py:PtxCompilationResult",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:common/jax_triton.py",
+      "target": "function:common/jax_triton.py:triton_call",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:common/jax_triton.py",
+      "target": "function:common/jax_triton.py:get_or_create_triton_kernel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:common/jax_triton.py",
+      "target": "function:common/jax_triton.py:triton_kernel_call_lowering",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:common/jax_triton.py",
+      "target": "function:common/jax_triton.py:compile_ttir_to_ptx_inplace",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:common/jax_triton.py",
+      "target": "function:common/jax_triton.py:triton_call",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:common/jax_triton.py:triton_kernel_call_lowering",
+      "target": "function:common/jax_triton.py:get_or_create_triton_kernel",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:common/jax_triton.py:get_or_create_triton_kernel",
+      "target": "function:common/jax_triton.py:compile_ttir_to_ptx_inplace",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "target": "file:modules/functional/attention/triton/tanh.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "target": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_fwd_kernel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "target": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_kernel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "target": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_preprocess_do_o_dot",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "target": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_kernel_one_col_block",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "target": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_store_dk_dv",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "target": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:handle_q_bound",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "target": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_fwd_kernel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "target": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_kernel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "target": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_preprocess_do_o_dot",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_fwd_kernel",
+      "target": "function:modules/functional/attention/triton/tanh.py:approx_tanh",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_kernel",
+      "target": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_kernel_one_col_block",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_kernel_one_col_block",
+      "target": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_store_dk_dv",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_kernel_one_col_block",
+      "target": "function:modules/functional/attention/triton/tanh.py:approx_tanh",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/functional/attention/triton/tanh.py",
+      "target": "function:modules/functional/attention/triton/tanh.py:approx_tanh",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/tanh.py",
+      "target": "function:modules/functional/attention/triton/tanh.py:approx_tanh",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/functional/attention/triton/wrapper.py",
+      "target": "file:common/array_view.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/functional/attention/triton/wrapper.py",
+      "target": "file:common/jax_triton.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/functional/attention/triton/wrapper.py",
+      "target": "file:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:modules/functional/attention/triton/wrapper.py",
+      "target": "function:modules/functional/attention/triton/wrapper.py:attention_fn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/wrapper.py",
+      "target": "function:modules/functional/attention/triton/wrapper.py:qkv_unpacked_attention_fn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/wrapper.py",
+      "target": "function:modules/functional/attention/triton/wrapper.py:qkvpacked_attention_fn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/wrapper.py",
+      "target": "function:modules/functional/attention/triton/wrapper.py:_forward_impl",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/wrapper.py",
+      "target": "function:modules/functional/attention/triton/wrapper.py:_backward_impl",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/wrapper.py",
+      "target": "function:modules/functional/attention/triton/wrapper.py:process_bias",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/wrapper.py",
+      "target": "function:modules/functional/attention/triton/wrapper.py:attention_fn",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/functional/attention/triton/wrapper.py",
+      "target": "function:modules/functional/attention/triton/wrapper.py:qkv_unpacked_attention_fn",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/functional/attention/triton/wrapper.py",
+      "target": "function:modules/functional/attention/triton/wrapper.py:qkvpacked_attention_fn",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:modules/functional/attention/triton/wrapper.py:attention_fn",
+      "target": "function:modules/functional/attention/triton/wrapper.py:qkv_unpacked_attention_fn",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:modules/functional/attention/triton/wrapper.py:attention_fn",
+      "target": "function:modules/functional/attention/triton/wrapper.py:qkvpacked_attention_fn",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:modules/functional/attention/triton/wrapper.py:_forward_impl",
+      "target": "function:common/jax_triton.py:triton_call",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:modules/functional/attention/triton/wrapper.py:_backward_impl",
+      "target": "function:common/jax_triton.py:triton_call",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:modules/functional/attention/triton/wrapper.py:_forward_impl",
+      "target": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_fwd_kernel",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:modules/functional/attention/triton/wrapper.py:_backward_impl",
+      "target": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_kernel",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:modules/functional/attention/triton/wrapper.py:_backward_impl",
+      "target": "function:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py:_bwd_preprocess_do_o_dot",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:modules/functional/attention/triton/wrapper.py",
+      "target": "function:modules/MultiHeadAttention.py:attention_fn",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:training/init_optimizer.py",
+      "target": "file:training/optimizers/__init__.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/init_optimizer.py",
+      "target": "file:training/optimizers/muon.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/optimizers/__init__.py",
+      "target": "file:training/optimizers/muon.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:training/init_optimizer.py",
+      "target": "function:training/init_optimizer.py:init_optimizer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:training/init_optimizer.py",
+      "target": "function:training/init_optimizer.py:init_optimizer",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/optimizers/muon.py",
+      "target": "function:training/optimizers/muon.py:zeropower_via_newtonschulz5",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:training/optimizers/muon.py",
+      "target": "function:training/optimizers/muon.py:zeropower_via_newtonschulz5",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/optimizers/muon.py",
+      "target": "function:training/optimizers/muon.py:if_dispatch_to_muon",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:training/optimizers/muon.py",
+      "target": "function:training/optimizers/muon.py:if_dispatch_to_muon",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/optimizers/muon.py",
+      "target": "function:training/optimizers/muon.py:merge",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:training/optimizers/muon.py",
+      "target": "function:training/optimizers/muon.py:merge",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/optimizers/muon.py",
+      "target": "function:training/optimizers/muon.py:set_leaves_to_false",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:training/optimizers/muon.py",
+      "target": "function:training/optimizers/muon.py:set_leaves_to_false",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/optimizers/muon.py",
+      "target": "function:training/optimizers/muon.py:multiplied_by_adjustment_ratio_for_muon",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:training/optimizers/muon.py",
+      "target": "function:training/optimizers/muon.py:multiplied_by_adjustment_ratio_for_muon",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:training/optimizers/muon.py",
+      "target": "function:training/optimizers/muon.py:muon",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:training/optimizers/muon.py",
+      "target": "function:training/optimizers/muon.py:muon",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:training/init_optimizer.py:init_optimizer",
+      "target": "function:training/optimizers/muon.py:muon",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:training/optimizers/muon.py:muon",
+      "target": "function:training/optimizers/muon.py:zeropower_via_newtonschulz5",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:training/optimizers/muon.py:muon",
+      "target": "function:training/optimizers/muon.py:if_dispatch_to_muon",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:training/optimizers/muon.py:muon",
+      "target": "function:training/optimizers/muon.py:set_leaves_to_false",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:training/optimizers/muon.py:muon",
+      "target": "function:training/optimizers/muon.py:multiplied_by_adjustment_ratio_for_muon",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:training/optimizers/muon.py:muon",
+      "target": "function:training/optimizers/muon.py:merge",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/train/tsp500.sh",
+      "target": "file:scripts/train/tsp100.sh",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:scripts/train/tsp1000.sh",
+      "target": "file:scripts/train/tsp500.sh",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:data/mcl_convert_fmt.py",
+      "target": "function:data/mcl_convert_fmt.py:remove_self_loop",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:data/mcl_convert_fmt.py",
+      "target": "function:data/mcl_convert_fmt.py:remove_replicated",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:data/mcl_convert_fmt.py",
+      "target": "function:data/mcl_convert_fmt.py:parse_instance",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:data/mcl_convert_fmt.py",
+      "target": "function:data/mcl_convert_fmt.py:convert_instances",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:data/mcl_convert_fmt.py",
+      "target": "function:data/mcl_convert_fmt.py:parse_convert_and_save",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:data/mis_convert_fmt.py",
+      "target": "function:data/mis_convert_fmt.py:convert_single",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:data/mis_convert_fmt.py",
+      "target": "function:data/mis_convert_fmt.py:convert",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/get_block_bound.py",
+      "target": "function:modules/functional/attention/triton/get_block_bound.py:get_block_bound",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:modules/functional/attention/triton/get_block_bound.py",
+      "target": "function:modules/functional/attention/triton/get_block_bound.py:get_block_bound",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "document:README.md",
+      "target": "file:install.sh",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "resource:lib/Makefile",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "file:data/mis_convert_fmt.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "file:data/mcl_convert_fmt.py",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:models",
+      "name": "모델 레이어",
+      "description": "TSP, MIS, MCL 문제에 특화된 JAX 기반 diffusion 신경망 모델을 정의하며, 노이즈 예측과 솔루션 생성을 담당하는 핵심 모델 클래스를 포함한다.",
+      "nodeIds": [
+        "file:models/MCLModel.py",
+        "file:models/__init__.py",
+        "file:models/MISModel.py",
+        "file:models/TSPModel.py"
+      ]
+    },
+    {
+      "id": "layer:modules",
+      "name": "신경망 모듈",
+      "description": "Transformer 인코더, Multi-Head Attention, MLPBlock, SwiGLU 등 모델을 구성하는 재사용 가능한 빌딩 블록과 Triton 기반 FlashAttention 커널, JAX-Triton 브리지를 포함하는 저수준 연산 계층이다.",
+      "nodeIds": [
+        "file:modules/functional/__init__.py",
+        "file:modules/functional/coord_transform.py",
+        "file:modules/Linear.py",
+        "file:modules/MLPBlock.py",
+        "file:modules/MultiHeadAttention.py",
+        "file:modules/SwiGLU.py",
+        "file:modules/TimestepEmbedder.py",
+        "file:modules/TransformerEncoder.py",
+        "file:modules/TransformerLayer.py",
+        "file:modules/__init__.py",
+        "file:modules/get_activation.py",
+        "file:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+        "file:modules/functional/attention/triton/tanh.py",
+        "file:modules/functional/attention/triton/wrapper.py",
+        "file:modules/functional/attention/__init__.py",
+        "file:modules/functional/attention/triton/get_block_bound.py",
+        "file:common/array_view.py",
+        "file:common/jax_triton.py"
+      ]
+    },
+    {
+      "id": "layer:decoding",
+      "name": "디코딩 레이어",
+      "description": "생성 모델을 탐색 연산자로 활용하는 추론 시간 확장 알고리즘을 구현하며, TSP/MIS/MCL 각 문제별 decoding 루프, diffusion 연속 샘플러(Euler, DPM++ 2M), GPU 2-opt 휴리스틱을 포함한다.",
+      "nodeIds": [
+        "file:decoding/__init__.py",
+        "file:decoding/continuous_sampling.py",
+        "file:decoding/extra/tsp_flow_labeling.py",
+        "file:decoding/gpu_heuristics/tsp.py",
+        "file:decoding/mcl.py",
+        "file:decoding/mis.py",
+        "file:decoding/tsp.py",
+        "file:decoding/tsp_gpu_2opt.py",
+        "file:decoding/utils.py"
+      ]
+    },
+    {
+      "id": "layer:training",
+      "name": "훈련 레이어",
+      "description": "TSP, MIS, MCL 모델의 학습 루프, 손실 계산, 체크포인트 관리, 로깅, Muon 옵티마이저 등 모델 파라미터를 최적화하는 전체 훈련 파이프라인을 담당한다.",
+      "nodeIds": [
+        "file:training/__init__.py",
+        "file:training/ckpt_utils.py",
+        "file:training/convert_ckpt.py",
+        "file:training/TrainConfig.py",
+        "file:training/train_mcl.py",
+        "file:training/train_mis.py",
+        "file:training/train_tsp.py",
+        "file:training/Logger.py",
+        "file:training/init_optimizer.py",
+        "file:training/optimizers/__init__.py",
+        "file:training/optimizers/muon.py"
+      ]
+    },
+    {
+      "id": "layer:data",
+      "name": "데이터 레이어",
+      "description": "TSP, MIS, MCL 문제의 데이터셋 로딩, 배치 생성, 포맷 변환, 2-opt 로컬 서치 기반 최적 투어 생성 등 학습 및 평가에 필요한 데이터 파이프라인을 제공한다.",
+      "nodeIds": [
+        "file:data/generate_tsp_with_multirun_2opt.py",
+        "file:data/solve_tsp_with_multirun_2opt.py",
+        "file:data/MCLDataloader.py",
+        "file:data/MISDataloader.py",
+        "file:data/TSPDataloader.py",
+        "file:data/__init__.py",
+        "file:data/mcl_convert_fmt.py",
+        "file:data/mis_convert_fmt.py"
+      ]
+    },
+    {
+      "id": "layer:lib",
+      "name": "C++ 확장 라이브러리",
+      "description": "TSP, MIS, MCL 알고리즘의 고성능 C++ 구현체와 pybind11 기반 Python-C++ 인터페이스, 병렬 유틸리티, 빌드 시스템(Makefile), 좌표 변환 및 솔루션 변환 헬퍼 함수를 포함하는 저수준 연산 라이브러리이다.",
+      "nodeIds": [
+        "file:lib/__init__.py",
+        "file:lib/interface.cpp",
+        "file:lib/interface.hpp",
+        "file:lib/mcl.hpp",
+        "file:lib/mcl_interface.hpp",
+        "file:lib/mis.hpp",
+        "file:lib/mis_interface.hpp",
+        "file:lib/par_utils.hpp",
+        "file:lib/params.hpp",
+        "file:lib/tsp.hpp",
+        "file:lib/tsp_interface.hpp",
+        "resource:lib/Makefile",
+        "file:helpers/coord_transform.py",
+        "file:helpers/mis_transform.py",
+        "file:helpers/tsp_transform.py",
+        "file:helpers/__init__.py",
+        "file:helpers/maybe_eval.py",
+        "file:helpers/parse_bool.py",
+        "file:helpers/solution_transform.py",
+        "file:helpers/with_invalid_kwargs_filtered.py"
+      ]
+    },
+    {
+      "id": "layer:scripts-and-config",
+      "name": "실행 스크립트 및 설정",
+      "description": "TSP/MIS/MCL 모델의 훈련 및 평가를 실행하는 shell 스크립트, 프로젝트 설치 스크립트, README 문서, understand-anything 도구 설정 파일을 포함하는 프로젝트 운영 계층이다.",
+      "nodeIds": [
+        "file:scripts/eval/mcl_rb_large.sh",
+        "file:scripts/eval/mcl_rb_small.sh",
+        "file:scripts/eval/mis_er.sh",
+        "file:scripts/eval/mis_rb.sh",
+        "file:scripts/eval/tsp100.sh",
+        "file:scripts/eval/tsp1000.sh",
+        "file:scripts/eval/tsp500.sh",
+        "file:scripts/train/mcl_rb_large.sh",
+        "file:scripts/train/mcl_rb_small.sh",
+        "file:scripts/train/mis_er.sh",
+        "file:scripts/train/mis_rb.sh",
+        "file:scripts/train/tsp100.sh",
+        "file:scripts/train/tsp1000.sh",
+        "file:scripts/train/tsp500.sh",
+        "file:install.sh",
+        "document:README.md",
+        "file:.understand-anything/.understandignore",
+        "config:.understand-anything/config.json"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "프로젝트 개요",
+      "description": "README.md는 GenSCO의 핵심 아이디어인 '생성을 탐색 연산자로 사용하는 추론 시간 확장'을 소개한다. NeurIPS 2025 논문의 핵심 결과(TSP-100에서 LKH3 대비 141배 속도 향상)와 지원 문제(TSP, MIS, MCL), 설치 방법, 학습·평가 스크립트 위치를 빠르게 파악할 수 있는 출발점이다.",
+      "nodeIds": [
+        "document:README.md"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "TSP 학습 진입점",
+      "description": "training/train_tsp.py는 가장 많은 모듈을 참조하는(fan-out 9) 훈련 진입점으로, diffusion 모델의 전체 학습 파이프라인을 보여준다. JAX pmap을 통한 다중 GPU 분산 학습, adjacency matrix 기반 손실 함수, JIT 컴파일된 train_step 함수가 어떻게 연결되는지 확인할 수 있다.",
+      "nodeIds": [
+        "file:training/train_tsp.py"
+      ],
+      "languageLesson": "JAX의 jax.pmap은 여러 디바이스에 함수를 복제하여 병렬 실행하며, 각 디바이스는 배치의 서로 다른 샤드를 처리한다. jax.jit과 달리 pmap은 디바이스 간 통신(lax.pmean 등)도 지원한다."
+    },
+    {
+      "order": 3,
+      "title": "TSP Diffusion 모델",
+      "description": "models/TSPModel.py는 GenSCO의 핵심 신경망으로, 2D 좌표를 입력받아 투어 엣지 확률 행렬(heatmap)을 출력하는 인코더-디코더 Transformer 구조를 정의한다. feature2logit 메서드에서 특징 벡터의 내적으로 쌍별 유사도 행렬을 생성하는 독특한 출력 방식이 조합 최적화 구조를 활용하는 핵심 설계 결정이다. 함께 살펴볼 MISModel.py는 그래프 문제(MIS, MCL)를 위한 대응 모델이다.",
+      "nodeIds": [
+        "file:models/TSPModel.py",
+        "file:models/MISModel.py"
+      ],
+      "languageLesson": "Flax NNX 모듈은 encode()와 decode()를 분리하여 추론 시간 탐색에서 인코딩을 한 번만 수행하고 디코딩을 반복 호출하는 패턴을 가능하게 한다. bfloat16 dtype을 기본 사용하여 TPU/GPU 처리 효율을 높인다."
+    },
+    {
+      "order": 4,
+      "title": "Transformer 인코더 스택",
+      "description": "modules/TransformerEncoder.py와 modules/TransformerLayer.py는 TSPModel·MISModel의 뼈대를 이루는 Transformer 블록을 정의한다. TransformerLayer는 Pre-LN 구조에 use_swiglu 플래그로 FFN을 MLPBlock 또는 SwiGLU 중 선택하며, remat_layernorm 옵션으로 activation checkpointing을 지원한다. fan-in 분석에서 MLPBlock이 4개 파일에서 참조되는 핵심 모듈임을 확인할 수 있다.",
+      "nodeIds": [
+        "file:modules/TransformerEncoder.py",
+        "file:modules/TransformerLayer.py",
+        "file:modules/MLPBlock.py"
+      ],
+      "languageLesson": "nnx.remat은 JAX의 gradient checkpointing으로, 순전파 결과를 메모리에 저장하지 않고 역전파 시 재계산하여 GPU 메모리를 절약한다. 대규모 모델 학습에서 배치 크기를 늘리기 위해 자주 사용된다."
+    },
+    {
+      "order": 5,
+      "title": "Diffusion Timestep 임베딩과 어텐션",
+      "description": "modules/TimestepEmbedder.py는 Stable Diffusion 3.5 스타일의 sinusoidal timestep 임베딩으로, diffusion 노이즈 레벨을 모델에 주입하는 역할을 한다. modules/MultiHeadAttention.py는 cuDNN과 Triton FlashAttention 백엔드를 자동 선택하는 어텐션 모듈로, 시퀀스 길이나 softcap 조건에 따라 최적 백엔드로 폴백한다.",
+      "nodeIds": [
+        "file:modules/TimestepEmbedder.py",
+        "file:modules/MultiHeadAttention.py"
+      ],
+      "languageLesson": "cuDNN dot_product_attention은 NVIDIA 공식 커널로 일반적인 경우 최고 성능을 제공하지만, 홀수 시퀀스 길이나 softcap 같은 특수 조건에서는 커스텀 Triton 커널로 자동 전환하는 설계가 유연성과 성능을 동시에 확보한다."
+    },
+    {
+      "order": 6,
+      "title": "Triton FlashAttention 커널",
+      "description": "modules/functional/attention/triton/wrapper.py는 FlashAttention Triton 커널을 jax.custom_vjp로 감싸 JAX 자동 미분 시스템에 통합하며, QKV-packed 및 분리 입력을 모두 지원한다. fa_kernel_softcap_then_bias.py에는 softcap-then-bias 변형의 실제 Triton 순전파/역전파 커널이 구현되어 있다. common/array_view.py의 ArrayView 클래스는 AlphaFold3에서 채택된 zero-copy 텐서 슬라이싱 유틸리티로 QKV 분리에 활용된다.",
+      "nodeIds": [
+        "file:modules/functional/attention/triton/wrapper.py",
+        "file:modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+        "file:common/array_view.py"
+      ],
+      "languageLesson": "jax.custom_vjp는 JAX에 커스텀 그래디언트를 등록하는 메커니즘이다. 순전파(fwd)와 역전파(bwd)를 명시적으로 정의하면 Triton처럼 JAX가 자동으로 미분할 수 없는 커널도 학습에 사용할 수 있다."
+    },
+    {
+      "order": 7,
+      "title": "Diffusion 샘플러",
+      "description": "decoding/continuous_sampling.py는 생성 탐색 루프의 핵심인 Euler와 DPM++ 2M 샘플러를 JAX로 구현한다. fan-in 6으로 모든 디코딩 모듈(tsp.py, mis.py, mcl.py, tsp_gpu_2opt.py 등)이 이 파일을 공유하며, TSP는 DPM++ 2M을, MIS/MCL은 Euler 샘플러를 사용한다. jax.lax.broadcast_in_dim을 활용한 XLA 친화적 timestep 처리가 특징이다.",
+      "nodeIds": [
+        "file:decoding/continuous_sampling.py"
+      ],
+      "languageLesson": "DPM++ 2M은 2차 다중스텝 ODE 솔버로, 이전 스텝의 함수값을 재활용하여 동일한 NFE(함수 평가 횟수)에서 Euler보다 더 높은 정확도의 샘플을 생성한다. 조합 최적화 디코딩에서는 샘플링 품질이 해의 최적성에 직결된다."
+    },
+    {
+      "order": 8,
+      "title": "GenSCO 탐색 루프 (TSP 디코딩)",
+      "description": "decoding/tsp.py는 GenSCO의 핵심 알고리즘인 '생성-탐색 루프'를 TSP에 구현한다. 매 사이클마다 DPM++ 샘플러로 heatmap을 생성하고, C++ 2-opt 후처리로 솔루션을 개선한 뒤, 다음 사이클의 노이즈 시작점으로 현재 최선 솔루션을 사용하는 반복 구조를 이해할 수 있다. MIS와 MCL 디코더(mis.py, mcl.py)도 동일한 패턴을 따른다.",
+      "nodeIds": [
+        "file:decoding/tsp.py",
+        "file:decoding/mis.py",
+        "file:decoding/mcl.py"
+      ],
+      "languageLesson": "GenSCO의 'disruption' 파라미터는 현재 솔루션에 얼마나 많은 노이즈를 주입할지 제어한다. 낮은 disruption은 지역 탐색에 집중하고, 높은 disruption은 해 공간을 더 넓게 탐색한다."
+    },
+    {
+      "order": 9,
+      "title": "C++ 고성능 휴리스틱 라이브러리",
+      "description": "lib/__init__.py는 C++ 확장 모듈을 Python으로 노출하는 바인딩 레이어로, TSP 2-opt, greedy insertion, MIS/MCL greedy insertion 등 CPU 가속 연산을 제공한다. 내부적으로 lib/tsp.hpp와 lib/mis.hpp에 핵심 알고리즘이 헤더 전용 C++ 템플릿으로 구현되어 있으며, lib/par_utils.hpp의 std::thread 기반 병렬화가 배치 처리를 가속한다.",
+      "nodeIds": [
+        "file:lib/__init__.py",
+        "file:lib/tsp.hpp",
+        "file:lib/mis.hpp"
+      ],
+      "languageLesson": "C++의 if constexpr를 활용하면 컴파일 타임에 알고리즘 분기를 결정하여 런타임 오버헤드 없이 여러 변형(Best-improve vs First-improve 2-opt)을 하나의 템플릿으로 지원할 수 있다. pybind11 GIL 해제(py::gil_scoped_release)는 C++ 병렬 코드가 Python GIL 없이 실행되도록 한다."
+    },
+    {
+      "order": 10,
+      "title": "C++ 빌드 시스템",
+      "description": "resource:lib/Makefile은 pybind11을 사용해 C++ 소스(interface.cpp)를 clang++ -O3으로 컴파일하여 Python이 직접 import할 수 있는 공유 라이브러리(.so)를 생성하는 빌드 정의다. install.sh와 함께 'sh install.sh && cd lib && make' 두 단계로 전체 환경을 구성한다.",
+      "nodeIds": [
+        "resource:lib/Makefile",
+        "file:install.sh"
+      ],
+      "languageLesson": "pybind11 확장 모듈은 python3-config --extension-suffix로 플랫폼별 .so 파일명을 동적으로 결정하므로 Linux, macOS 등 다양한 환경에서 동일한 Makefile을 사용할 수 있다."
+    },
+    {
+      "order": 11,
+      "title": "데이터 파이프라인",
+      "description": "data/TSPDataloader.py는 JAX JIT 컴파일된 2-opt 기반 노이즈 생성, 좌표 증강, timestep 샘플링을 TensorFlow 데이터 파이프라인으로 통합한 고성능 데이터로더다. jax2tf와 tf.function을 결합하여 CPU 병렬 워커에서 JAX 전처리를 실행하는 독특한 구조를 확인할 수 있다. data/MISDataloader.py는 그래프 문제용 단순 배치 샘플러를 제공한다.",
+      "nodeIds": [
+        "file:data/TSPDataloader.py",
+        "file:data/MISDataloader.py"
+      ],
+      "languageLesson": "jax2tf는 JAX 함수를 TensorFlow 그래프 연산으로 변환한다. 이를 tf.data 파이프라인에 삽입하면 다중 CPU 워커로 데이터 전처리를 병렬화하면서도 JAX의 벡터화 연산(vmap, lax.fori_loop)을 그대로 활용할 수 있다."
+    },
+    {
+      "order": 12,
+      "title": "훈련 설정 및 옵티마이저",
+      "description": "training/TrainConfig.py는 학습률, 배치 크기, disruption 범위 등 모든 하이퍼파라미터를 dataclass로 관리하는 중심 설정 클래스다. training/optimizers/muon.py는 Newton-Schulz 반복을 통해 2D 행렬 파라미터를 Muon 알고리즘으로, 나머지를 AdamW로 처리하는 하이브리드 optax 옵티마이저를 구현하며, 이는 대규모 Transformer 학습에서 수렴 속도를 높이는 최신 기법이다.",
+      "nodeIds": [
+        "file:training/TrainConfig.py",
+        "file:training/optimizers/muon.py"
+      ],
+      "languageLesson": "optax의 GradientTransformation 패턴(init_fn + update_fn)을 사용하면 커스텀 옵티마이저를 표준 인터페이스로 구현할 수 있다. Muon은 jax.tree.map으로 pytree를 순회하여 파라미터 형태(2D vs 나머지)에 따라 동적으로 업데이트 규칙을 분기한다."
+    }
+  ]
+}

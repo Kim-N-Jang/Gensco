@@ -1,0 +1,803 @@
+{
+  "name": "GenSCO",
+  "description": "NeurIPS 2025 논문의 공식 JAX 구현으로, diffusion 기반 조합 최적화(combinatorial optimization)의 추론 시간 확장을 위해 생성(generation)을 탐색 연산자(search operator)로 활용하는 GenSCO 프레임워크입니다. TSP, MIS, MCL 등 대표적인 조합 최적화 문제에서 기존 신경망 방법론 대비 월등한 성능을 달성합니다.",
+  "languages": ["cpp", "json", "makefile", "markdown", "python", "shell", "unknown"],
+  "frameworks": ["JAX", "Triton"],
+  "files": [
+    {
+      "path": ".understand-anything/.understandignore",
+      "language": "unknown",
+      "sizeLines": 41,
+      "fileCategory": "code"
+    },
+    {
+      "path": ".understand-anything/config.json",
+      "language": "json",
+      "sizeLines": 1,
+      "fileCategory": "config"
+    },
+    {
+      "path": "common/array_view.py",
+      "language": "python",
+      "sizeLines": 402,
+      "fileCategory": "code"
+    },
+    {
+      "path": "common/jax_triton.py",
+      "language": "python",
+      "sizeLines": 749,
+      "fileCategory": "code"
+    },
+    {
+      "path": "data/__init__.py",
+      "language": "python",
+      "sizeLines": 3,
+      "fileCategory": "code"
+    },
+    {
+      "path": "data/generate_tsp_with_multirun_2opt.py",
+      "language": "python",
+      "sizeLines": 107,
+      "fileCategory": "code"
+    },
+    {
+      "path": "data/mcl_convert_fmt.py",
+      "language": "python",
+      "sizeLines": 110,
+      "fileCategory": "code"
+    },
+    {
+      "path": "data/MCLDataloader.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "data/mis_convert_fmt.py",
+      "language": "python",
+      "sizeLines": 68,
+      "fileCategory": "code"
+    },
+    {
+      "path": "data/MISDataloader.py",
+      "language": "python",
+      "sizeLines": 33,
+      "fileCategory": "code"
+    },
+    {
+      "path": "data/solve_tsp_with_multirun_2opt.py",
+      "language": "python",
+      "sizeLines": 46,
+      "fileCategory": "code"
+    },
+    {
+      "path": "data/TSPDataloader.py",
+      "language": "python",
+      "sizeLines": 390,
+      "fileCategory": "code"
+    },
+    {
+      "path": "decoding/__init__.py",
+      "language": "python",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "decoding/continuous_sampling.py",
+      "language": "python",
+      "sizeLines": 80,
+      "fileCategory": "code"
+    },
+    {
+      "path": "decoding/extra/tsp_flow_labeling.py",
+      "language": "python",
+      "sizeLines": 276,
+      "fileCategory": "code"
+    },
+    {
+      "path": "decoding/gpu_heuristics/tsp.py",
+      "language": "python",
+      "sizeLines": 89,
+      "fileCategory": "code"
+    },
+    {
+      "path": "decoding/mcl.py",
+      "language": "python",
+      "sizeLines": 244,
+      "fileCategory": "code"
+    },
+    {
+      "path": "decoding/mis.py",
+      "language": "python",
+      "sizeLines": 242,
+      "fileCategory": "code"
+    },
+    {
+      "path": "decoding/tsp_gpu_2opt.py",
+      "language": "python",
+      "sizeLines": 241,
+      "fileCategory": "code"
+    },
+    {
+      "path": "decoding/tsp.py",
+      "language": "python",
+      "sizeLines": 233,
+      "fileCategory": "code"
+    },
+    {
+      "path": "decoding/utils.py",
+      "language": "python",
+      "sizeLines": 94,
+      "fileCategory": "code"
+    },
+    {
+      "path": "helpers/__init__.py",
+      "language": "python",
+      "sizeLines": 10,
+      "fileCategory": "code"
+    },
+    {
+      "path": "helpers/coord_transform.py",
+      "language": "python",
+      "sizeLines": 69,
+      "fileCategory": "code"
+    },
+    {
+      "path": "helpers/maybe_eval.py",
+      "language": "python",
+      "sizeLines": 9,
+      "fileCategory": "code"
+    },
+    {
+      "path": "helpers/mis_transform.py",
+      "language": "python",
+      "sizeLines": 11,
+      "fileCategory": "code"
+    },
+    {
+      "path": "helpers/parse_bool.py",
+      "language": "python",
+      "sizeLines": 7,
+      "fileCategory": "code"
+    },
+    {
+      "path": "helpers/solution_transform.py",
+      "language": "python",
+      "sizeLines": 45,
+      "fileCategory": "code"
+    },
+    {
+      "path": "helpers/tsp_transform.py",
+      "language": "python",
+      "sizeLines": 134,
+      "fileCategory": "code"
+    },
+    {
+      "path": "helpers/with_invalid_kwargs_filtered.py",
+      "language": "python",
+      "sizeLines": 12,
+      "fileCategory": "code"
+    },
+    {
+      "path": "install.sh",
+      "language": "shell",
+      "sizeLines": 3,
+      "fileCategory": "script"
+    },
+    {
+      "path": "lib/__init__.py",
+      "language": "python",
+      "sizeLines": 182,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/interface.cpp",
+      "language": "cpp",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/interface.hpp",
+      "language": "cpp",
+      "sizeLines": 17,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/Makefile",
+      "language": "makefile",
+      "sizeLines": 10,
+      "fileCategory": "infra"
+    },
+    {
+      "path": "lib/mcl_interface.hpp",
+      "language": "cpp",
+      "sizeLines": 59,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/mcl.hpp",
+      "language": "cpp",
+      "sizeLines": 56,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/mis_interface.hpp",
+      "language": "cpp",
+      "sizeLines": 209,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/mis.hpp",
+      "language": "cpp",
+      "sizeLines": 141,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/par_utils.hpp",
+      "language": "cpp",
+      "sizeLines": 96,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/params.hpp",
+      "language": "cpp",
+      "sizeLines": 11,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/tsp_interface.hpp",
+      "language": "cpp",
+      "sizeLines": 278,
+      "fileCategory": "code"
+    },
+    {
+      "path": "lib/tsp.hpp",
+      "language": "cpp",
+      "sizeLines": 467,
+      "fileCategory": "code"
+    },
+    {
+      "path": "models/__init__.py",
+      "language": "python",
+      "sizeLines": 12,
+      "fileCategory": "code"
+    },
+    {
+      "path": "models/MCLModel.py",
+      "language": "python",
+      "sizeLines": 4,
+      "fileCategory": "code"
+    },
+    {
+      "path": "models/MISModel.py",
+      "language": "python",
+      "sizeLines": 220,
+      "fileCategory": "code"
+    },
+    {
+      "path": "models/TSPModel.py",
+      "language": "python",
+      "sizeLines": 200,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/__init__.py",
+      "language": "python",
+      "sizeLines": 4,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/functional/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/functional/attention/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "language": "python",
+      "sizeLines": 1417,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/functional/attention/triton/get_block_bound.py",
+      "language": "python",
+      "sizeLines": 47,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/functional/attention/triton/tanh.py",
+      "language": "python",
+      "sizeLines": 24,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/functional/attention/triton/wrapper.py",
+      "language": "python",
+      "sizeLines": 396,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/functional/coord_transform.py",
+      "language": "python",
+      "sizeLines": 37,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/get_activation.py",
+      "language": "python",
+      "sizeLines": 11,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/Linear.py",
+      "language": "python",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/MLPBlock.py",
+      "language": "python",
+      "sizeLines": 53,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/MultiHeadAttention.py",
+      "language": "python",
+      "sizeLines": 173,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/SwiGLU.py",
+      "language": "python",
+      "sizeLines": 85,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/TimestepEmbedder.py",
+      "language": "python",
+      "sizeLines": 72,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/TransformerEncoder.py",
+      "language": "python",
+      "sizeLines": 46,
+      "fileCategory": "code"
+    },
+    {
+      "path": "modules/TransformerLayer.py",
+      "language": "python",
+      "sizeLines": 88,
+      "fileCategory": "code"
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "sizeLines": 32,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "scripts/eval/mcl_rb_large.sh",
+      "language": "shell",
+      "sizeLines": 8,
+      "fileCategory": "script"
+    },
+    {
+      "path": "scripts/eval/mcl_rb_small.sh",
+      "language": "shell",
+      "sizeLines": 8,
+      "fileCategory": "script"
+    },
+    {
+      "path": "scripts/eval/mis_er.sh",
+      "language": "shell",
+      "sizeLines": 8,
+      "fileCategory": "script"
+    },
+    {
+      "path": "scripts/eval/mis_rb.sh",
+      "language": "shell",
+      "sizeLines": 8,
+      "fileCategory": "script"
+    },
+    {
+      "path": "scripts/eval/tsp100.sh",
+      "language": "shell",
+      "sizeLines": 8,
+      "fileCategory": "script"
+    },
+    {
+      "path": "scripts/eval/tsp1000.sh",
+      "language": "shell",
+      "sizeLines": 9,
+      "fileCategory": "script"
+    },
+    {
+      "path": "scripts/eval/tsp500.sh",
+      "language": "shell",
+      "sizeLines": 9,
+      "fileCategory": "script"
+    },
+    {
+      "path": "scripts/train/mcl_rb_large.sh",
+      "language": "shell",
+      "sizeLines": 14,
+      "fileCategory": "script"
+    },
+    {
+      "path": "scripts/train/mcl_rb_small.sh",
+      "language": "shell",
+      "sizeLines": 14,
+      "fileCategory": "script"
+    },
+    {
+      "path": "scripts/train/mis_er.sh",
+      "language": "shell",
+      "sizeLines": 14,
+      "fileCategory": "script"
+    },
+    {
+      "path": "scripts/train/mis_rb.sh",
+      "language": "shell",
+      "sizeLines": 14,
+      "fileCategory": "script"
+    },
+    {
+      "path": "scripts/train/tsp100.sh",
+      "language": "shell",
+      "sizeLines": 15,
+      "fileCategory": "script"
+    },
+    {
+      "path": "scripts/train/tsp1000.sh",
+      "language": "shell",
+      "sizeLines": 17,
+      "fileCategory": "script"
+    },
+    {
+      "path": "scripts/train/tsp500.sh",
+      "language": "shell",
+      "sizeLines": 18,
+      "fileCategory": "script"
+    },
+    {
+      "path": "training/__init__.py",
+      "language": "python",
+      "sizeLines": 3,
+      "fileCategory": "code"
+    },
+    {
+      "path": "training/ckpt_utils.py",
+      "language": "python",
+      "sizeLines": 54,
+      "fileCategory": "code"
+    },
+    {
+      "path": "training/convert_ckpt.py",
+      "language": "python",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "training/init_optimizer.py",
+      "language": "python",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "training/Logger.py",
+      "language": "python",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "training/optimizers/__init__.py",
+      "language": "python",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "training/optimizers/muon.py",
+      "language": "python",
+      "sizeLines": 186,
+      "fileCategory": "code"
+    },
+    {
+      "path": "training/train_mcl.py",
+      "language": "python",
+      "sizeLines": 92,
+      "fileCategory": "code"
+    },
+    {
+      "path": "training/train_mis.py",
+      "language": "python",
+      "sizeLines": 223,
+      "fileCategory": "code"
+    },
+    {
+      "path": "training/train_tsp.py",
+      "language": "python",
+      "sizeLines": 161,
+      "fileCategory": "code"
+    },
+    {
+      "path": "training/TrainConfig.py",
+      "language": "python",
+      "sizeLines": 38,
+      "fileCategory": "code"
+    }
+  ],
+  "totalFiles": 88,
+  "filteredByIgnore": 0,
+  "estimatedComplexity": "moderate",
+  "importMap": {
+    ".understand-anything/.understandignore": [],
+    ".understand-anything/config.json": [],
+    "common/array_view.py": [],
+    "common/jax_triton.py": [],
+    "data/__init__.py": [
+      "data/MCLDataloader.py",
+      "data/MISDataloader.py",
+      "data/TSPDataloader.py"
+    ],
+    "data/generate_tsp_with_multirun_2opt.py": [
+      "helpers/coord_transform.py",
+      "lib/__init__.py"
+    ],
+    "data/mcl_convert_fmt.py": [],
+    "data/MCLDataloader.py": [
+      "data/MISDataloader.py"
+    ],
+    "data/mis_convert_fmt.py": [],
+    "data/MISDataloader.py": [],
+    "data/solve_tsp_with_multirun_2opt.py": [
+      "data/generate_tsp_with_multirun_2opt.py",
+      "helpers/coord_transform.py",
+      "lib/__init__.py"
+    ],
+    "data/TSPDataloader.py": [],
+    "decoding/__init__.py": [
+      "decoding/continuous_sampling.py"
+    ],
+    "decoding/continuous_sampling.py": [],
+    "decoding/extra/tsp_flow_labeling.py": [
+      "decoding/continuous_sampling.py",
+      "decoding/gpu_heuristics/tsp.py",
+      "decoding/utils.py",
+      "helpers/__init__.py",
+      "helpers/coord_transform.py",
+      "helpers/tsp_transform.py",
+      "lib/__init__.py",
+      "models/__init__.py",
+      "models/TSPModel.py",
+      "training/__init__.py"
+    ],
+    "decoding/gpu_heuristics/tsp.py": [],
+    "decoding/mcl.py": [
+      "decoding/continuous_sampling.py",
+      "helpers/mis_transform.py",
+      "lib/__init__.py",
+      "models/__init__.py",
+      "models/MISModel.py",
+      "training/__init__.py"
+    ],
+    "decoding/mis.py": [
+      "decoding/continuous_sampling.py",
+      "helpers/mis_transform.py",
+      "lib/__init__.py",
+      "models/__init__.py",
+      "models/MISModel.py",
+      "training/__init__.py"
+    ],
+    "decoding/tsp_gpu_2opt.py": [
+      "decoding/continuous_sampling.py",
+      "decoding/gpu_heuristics/tsp.py",
+      "decoding/utils.py",
+      "helpers/__init__.py",
+      "helpers/coord_transform.py",
+      "helpers/tsp_transform.py",
+      "lib/__init__.py",
+      "models/__init__.py",
+      "models/TSPModel.py",
+      "training/__init__.py"
+    ],
+    "decoding/tsp.py": [
+      "decoding/continuous_sampling.py",
+      "decoding/utils.py",
+      "helpers/__init__.py",
+      "helpers/coord_transform.py",
+      "helpers/tsp_transform.py",
+      "lib/__init__.py",
+      "models/__init__.py",
+      "models/TSPModel.py",
+      "training/__init__.py"
+    ],
+    "decoding/utils.py": [],
+    "helpers/__init__.py": [
+      "helpers/coord_transform.py",
+      "helpers/maybe_eval.py",
+      "helpers/parse_bool.py",
+      "helpers/solution_transform.py",
+      "helpers/with_invalid_kwargs_filtered.py"
+    ],
+    "helpers/coord_transform.py": [],
+    "helpers/maybe_eval.py": [],
+    "helpers/mis_transform.py": [],
+    "helpers/parse_bool.py": [],
+    "helpers/solution_transform.py": [],
+    "helpers/tsp_transform.py": [],
+    "helpers/with_invalid_kwargs_filtered.py": [],
+    "install.sh": [],
+    "lib/__init__.py": [],
+    "lib/interface.cpp": [
+      "lib/interface.hpp",
+      "lib/mcl_interface.hpp",
+      "lib/mis_interface.hpp"
+    ],
+    "lib/interface.hpp": [
+      "lib/mis_interface.hpp",
+      "lib/par_utils.hpp",
+      "lib/tsp_interface.hpp",
+      "lib/tsp.hpp"
+    ],
+    "lib/Makefile": [],
+    "lib/mcl_interface.hpp": [
+      "lib/mcl.hpp"
+    ],
+    "lib/mcl.hpp": [],
+    "lib/mis_interface.hpp": [
+      "lib/mis.hpp",
+      "lib/par_utils.hpp"
+    ],
+    "lib/mis.hpp": [],
+    "lib/par_utils.hpp": [],
+    "lib/params.hpp": [],
+    "lib/tsp_interface.hpp": [
+      "lib/par_utils.hpp",
+      "lib/tsp.hpp"
+    ],
+    "lib/tsp.hpp": [
+      "lib/params.hpp"
+    ],
+    "models/__init__.py": [
+      "models/MCLModel.py",
+      "models/MISModel.py",
+      "models/TSPModel.py"
+    ],
+    "models/MCLModel.py": [
+      "models/MISModel.py"
+    ],
+    "models/MISModel.py": [
+      "modules/__init__.py",
+      "modules/Linear.py",
+      "modules/MLPBlock.py",
+      "modules/TimestepEmbedder.py",
+      "modules/TransformerEncoder.py"
+    ],
+    "models/TSPModel.py": [
+      "helpers/__init__.py",
+      "helpers/with_invalid_kwargs_filtered.py",
+      "modules/__init__.py",
+      "modules/Linear.py",
+      "modules/MLPBlock.py",
+      "modules/TimestepEmbedder.py",
+      "modules/TransformerEncoder.py"
+    ],
+    "modules/__init__.py": [
+      "modules/Linear.py",
+      "modules/MLPBlock.py",
+      "modules/TimestepEmbedder.py",
+      "modules/TransformerEncoder.py"
+    ],
+    "modules/functional/__init__.py": [
+      "modules/functional/coord_transform.py"
+    ],
+    "modules/functional/attention/__init__.py": [],
+    "modules/functional/attention/triton/fa_kernel_softcap_then_bias.py": [
+      "modules/functional/attention/triton/tanh.py"
+    ],
+    "modules/functional/attention/triton/get_block_bound.py": [],
+    "modules/functional/attention/triton/tanh.py": [],
+    "modules/functional/attention/triton/wrapper.py": [
+      "common/array_view.py",
+      "common/jax_triton.py",
+      "modules/functional/attention/triton/fa_kernel_softcap_then_bias.py"
+    ],
+    "modules/functional/coord_transform.py": [],
+    "modules/get_activation.py": [],
+    "modules/Linear.py": [],
+    "modules/MLPBlock.py": [
+      "modules/get_activation.py"
+    ],
+    "modules/MultiHeadAttention.py": [
+      "modules/functional/attention/triton/wrapper.py"
+    ],
+    "modules/SwiGLU.py": [],
+    "modules/TimestepEmbedder.py": [],
+    "modules/TransformerEncoder.py": [
+      "modules/TransformerLayer.py"
+    ],
+    "modules/TransformerLayer.py": [
+      "modules/MLPBlock.py",
+      "modules/MultiHeadAttention.py",
+      "modules/SwiGLU.py"
+    ],
+    "README.md": [],
+    "scripts/eval/mcl_rb_large.sh": [],
+    "scripts/eval/mcl_rb_small.sh": [],
+    "scripts/eval/mis_er.sh": [],
+    "scripts/eval/mis_rb.sh": [],
+    "scripts/eval/tsp100.sh": [],
+    "scripts/eval/tsp1000.sh": [],
+    "scripts/eval/tsp500.sh": [],
+    "scripts/train/mcl_rb_large.sh": [],
+    "scripts/train/mcl_rb_small.sh": [],
+    "scripts/train/mis_er.sh": [],
+    "scripts/train/mis_rb.sh": [],
+    "scripts/train/tsp100.sh": [],
+    "scripts/train/tsp1000.sh": [],
+    "scripts/train/tsp500.sh": [],
+    "training/__init__.py": [
+      "training/ckpt_utils.py",
+      "training/init_optimizer.py",
+      "training/Logger.py"
+    ],
+    "training/ckpt_utils.py": [
+      "training/TrainConfig.py"
+    ],
+    "training/convert_ckpt.py": [
+      "training/ckpt_utils.py"
+    ],
+    "training/init_optimizer.py": [
+      "training/optimizers/__init__.py",
+      "training/optimizers/muon.py"
+    ],
+    "training/Logger.py": [
+      "helpers/__init__.py",
+      "helpers/parse_bool.py"
+    ],
+    "training/optimizers/__init__.py": [
+      "training/optimizers/muon.py"
+    ],
+    "training/optimizers/muon.py": [],
+    "training/train_mcl.py": [
+      "data/__init__.py",
+      "data/MCLDataloader.py",
+      "models/__init__.py",
+      "models/MCLModel.py",
+      "training/__init__.py",
+      "training/train_mis.py",
+      "training/TrainConfig.py"
+    ],
+    "training/train_mis.py": [
+      "data/__init__.py",
+      "data/MISDataloader.py",
+      "helpers/mis_transform.py",
+      "models/__init__.py",
+      "models/MISModel.py",
+      "training/__init__.py",
+      "training/Logger.py",
+      "training/TrainConfig.py"
+    ],
+    "training/train_tsp.py": [
+      "data/__init__.py",
+      "data/TSPDataloader.py",
+      "helpers/__init__.py",
+      "models/__init__.py",
+      "models/TSPModel.py",
+      "modules/functional/__init__.py",
+      "training/__init__.py",
+      "training/Logger.py",
+      "training/TrainConfig.py"
+    ],
+    "training/TrainConfig.py": [
+      "training/init_optimizer.py"
+    ]
+  }
+}

@@ -1,0 +1,5821 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "57f7ef7f43e43dd6a792a8790ac5e40adce0e1ee",
+  "generatedAt": "2026-06-21T03:24:33.546Z",
+  "files": {
+    ".understand-anything/.understandignore": {
+      "filePath": ".understand-anything/.understandignore",
+      "contentHash": "a72fe74df4b572f1de72059768b6507610e82603ded992b912a6bc3b70e651f4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 42,
+      "hasStructuralAnalysis": false
+    },
+    ".understand-anything/config.json": {
+      "filePath": ".understand-anything/config.json",
+      "contentHash": "c896144160a2ef6883f6814647cc53219b7adb0b4a76219b7ef47571d72ce4ec",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "common/array_view.py": {
+      "filePath": "common/array_view.py",
+      "contentHash": "9750ac52dfedc5021b86cbe9db4b702388f63590e48b46c0079de420d85f30fd",
+      "functions": [
+        {
+          "name": "as_array_view",
+          "params": [
+            "x"
+          ],
+          "returnType": "ArrayView",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "zeros_like",
+          "params": [
+            "x"
+          ],
+          "returnType": "T",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "_canonicalize_axis",
+          "params": [
+            "axis",
+            "num_dims"
+          ],
+          "returnType": "int",
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [
+        {
+          "name": "ArrayView",
+          "methods": [
+            "__post_init__",
+            "tree_flatten",
+            "tree_unflatten",
+            "dtype",
+            "size",
+            "ndim",
+            "T",
+            "_index_dtype",
+            "offsets",
+            "astype",
+            "broadcast_to_rank",
+            "broadcast_to",
+            "collapse",
+            "reshape",
+            "_reshape",
+            "split",
+            "swapaxes",
+            "moveaxis",
+            "transpose",
+            "__getitem__",
+            "_replace",
+            "set",
+            "__jax_array__"
+          ],
+          "properties": [
+            "base",
+            "_",
+            "shape",
+            "strides",
+            "offset",
+            "flatten_base"
+          ],
+          "exported": true,
+          "lineCount": 343
+        }
+      ],
+      "imports": [
+        {
+          "source": "collections.abc",
+          "specifiers": [
+            "Sequence"
+          ]
+        },
+        {
+          "source": "dataclasses",
+          "specifiers": [
+            "dataclasses"
+          ]
+        },
+        {
+          "source": "math",
+          "specifiers": [
+            "math"
+          ]
+        },
+        {
+          "source": "operator",
+          "specifiers": [
+            "operator"
+          ]
+        },
+        {
+          "source": "types",
+          "specifiers": [
+            "EllipsisType"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any",
+            "Self",
+            "TypeAlias",
+            "TypeVar"
+          ]
+        },
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.experimental",
+          "specifiers": [
+            "jax.experimental"
+          ]
+        },
+        {
+          "source": "jax.experimental",
+          "specifiers": [
+            "pl"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "jax.typing",
+          "specifiers": [
+            "ArrayLike"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        }
+      ],
+      "exports": [
+        "ArrayView",
+        "as_array_view",
+        "zeros_like",
+        "_canonicalize_axis"
+      ],
+      "totalLines": 403,
+      "hasStructuralAnalysis": true
+    },
+    "common/jax_triton.py": {
+      "filePath": "common/jax_triton.py",
+      "contentHash": "b97d0cd4dc87397040e92f9e495f140db4cc9bd62f1c03e513f914aaac69261c",
+      "functions": [
+        {
+          "name": "normalize_grid",
+          "params": [
+            "grid",
+            "metaparams"
+          ],
+          "returnType": "Tuple[int, int, int]",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "avals_to_layouts",
+          "params": [
+            "avals"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "get_triton_type",
+          "params": [
+            "obj"
+          ],
+          "returnType": "str",
+          "exported": true,
+          "lineCount": 27
+        },
+        {
+          "name": "triton_kernel_call_abstract_eval",
+          "params": [
+            "*_",
+            "out_shapes",
+            "**__"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "aval_size_bytes",
+          "params": [
+            "aval"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "compile_ttir_to_ptx_inplace",
+          "params": [
+            "ttir",
+            "cuda_backend",
+            "cuda_options",
+            "compute_capability"
+          ],
+          "returnType": "PtxCompilationResult",
+          "exported": true,
+          "lineCount": 68
+        },
+        {
+          "name": "get_or_create_triton_kernel",
+          "params": [
+            "fn",
+            "arg_dtypes",
+            "scalar_args",
+            "num_warps",
+            "num_stages",
+            "num_ctas",
+            "compute_capability",
+            "enable_fp_fusion",
+            "metaparams",
+            "dump"
+          ],
+          "returnType": "Tuple[Any, Any]",
+          "exported": true,
+          "lineCount": 143
+        },
+        {
+          "name": "triton_kernel_call_lowering",
+          "params": [
+            "ctx",
+            "*array_args",
+            "fn",
+            "scalar_args",
+            "name",
+            "custom_call_target_name",
+            "out_shapes",
+            "grid",
+            "num_warps",
+            "num_stages",
+            "num_ctas",
+            "compute_capability",
+            "enable_fp_fusion",
+            "input_output_aliases",
+            "zeroed_outputs",
+            "debug",
+            "serialized_metadata",
+            "**metaparams"
+          ],
+          "exported": true,
+          "lineCount": 188
+        },
+        {
+          "name": "triton_call",
+          "params": [
+            "kernel",
+            "out_shape",
+            "grid",
+            "name",
+            "custom_call_target_name",
+            "num_warps",
+            "num_stages",
+            "num_ctas",
+            "compute_capability",
+            "enable_fp_fusion",
+            "input_output_aliases",
+            "zeroed_outputs",
+            "debug",
+            "serialized_metadata"
+          ],
+          "returnType": "Any",
+          "exported": true,
+          "lineCount": 146
+        }
+      ],
+      "classes": [
+        {
+          "name": "PtxCompilationResult",
+          "methods": [],
+          "properties": [
+            "ptx",
+            "name",
+            "shared_mem_bytes",
+            "cluster_dims",
+            "ttgir",
+            "llir"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "ShapeDtype",
+          "methods": [
+            "shape",
+            "dtype"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "imports": [
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "copy",
+          "specifiers": [
+            "copy"
+          ]
+        },
+        {
+          "source": "dataclasses",
+          "specifiers": [
+            "dataclasses"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "functools"
+          ]
+        },
+        {
+          "source": "pprint",
+          "specifiers": [
+            "pprint"
+          ]
+        },
+        {
+          "source": "tempfile",
+          "specifiers": [
+            "tempfile"
+          ]
+        },
+        {
+          "source": "types",
+          "specifiers": [
+            "types"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any",
+            "Callable",
+            "Dict",
+            "Optional",
+            "Protocol",
+            "Sequence",
+            "Tuple",
+            "Union"
+          ]
+        },
+        {
+          "source": "zlib",
+          "specifiers": [
+            "zlib"
+          ]
+        },
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jaxlib",
+          "specifiers": [
+            "jaxlib"
+          ]
+        },
+        {
+          "source": "jax",
+          "specifiers": [
+            "tree_util"
+          ]
+        },
+        {
+          "source": "jax._src",
+          "specifiers": [
+            "core"
+          ]
+        },
+        {
+          "source": "jax._src",
+          "specifiers": [
+            "state"
+          ]
+        },
+        {
+          "source": "jax._src",
+          "specifiers": [
+            "util"
+          ]
+        },
+        {
+          "source": "jax._src.lib.mlir",
+          "specifiers": [
+            "ir"
+          ]
+        },
+        {
+          "source": "jax.dlpack",
+          "specifiers": [
+            "jax.dlpack"
+          ]
+        },
+        {
+          "source": "jax.interpreters",
+          "specifiers": [
+            "mlir"
+          ]
+        },
+        {
+          "source": "jax.interpreters",
+          "specifiers": [
+            "xla"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        }
+      ],
+      "exports": [
+        "normalize_grid",
+        "avals_to_layouts",
+        "get_triton_type",
+        "triton_kernel_call_abstract_eval",
+        "aval_size_bytes",
+        "PtxCompilationResult",
+        "compile_ttir_to_ptx_inplace",
+        "get_or_create_triton_kernel",
+        "triton_kernel_call_lowering",
+        "ShapeDtype",
+        "triton_call"
+      ],
+      "totalLines": 750,
+      "hasStructuralAnalysis": true
+    },
+    "data/__init__.py": {
+      "filePath": "data/__init__.py",
+      "contentHash": "211cc8513fde329faea4f3ddaca7a81484c39e8c6be1c24f131b2bc87539a063",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".TSPDataloader",
+          "specifiers": [
+            "TSPDataloader"
+          ]
+        },
+        {
+          "source": ".MISDataloader",
+          "specifiers": [
+            "MISDataloader"
+          ]
+        },
+        {
+          "source": ".MCLDataloader",
+          "specifiers": [
+            "MCLDataloader"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "data/generate_tsp_with_multirun_2opt.py": {
+      "filePath": "data/generate_tsp_with_multirun_2opt.py",
+      "contentHash": "00680ed8933c03015bc158cc1975aa0c75e5409a05ede924fb3bc1f79b9eb626",
+      "functions": [
+        {
+          "name": "tsp_two_opt_multirun",
+          "params": [
+            "coords",
+            "runs",
+            "generator",
+            "num_workers"
+          ],
+          "returnType": "tuple[np.ndarray, np.ndarray]",
+          "exported": true,
+          "lineCount": 42
+        },
+        {
+          "name": "generate_and_save",
+          "params": [
+            "num_nodes",
+            "num_instances",
+            "runs",
+            "batch_size",
+            "num_workers",
+            "seed",
+            "save_path",
+            "overwrite"
+          ],
+          "exported": true,
+          "lineCount": 32
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "lib",
+          "specifiers": [
+            "tsp_two_opt",
+            "tsp_eval_cost"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "helpers.coord_transform",
+          "specifiers": [
+            "cdist"
+          ]
+        },
+        {
+          "source": "tqdm",
+          "specifiers": [
+            "tqdm"
+          ]
+        }
+      ],
+      "exports": [
+        "tsp_two_opt_multirun",
+        "generate_and_save"
+      ],
+      "totalLines": 108,
+      "hasStructuralAnalysis": true
+    },
+    "data/mcl_convert_fmt.py": {
+      "filePath": "data/mcl_convert_fmt.py",
+      "contentHash": "c08305398ebd0124dededc28c98852808f1208b12353a0ccb8f3b032a418fa32",
+      "functions": [
+        {
+          "name": "remove_self_loop",
+          "params": [
+            "edges"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "remove_replicated",
+          "params": [
+            "edges",
+            "num_nodes"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "parse_instance",
+          "params": [
+            "content",
+            "replicated_format"
+          ],
+          "exported": true,
+          "lineCount": 26
+        },
+        {
+          "name": "parse_single",
+          "params": [
+            "src_path",
+            "replicated_format"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "parse_all",
+          "params": [
+            "src_paths",
+            "replicated_format"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "convert_instances",
+          "params": [
+            "instances"
+          ],
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "parse_convert_and_save",
+          "params": [
+            "src_paths",
+            "save_path",
+            "replicated_format"
+          ],
+          "exported": true,
+          "lineCount": 4
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        }
+      ],
+      "exports": [
+        "remove_self_loop",
+        "remove_replicated",
+        "parse_instance",
+        "parse_single",
+        "parse_all",
+        "convert_instances",
+        "parse_convert_and_save"
+      ],
+      "totalLines": 111,
+      "hasStructuralAnalysis": true
+    },
+    "data/MCLDataloader.py": {
+      "filePath": "data/MCLDataloader.py",
+      "contentHash": "3f9006fb2b75e3c60282e9c5e41e9ac552433d55f3b82370a3913fe7aefadfbe",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".MISDataloader",
+          "specifiers": [
+            "MCLDataloader"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "data/mis_convert_fmt.py": {
+      "filePath": "data/mis_convert_fmt.py",
+      "contentHash": "3e832bd274e7849c3fe50734c68aafba4183198995da4dfa16830106186e55eb",
+      "functions": [
+        {
+          "name": "convert_single",
+          "params": [
+            "graph"
+          ],
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "find_graph_paths",
+          "params": [
+            "directory"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "get_id",
+          "params": [
+            "path"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "convert",
+          "params": [
+            "directory",
+            "save_path"
+          ],
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "networkx",
+          "specifiers": [
+            "networkx"
+          ]
+        },
+        {
+          "source": "pathlib",
+          "specifiers": [
+            "Path"
+          ]
+        },
+        {
+          "source": "pickle",
+          "specifiers": [
+            "pickle"
+          ]
+        }
+      ],
+      "exports": [
+        "convert_single",
+        "find_graph_paths",
+        "get_id",
+        "convert"
+      ],
+      "totalLines": 69,
+      "hasStructuralAnalysis": true
+    },
+    "data/MISDataloader.py": {
+      "filePath": "data/MISDataloader.py",
+      "contentHash": "3b02b849f432ab5423c3f76783e561a3957efef4de072af2670fe7762f02dad7",
+      "functions": [],
+      "classes": [
+        {
+          "name": "MISDataloader",
+          "methods": [
+            "__init__",
+            "__iter__",
+            "__next__",
+            "num_nodes_padded"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 28
+        }
+      ],
+      "imports": [
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "tensorflow",
+          "specifiers": [
+            "tf"
+          ]
+        }
+      ],
+      "exports": [
+        "MISDataloader"
+      ],
+      "totalLines": 34,
+      "hasStructuralAnalysis": true
+    },
+    "data/solve_tsp_with_multirun_2opt.py": {
+      "filePath": "data/solve_tsp_with_multirun_2opt.py",
+      "contentHash": "dafe2c85281e04fcb3ad9846f024578478fc3b6e56c936c7bb89c6784f9d473b",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "data.generate_tsp_with_multirun_2opt",
+          "specifiers": [
+            "tsp_two_opt_multirun"
+          ]
+        },
+        {
+          "source": "helpers.coord_transform",
+          "specifiers": [
+            "cdist"
+          ]
+        },
+        {
+          "source": "lib",
+          "specifiers": [
+            "tsp_eval_cost"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 47,
+      "hasStructuralAnalysis": true
+    },
+    "data/TSPDataloader.py": {
+      "filePath": "data/TSPDataloader.py",
+      "contentHash": "a8a48af76ebc2f0c0535239ceb15e7eb30fe0e8270241c65045fbd7251315f06",
+      "functions": [
+        {
+          "name": "apply_two_opt",
+          "params": [
+            "sol",
+            "step"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 20
+        },
+        {
+          "name": "tour_shuffle",
+          "params": [
+            "key",
+            "tour",
+            "times"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 30
+        },
+        {
+          "name": "reversed_mapping",
+          "params": [
+            "mapping"
+          ],
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "sol2var",
+          "params": [
+            "sol",
+            "normalization_base_idx",
+            "shift"
+          ],
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "sample_from_poly",
+          "params": [
+            "key",
+            "shape",
+            "k",
+            "dtype"
+          ],
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "_preprocess_sol_type_edge_unbatched",
+          "params": [
+            "key",
+            "target",
+            "shuffle_range",
+            "noise_type",
+            "timestep_distribution_k",
+            "target_disruption"
+          ],
+          "returnType": "tuple[jax.Array, jax.Array]",
+          "exported": true,
+          "lineCount": 51
+        },
+        {
+          "name": "preprocess_sol_type_edge",
+          "params": [
+            "key",
+            "targets",
+            "random_two_opt_steps_range",
+            "noise_type",
+            "timestep_distribution_k",
+            "target_disruption"
+          ],
+          "returnType": "tuple[jax.Array, ...]",
+          "exported": true,
+          "lineCount": 35
+        },
+        {
+          "name": "rotate_coords",
+          "params": [
+            "key",
+            "coords"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "reflect_x",
+          "params": [
+            "inputs"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "reflect_y",
+          "params": [
+            "inputs"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "median",
+          "params": [
+            "xs"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "normalize",
+          "params": [
+            "inputs",
+            "centering_method"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 15
+        }
+      ],
+      "classes": [
+        {
+          "name": "TSPDataloader",
+          "methods": [
+            "__init__",
+            "__iter__"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 134
+        }
+      ],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.experimental",
+          "specifiers": [
+            "jax.experimental"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "tensorflow",
+          "specifiers": [
+            "tf"
+          ]
+        },
+        {
+          "source": "jax.experimental",
+          "specifiers": [
+            "jax2tf"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Optional",
+            "Literal",
+            "Any",
+            "Mapping",
+            "Iterable",
+            "Sequence"
+          ]
+        }
+      ],
+      "exports": [
+        "apply_two_opt",
+        "tour_shuffle",
+        "reversed_mapping",
+        "sol2var",
+        "sample_from_poly",
+        "_preprocess_sol_type_edge_unbatched",
+        "preprocess_sol_type_edge",
+        "rotate_coords",
+        "reflect_x",
+        "reflect_y",
+        "median",
+        "normalize",
+        "TSPDataloader"
+      ],
+      "totalLines": 391,
+      "hasStructuralAnalysis": true
+    },
+    "decoding/__init__.py": {
+      "filePath": "decoding/__init__.py",
+      "contentHash": "dc996d1e4343ba67a47921680b96d2090376925e6524d5f1e99553697d3b1843",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".continuous_sampling",
+          "specifiers": [
+            "get_linear_timesteps",
+            "sample_euler",
+            "sample_dpmpp_2m"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": true
+    },
+    "decoding/continuous_sampling.py": {
+      "filePath": "decoding/continuous_sampling.py",
+      "contentHash": "23f1e768cd38dbe2a2d459ef1789d4d01f69635cb288725d5b78f7ebdfbd2712",
+      "functions": [
+        {
+          "name": "get_linear_timesteps",
+          "params": [
+            "scheduled_steps"
+          ],
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "sample_euler",
+          "params": [
+            "denoised_fn",
+            "x",
+            "timesteps",
+            "ascending",
+            "force_fp32",
+            "need_history"
+          ],
+          "exported": true,
+          "lineCount": 27
+        },
+        {
+          "name": "sample_dpmpp_2m",
+          "params": [
+            "denoised_fn",
+            "x",
+            "timesteps",
+            "ascending",
+            "force_fp32"
+          ],
+          "exported": true,
+          "lineCount": 37
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "tp"
+          ]
+        }
+      ],
+      "exports": [
+        "get_linear_timesteps",
+        "sample_euler",
+        "sample_dpmpp_2m"
+      ],
+      "totalLines": 81,
+      "hasStructuralAnalysis": true
+    },
+    "decoding/extra/tsp_flow_labeling.py": {
+      "filePath": "decoding/extra/tsp_flow_labeling.py",
+      "contentHash": "c24061a2e2749ab3622010209d10db98deb4eb8434ec25e7cd98f6a8e6d7f1cd",
+      "functions": [
+        {
+          "name": "tsp_flow_searching_decode",
+          "params": [
+            "dataset",
+            "model",
+            "model_config",
+            "sampling_steps",
+            "two_opt_steps",
+            "random_two_opt_steps_range",
+            "cycles",
+            "batch_size",
+            "runs",
+            "heatmap_dtype",
+            "topk",
+            "augment_level",
+            "threads_over_batches",
+            "seed"
+          ],
+          "exported": true,
+          "lineCount": 161
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "threading",
+          "specifiers": [
+            "threading"
+          ]
+        },
+        {
+          "source": "tqdm",
+          "specifiers": [
+            "tqdm"
+          ]
+        },
+        {
+          "source": "concurrent.futures",
+          "specifiers": [
+            "ThreadPoolExecutor"
+          ]
+        },
+        {
+          "source": "models",
+          "specifiers": [
+            "TSPModel",
+            "TSPModelConfig"
+          ]
+        },
+        {
+          "source": "helpers.coord_transform",
+          "specifiers": [
+            "normalize",
+            "cdist"
+          ]
+        },
+        {
+          "source": "helpers.tsp_transform",
+          "specifiers": [
+            "get_costs"
+          ]
+        },
+        {
+          "source": "helpers",
+          "specifiers": [
+            "sol2adj"
+          ]
+        },
+        {
+          "source": "decoding.continuous_sampling",
+          "specifiers": [
+            "sample_euler",
+            "sample_dpmpp_2m",
+            "get_linear_timesteps"
+          ]
+        },
+        {
+          "source": "training",
+          "specifiers": [
+            "load_ckpt"
+          ]
+        },
+        {
+          "source": "lib",
+          "specifiers": [
+            "tsp_greedy_insert",
+            "tsp_double_two_opt",
+            "tsp_eval_cost",
+            "tsp_random_two_opt"
+          ]
+        },
+        {
+          "source": "decoding.utils",
+          "specifiers": [
+            "convert_heatmap_dtype",
+            "DynamicAugment"
+          ]
+        },
+        {
+          "source": "decoding.gpu_heuristics.tsp",
+          "specifiers": [
+            "gpu_tsp_two_opt"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        }
+      ],
+      "exports": [
+        "tsp_flow_searching_decode"
+      ],
+      "totalLines": 277,
+      "hasStructuralAnalysis": true
+    },
+    "decoding/gpu_heuristics/tsp.py": {
+      "filePath": "decoding/gpu_heuristics/tsp.py",
+      "contentHash": "902aab2fcb2005cff1b13d735c2affb3aa17c37fd6a95d4779947075ee586e0f",
+      "functions": [
+        {
+          "name": "apply_two_opt",
+          "params": [
+            "sol",
+            "step"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "_two_opt_post_processing_argmax_impl_unbatched",
+          "params": [
+            "sol",
+            "dist_mat",
+            "num_steps",
+            "unroll"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 48
+        },
+        {
+          "name": "two_opt",
+          "params": [
+            "sol",
+            "dist_mat",
+            "num_steps",
+            "unroll"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        }
+      ],
+      "exports": [
+        "apply_two_opt",
+        "_two_opt_post_processing_argmax_impl_unbatched",
+        "two_opt"
+      ],
+      "totalLines": 90,
+      "hasStructuralAnalysis": true
+    },
+    "decoding/mcl.py": {
+      "filePath": "decoding/mcl.py",
+      "contentHash": "2bdc86a69eeb27b464e8b7b1ab9b69ea0e034dfc7fa892c6ada49c48c9240f9a",
+      "functions": [
+        {
+          "name": "mcl_flow_decode",
+          "params": [
+            "dataset",
+            "model",
+            "sampling_steps",
+            "flip_rate",
+            "cycles",
+            "runs",
+            "decode_intermediate",
+            "batch_size",
+            "threads_over_batches",
+            "seed"
+          ],
+          "exported": true,
+          "lineCount": 190
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "tqdm",
+          "specifiers": [
+            "tqdm"
+          ]
+        },
+        {
+          "source": "threading",
+          "specifiers": [
+            "threading"
+          ]
+        },
+        {
+          "source": "concurrent.futures",
+          "specifiers": [
+            "ThreadPoolExecutor"
+          ]
+        },
+        {
+          "source": "models",
+          "specifiers": [
+            "MISModel",
+            "MISModelConfig"
+          ]
+        },
+        {
+          "source": "training",
+          "specifiers": [
+            "load_ckpt"
+          ]
+        },
+        {
+          "source": "helpers.mis_transform",
+          "specifiers": [
+            "edges2adj"
+          ]
+        },
+        {
+          "source": "lib",
+          "specifiers": [
+            "mcl_greedy_insert",
+            "mis_edges2neighbors",
+            "MISBatchedNeighbors"
+          ]
+        },
+        {
+          "source": "decoding.continuous_sampling",
+          "specifiers": [
+            "sample_dpmpp_2m",
+            "sample_euler"
+          ]
+        }
+      ],
+      "exports": [
+        "mcl_flow_decode"
+      ],
+      "totalLines": 245,
+      "hasStructuralAnalysis": true
+    },
+    "decoding/mis.py": {
+      "filePath": "decoding/mis.py",
+      "contentHash": "2f6fa9e73bbe078e7180f85af0dabdc526dfab3a27a4a19b60c6eaa3079d2342",
+      "functions": [
+        {
+          "name": "mis_flow_decode",
+          "params": [
+            "dataset",
+            "model",
+            "sampling_steps",
+            "flip_rate",
+            "cycles",
+            "runs",
+            "decode_intermediate",
+            "batch_size",
+            "threads_over_batches",
+            "seed"
+          ],
+          "exported": true,
+          "lineCount": 188
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "tqdm",
+          "specifiers": [
+            "tqdm"
+          ]
+        },
+        {
+          "source": "threading",
+          "specifiers": [
+            "threading"
+          ]
+        },
+        {
+          "source": "concurrent.futures",
+          "specifiers": [
+            "ThreadPoolExecutor"
+          ]
+        },
+        {
+          "source": "models",
+          "specifiers": [
+            "MISModel",
+            "MISModelConfig"
+          ]
+        },
+        {
+          "source": "training",
+          "specifiers": [
+            "load_ckpt"
+          ]
+        },
+        {
+          "source": "helpers.mis_transform",
+          "specifiers": [
+            "edges2adj"
+          ]
+        },
+        {
+          "source": "lib",
+          "specifiers": [
+            "mis_greedy_insert",
+            "mis_edges2neighbors",
+            "MISBatchedNeighbors"
+          ]
+        },
+        {
+          "source": "decoding.continuous_sampling",
+          "specifiers": [
+            "sample_dpmpp_2m",
+            "sample_euler"
+          ]
+        }
+      ],
+      "exports": [
+        "mis_flow_decode"
+      ],
+      "totalLines": 243,
+      "hasStructuralAnalysis": true
+    },
+    "decoding/tsp_gpu_2opt.py": {
+      "filePath": "decoding/tsp_gpu_2opt.py",
+      "contentHash": "029eed719b71110e106611a50cda27db70a8b6b98ab9170118cfd4ca899e7a1a",
+      "functions": [
+        {
+          "name": "tsp_flow_searching_decode",
+          "params": [
+            "dataset",
+            "model",
+            "model_config",
+            "sampling_steps",
+            "two_opt_steps",
+            "random_two_opt_steps_range",
+            "cycles",
+            "batch_size",
+            "runs",
+            "heatmap_dtype",
+            "topk",
+            "augment_level",
+            "threads_over_batches",
+            "seed"
+          ],
+          "exported": true,
+          "lineCount": 165
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "threading",
+          "specifiers": [
+            "threading"
+          ]
+        },
+        {
+          "source": "tqdm",
+          "specifiers": [
+            "tqdm"
+          ]
+        },
+        {
+          "source": "concurrent.futures",
+          "specifiers": [
+            "ThreadPoolExecutor"
+          ]
+        },
+        {
+          "source": "models",
+          "specifiers": [
+            "TSPModel",
+            "TSPModelConfig"
+          ]
+        },
+        {
+          "source": "helpers.coord_transform",
+          "specifiers": [
+            "normalize",
+            "cdist"
+          ]
+        },
+        {
+          "source": "helpers.tsp_transform",
+          "specifiers": [
+            "get_costs"
+          ]
+        },
+        {
+          "source": "helpers",
+          "specifiers": [
+            "sol2adj"
+          ]
+        },
+        {
+          "source": "decoding.continuous_sampling",
+          "specifiers": [
+            "sample_euler",
+            "sample_dpmpp_2m",
+            "get_linear_timesteps"
+          ]
+        },
+        {
+          "source": "training",
+          "specifiers": [
+            "load_ckpt"
+          ]
+        },
+        {
+          "source": "lib",
+          "specifiers": [
+            "tsp_greedy_insert",
+            "tsp_double_two_opt",
+            "tsp_eval_cost",
+            "tsp_random_two_opt"
+          ]
+        },
+        {
+          "source": "decoding.utils",
+          "specifiers": [
+            "convert_heatmap_dtype",
+            "DynamicAugment"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        },
+        {
+          "source": "decoding.gpu_heuristics.tsp",
+          "specifiers": [
+            "gpu_tsp_two_opt"
+          ]
+        }
+      ],
+      "exports": [
+        "tsp_flow_searching_decode"
+      ],
+      "totalLines": 242,
+      "hasStructuralAnalysis": true
+    },
+    "decoding/tsp.py": {
+      "filePath": "decoding/tsp.py",
+      "contentHash": "a0274a7dbe9bfe49bf771c89560a41e7a3a00cab8cfc76c9bc0ca64c7c85d445",
+      "functions": [
+        {
+          "name": "tsp_flow_searching_decode",
+          "params": [
+            "dataset",
+            "model",
+            "model_config",
+            "sampling_steps",
+            "two_opt_steps",
+            "random_two_opt_steps_range",
+            "cycles",
+            "batch_size",
+            "runs",
+            "heatmap_dtype",
+            "topk",
+            "augment_level",
+            "threads_over_batches",
+            "seed"
+          ],
+          "exported": true,
+          "lineCount": 158
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "threading",
+          "specifiers": [
+            "threading"
+          ]
+        },
+        {
+          "source": "tqdm",
+          "specifiers": [
+            "tqdm"
+          ]
+        },
+        {
+          "source": "concurrent.futures",
+          "specifiers": [
+            "ThreadPoolExecutor"
+          ]
+        },
+        {
+          "source": "models",
+          "specifiers": [
+            "TSPModel",
+            "TSPModelConfig"
+          ]
+        },
+        {
+          "source": "helpers.coord_transform",
+          "specifiers": [
+            "normalize",
+            "cdist"
+          ]
+        },
+        {
+          "source": "helpers.tsp_transform",
+          "specifiers": [
+            "get_costs"
+          ]
+        },
+        {
+          "source": "helpers",
+          "specifiers": [
+            "sol2adj"
+          ]
+        },
+        {
+          "source": "decoding.continuous_sampling",
+          "specifiers": [
+            "sample_euler",
+            "sample_dpmpp_2m",
+            "get_linear_timesteps"
+          ]
+        },
+        {
+          "source": "training",
+          "specifiers": [
+            "load_ckpt"
+          ]
+        },
+        {
+          "source": "lib",
+          "specifiers": [
+            "tsp_greedy_insert",
+            "tsp_double_two_opt",
+            "tsp_eval_cost"
+          ]
+        },
+        {
+          "source": "decoding.utils",
+          "specifiers": [
+            "convert_heatmap_dtype",
+            "DynamicAugment"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        }
+      ],
+      "exports": [
+        "tsp_flow_searching_decode"
+      ],
+      "totalLines": 234,
+      "hasStructuralAnalysis": true
+    },
+    "decoding/utils.py": {
+      "filePath": "decoding/utils.py",
+      "contentHash": "31a87a5ff585f0adb25d4844410b6c77d6498c1f0e90ae6ec0c5f52a1ffb9c96",
+      "functions": [
+        {
+          "name": "heatmap_quant",
+          "params": [
+            "heatmap",
+            "strategy",
+            "eps"
+          ],
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "convert_heatmap_dtype",
+          "params": [
+            "heatmap",
+            "dtype",
+            "quant_strategy",
+            "quant_eps"
+          ],
+          "exported": true,
+          "lineCount": 17
+        }
+      ],
+      "classes": [
+        {
+          "name": "CoordDynamicAugment",
+          "methods": [
+            "__init__",
+            "__call__"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 43
+        }
+      ],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Literal"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "tp"
+          ]
+        }
+      ],
+      "exports": [
+        "heatmap_quant",
+        "convert_heatmap_dtype",
+        "CoordDynamicAugment"
+      ],
+      "totalLines": 95,
+      "hasStructuralAnalysis": true
+    },
+    "helpers/__init__.py": {
+      "filePath": "helpers/__init__.py",
+      "contentHash": "0cbd9a09646ca23ad191fa96aefde9a5d3d851fea806c1ffb2dc0af23e5a4ccf",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".with_invalid_kwargs_filtered",
+          "specifiers": [
+            "with_invalid_kwargs_filtered"
+          ]
+        },
+        {
+          "source": ".solution_transform",
+          "specifiers": [
+            "sol2adj",
+            "edges2adj"
+          ]
+        },
+        {
+          "source": ".maybe_eval",
+          "specifiers": [
+            "maybe_eval"
+          ]
+        },
+        {
+          "source": ".coord_transform",
+          "specifiers": [
+            "cdist"
+          ]
+        },
+        {
+          "source": ".parse_bool",
+          "specifiers": [
+            "parse_bool"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "helpers/coord_transform.py": {
+      "filePath": "helpers/coord_transform.py",
+      "contentHash": "7cd6587288a89fe7e6a108e5db20eb33e2312a89f31cf071417c194ac3b7ee78",
+      "functions": [
+        {
+          "name": "rotate",
+          "params": [
+            "inputs",
+            "theta"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "get_rot_mat",
+          "params": [
+            "theta",
+            "dtype"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "reflect_x",
+          "params": [
+            "inputs"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "reflect_y",
+          "params": [
+            "inputs"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "median",
+          "params": [
+            "xs"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "normalize",
+          "params": [
+            "inputs",
+            "centering_method"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "get_normalize_scale_rate",
+          "params": [
+            "inputs"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "_cdist_unbatched",
+          "params": [
+            "coord"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "cdist",
+          "params": [
+            "coords"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Literal"
+          ]
+        }
+      ],
+      "exports": [
+        "rotate",
+        "get_rot_mat",
+        "reflect_x",
+        "reflect_y",
+        "median",
+        "normalize",
+        "get_normalize_scale_rate",
+        "_cdist_unbatched",
+        "cdist"
+      ],
+      "totalLines": 70,
+      "hasStructuralAnalysis": true
+    },
+    "helpers/maybe_eval.py": {
+      "filePath": "helpers/maybe_eval.py",
+      "contentHash": "5d81fad056ba56025dab159be8f489ceb7f28545559556ac52af5e5a37d82338",
+      "functions": [
+        {
+          "name": "maybe_eval",
+          "params": [
+            "s",
+            "should_keep"
+          ],
+          "exported": true,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "typing",
+          "specifiers": [
+            "Collection",
+            "Any"
+          ]
+        }
+      ],
+      "exports": [
+        "maybe_eval"
+      ],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "helpers/mis_transform.py": {
+      "filePath": "helpers/mis_transform.py",
+      "contentHash": "a92b4fdb4eb7c5d5aaee19fff5634dd78dc8182f3444481cdd885ce39a5c3f5d",
+      "functions": [
+        {
+          "name": "edges2adj",
+          "params": [
+            "edges",
+            "num_nodes_padded",
+            "dtype"
+          ],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        }
+      ],
+      "exports": [
+        "edges2adj"
+      ],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "helpers/parse_bool.py": {
+      "filePath": "helpers/parse_bool.py",
+      "contentHash": "99630b1b026a884193badd79d763035884f8abe4299844e4a6f1fb3371557ecf",
+      "functions": [
+        {
+          "name": "parse_bool",
+          "params": [
+            "s"
+          ],
+          "returnType": "bool",
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "parse_bool"
+      ],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "helpers/solution_transform.py": {
+      "filePath": "helpers/solution_transform.py",
+      "contentHash": "99420db8eb18982e38aa07e3cebb63cdcd03157eb63b8bee3d0abe246783fd35",
+      "functions": [
+        {
+          "name": "sol2adj",
+          "params": [
+            "sols",
+            "dtype",
+            "num_nodes",
+            "is_cvrp"
+          ],
+          "exported": true,
+          "lineCount": 19
+        },
+        {
+          "name": "edges2adj",
+          "params": [
+            "edges",
+            "dtype",
+            "num_nodes",
+            "is_cvrp"
+          ],
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Literal"
+          ]
+        }
+      ],
+      "exports": [
+        "sol2adj",
+        "edges2adj"
+      ],
+      "totalLines": 46,
+      "hasStructuralAnalysis": true
+    },
+    "helpers/tsp_transform.py": {
+      "filePath": "helpers/tsp_transform.py",
+      "contentHash": "5394c533483c7262c0fa090fec0cd8fb36b11fed668e7d98e49b3af500159197",
+      "functions": [
+        {
+          "name": "_two_opt_unbatched",
+          "params": [
+            "sol",
+            "step"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "two_opt",
+          "params": [
+            "sol",
+            "step"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "_get_step_improvement_unbatched",
+          "params": [
+            "sol",
+            "step",
+            "dist_mat"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "get_step_improvement",
+          "params": [
+            "sol",
+            "step",
+            "dist_mat"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "two_opt_with_improvement_value",
+          "params": [
+            "sol",
+            "step",
+            "dist_mat"
+          ],
+          "returnType": "tuple[jax.Array, jax.Array]",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "_get_costs_unbatched",
+          "params": [
+            "sol",
+            "dist_mat"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "get_costs",
+          "params": [
+            "sols",
+            "dist_mat"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "get_cost_numpy",
+          "params": [
+            "sol",
+            "dist_mat"
+          ],
+          "returnType": "np.ndarray",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "_get_costs_with_coords_unbatched",
+          "params": [
+            "sol",
+            "coord"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "get_costs_with_coords",
+          "params": [
+            "sols",
+            "coords"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "tour_shuffle",
+          "params": [
+            "key",
+            "tour",
+            "times"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 29
+        },
+        {
+          "name": "get_two_opt_mask",
+          "params": [
+            "num_nodes"
+          ],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        }
+      ],
+      "exports": [
+        "_two_opt_unbatched",
+        "two_opt",
+        "_get_step_improvement_unbatched",
+        "get_step_improvement",
+        "two_opt_with_improvement_value",
+        "_get_costs_unbatched",
+        "get_costs",
+        "get_cost_numpy",
+        "_get_costs_with_coords_unbatched",
+        "get_costs_with_coords",
+        "tour_shuffle",
+        "get_two_opt_mask"
+      ],
+      "totalLines": 135,
+      "hasStructuralAnalysis": true
+    },
+    "helpers/with_invalid_kwargs_filtered.py": {
+      "filePath": "helpers/with_invalid_kwargs_filtered.py",
+      "contentHash": "ec45b48087d7ea7e182a51107c9a885e5cbb828a56d72ef1786b9b052368f901",
+      "functions": [
+        {
+          "name": "with_invalid_kwargs_filtered",
+          "params": [
+            "fn"
+          ],
+          "returnType": "Callable[..., T]",
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "typing",
+          "specifiers": [
+            "Callable",
+            "TypeVar"
+          ]
+        },
+        {
+          "source": "inspect",
+          "specifiers": [
+            "signature"
+          ]
+        }
+      ],
+      "exports": [
+        "with_invalid_kwargs_filtered"
+      ],
+      "totalLines": 13,
+      "hasStructuralAnalysis": true
+    },
+    "install.sh": {
+      "filePath": "install.sh",
+      "contentHash": "13d6812b1997954ef979c71810ef830b5bbfe45fad65cb359d45c22c1992abff",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "lib/__init__.py": {
+      "filePath": "lib/__init__.py",
+      "contentHash": "ab01550eece200c3ae217c8d7d81af364876b4f32e47cc769031f807fb3eb000",
+      "functions": [
+        {
+          "name": "tsp_eval_cost",
+          "params": [
+            "tour",
+            "dist_mat",
+            "num_workers"
+          ],
+          "returnType": "np.ndarray",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "tsp_two_opt",
+          "params": [
+            "tours",
+            "dist_mat",
+            "num_steps",
+            "num_workers",
+            "inplace"
+          ],
+          "returnType": "np.ndarray",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "tsp_random_two_opt",
+          "params": [
+            "seed",
+            "tours",
+            "num_steps",
+            "num_workers",
+            "inplace"
+          ],
+          "returnType": "np.ndarray",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "tsp_double_two_opt",
+          "params": [
+            "seed",
+            "tours",
+            "dist_mat",
+            "steps",
+            "random_steps",
+            "num_workers"
+          ],
+          "returnType": "tuple[np.ndarray, np.ndarray]",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "tsp_greedy_insert",
+          "params": [
+            "candidate_edges",
+            "num_nodes",
+            "num_workers"
+          ],
+          "returnType": "np.ndarray",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "mis_edges2neighbors",
+          "params": [
+            "edges",
+            "num_nodes",
+            "num_edges",
+            "num_worker",
+            "tolist"
+          ],
+          "returnType": "list[list[list[int]]] | MISBatchedNeighbors",
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "mis_partially_greedy_insert",
+          "params": [
+            "solution",
+            "mask",
+            "num_inserted_nodes",
+            "num_masked_nodes",
+            "candidate_nodes",
+            "neighbors",
+            "num_nodes",
+            "target_num_nodes",
+            "num_workers"
+          ],
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "mis_greedy_insert",
+          "params": [
+            "neighbors",
+            "num_nodes",
+            "num_nodes_padded",
+            "candidate_nodes",
+            "num_workers"
+          ],
+          "exported": true,
+          "lineCount": 19
+        },
+        {
+          "name": "mcl_greedy_insert",
+          "params": [
+            "neighbors",
+            "num_nodes",
+            "num_nodes_padded",
+            "candidate_nodes",
+            "num_workers"
+          ],
+          "exported": true,
+          "lineCount": 24
+        }
+      ],
+      "classes": [
+        {
+          "name": "MISPartialInsertion",
+          "methods": [
+            "__init__",
+            "insert"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 34
+        }
+      ],
+      "imports": [
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "tp"
+          ]
+        },
+        {
+          "source": ".interface",
+          "specifiers": [
+            "_tsp_two_opt_inplace_impl",
+            "_tsp_random_two_opt_inplace_impl",
+            "_tsp_double_two_opt_impl",
+            "_tsp_greedy_insert_impl",
+            "_tsp_eval_cost_impl",
+            "_mis_edges2neighbors_impl",
+            "_mis_edges2neighbors_nocast_impl",
+            "_mis_partially_greedy_insert_impl",
+            "_mcl_partially_greedy_insert_impl"
+          ]
+        }
+      ],
+      "exports": [
+        "tsp_eval_cost",
+        "tsp_two_opt",
+        "tsp_random_two_opt",
+        "tsp_double_two_opt",
+        "tsp_greedy_insert",
+        "mis_edges2neighbors",
+        "mis_partially_greedy_insert",
+        "MISPartialInsertion",
+        "mis_greedy_insert",
+        "mcl_greedy_insert"
+      ],
+      "totalLines": 183,
+      "hasStructuralAnalysis": true
+    },
+    "lib/interface.cpp": {
+      "filePath": "lib/interface.cpp",
+      "contentHash": "f821f83fac66ff8efceb500550c6ee1fec079e4569c62b70b3ed74047a05cf0b",
+      "functions": [
+        {
+          "name": "PYBIND11_MODULE",
+          "params": [],
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "pybind11/pybind11.h",
+          "specifiers": [
+            "pybind11/pybind11.h"
+          ]
+        },
+        {
+          "source": "interface.hpp",
+          "specifiers": [
+            "interface.hpp"
+          ]
+        },
+        {
+          "source": "mis_interface.hpp",
+          "specifiers": [
+            "mis_interface.hpp"
+          ]
+        },
+        {
+          "source": "mcl_interface.hpp",
+          "specifiers": [
+            "mcl_interface.hpp"
+          ]
+        }
+      ],
+      "exports": [
+        "PYBIND11_MODULE"
+      ],
+      "totalLines": 23,
+      "hasStructuralAnalysis": true
+    },
+    "lib/interface.hpp": {
+      "filePath": "lib/interface.hpp",
+      "contentHash": "93f8b2069c05412533023edd1d76874d776a8e6050ffd8f019d7b8680365d8fd",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "pybind11/cast.h",
+          "specifiers": [
+            "pybind11/cast.h"
+          ]
+        },
+        {
+          "source": "pybind11/gil.h",
+          "specifiers": [
+            "pybind11/gil.h"
+          ]
+        },
+        {
+          "source": "pybind11/pytypes.h",
+          "specifiers": [
+            "pybind11/pytypes.h"
+          ]
+        },
+        {
+          "source": "par_utils.hpp",
+          "specifiers": [
+            "par_utils.hpp"
+          ]
+        },
+        {
+          "source": "tsp.hpp",
+          "specifiers": [
+            "tsp.hpp"
+          ]
+        },
+        {
+          "source": "tsp_interface.hpp",
+          "specifiers": [
+            "tsp_interface.hpp"
+          ]
+        },
+        {
+          "source": "mis_interface.hpp",
+          "specifiers": [
+            "mis_interface.hpp"
+          ]
+        },
+        {
+          "source": "pybind11/pybind11.h",
+          "specifiers": [
+            "pybind11/pybind11.h"
+          ]
+        },
+        {
+          "source": "pybind11/numpy.h",
+          "specifiers": [
+            "pybind11/numpy.h"
+          ]
+        },
+        {
+          "source": "sys/types.h",
+          "specifiers": [
+            "sys/types.h"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": true
+    },
+    "lib/Makefile": {
+      "filePath": "lib/Makefile",
+      "contentHash": "436aadac2563a5d2f4ded75c3a3246bd06eeb60ab1a408aca77810dee9759a27",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "lib/mcl_interface.hpp": {
+      "filePath": "lib/mcl_interface.hpp",
+      "contentHash": "34424370027adb3054e225b58dbb133581e622052c6e396d4a3cd42f38af58a7",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "pybind11/pybind11.h",
+          "specifiers": [
+            "pybind11/pybind11.h"
+          ]
+        },
+        {
+          "source": "pybind11/numpy.h",
+          "specifiers": [
+            "pybind11/numpy.h"
+          ]
+        },
+        {
+          "source": "mcl.hpp",
+          "specifiers": [
+            "mcl.hpp"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 60,
+      "hasStructuralAnalysis": true
+    },
+    "lib/mcl.hpp": {
+      "filePath": "lib/mcl.hpp",
+      "contentHash": "0d58a7ae80b1f2f0b3a4cb565319bd71b74affc82d5dcb669ecd65dae41d13f1",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "algorithm",
+          "specifiers": [
+            "algorithm"
+          ]
+        },
+        {
+          "source": "cassert",
+          "specifiers": [
+            "cassert"
+          ]
+        },
+        {
+          "source": "limits",
+          "specifiers": [
+            "limits"
+          ]
+        },
+        {
+          "source": "random",
+          "specifiers": [
+            "random"
+          ]
+        },
+        {
+          "source": "vector",
+          "specifiers": [
+            "vector"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 57,
+      "hasStructuralAnalysis": true
+    },
+    "lib/mis_interface.hpp": {
+      "filePath": "lib/mis_interface.hpp",
+      "contentHash": "fb8eefa81d0e5de2834895969d035c0a273f55eab96c62f3079143dc2cc3318f",
+      "functions": [
+        {
+          "name": "mis_partially_greedy_insert_interface_int32",
+          "params": [
+            "solution",
+            "mask",
+            "num_inserted_nodes",
+            "num_masked_nodes",
+            "candidate_nodes",
+            "neighbors_ptr",
+            "num_nodes",
+            "target_num_nodes",
+            "num_workers"
+          ],
+          "returnType": "auto",
+          "exported": true,
+          "lineCount": 19
+        },
+        {
+          "name": "mis_edges2neighbors_interface_int32",
+          "params": [
+            "edges",
+            "num_nodes",
+            "num_edges",
+            "num_workers"
+          ],
+          "returnType": "auto",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "mis_edges2neighbors_interface_int32_nocast",
+          "params": [
+            "edges",
+            "num_nodes",
+            "num_edges",
+            "num_workers"
+          ],
+          "returnType": "auto",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "mis_partially_mask_interface",
+          "params": [
+            "solution",
+            "seeds",
+            "num_nodes",
+            "num_nodes_to_keep",
+            "num_workers"
+          ],
+          "returnType": "auto",
+          "exported": true,
+          "lineCount": 36
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "pybind11/cast.h",
+          "specifiers": [
+            "pybind11/cast.h"
+          ]
+        },
+        {
+          "source": "pybind11/gil.h",
+          "specifiers": [
+            "pybind11/gil.h"
+          ]
+        },
+        {
+          "source": "pybind11/pytypes.h",
+          "specifiers": [
+            "pybind11/pytypes.h"
+          ]
+        },
+        {
+          "source": "pybind11/stl.h",
+          "specifiers": [
+            "pybind11/stl.h"
+          ]
+        },
+        {
+          "source": "par_utils.hpp",
+          "specifiers": [
+            "par_utils.hpp"
+          ]
+        },
+        {
+          "source": "mis.hpp",
+          "specifiers": [
+            "mis.hpp"
+          ]
+        },
+        {
+          "source": "algorithm",
+          "specifiers": [
+            "algorithm"
+          ]
+        },
+        {
+          "source": "cassert",
+          "specifiers": [
+            "cassert"
+          ]
+        },
+        {
+          "source": "cstdint",
+          "specifiers": [
+            "cstdint"
+          ]
+        },
+        {
+          "source": "memory",
+          "specifiers": [
+            "memory"
+          ]
+        },
+        {
+          "source": "pybind11/pybind11.h",
+          "specifiers": [
+            "pybind11/pybind11.h"
+          ]
+        },
+        {
+          "source": "pybind11/numpy.h",
+          "specifiers": [
+            "pybind11/numpy.h"
+          ]
+        },
+        {
+          "source": "random",
+          "specifiers": [
+            "random"
+          ]
+        },
+        {
+          "source": "sys/types.h",
+          "specifiers": [
+            "sys/types.h"
+          ]
+        },
+        {
+          "source": "vector",
+          "specifiers": [
+            "vector"
+          ]
+        }
+      ],
+      "exports": [
+        "mis_partially_greedy_insert_interface_int32",
+        "mis_edges2neighbors_interface_int32",
+        "mis_edges2neighbors_interface_int32_nocast",
+        "mis_partially_mask_interface"
+      ],
+      "totalLines": 210,
+      "hasStructuralAnalysis": true
+    },
+    "lib/mis.hpp": {
+      "filePath": "lib/mis.hpp",
+      "contentHash": "d266bc02291ad37665e376d8883d920b00732aaf68c54f367bbadbf792f8d278",
+      "functions": [
+        {
+          "name": "partially_mask",
+          "params": [
+            "solution",
+            "generator",
+            "num_nodes",
+            "num_nodes_to_keep"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "partially_mask",
+          "params": [
+            "solution",
+            "seed",
+            "num_nodes",
+            "num_nodes_to_keep"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "algorithm",
+          "specifiers": [
+            "algorithm"
+          ]
+        },
+        {
+          "source": "cassert",
+          "specifiers": [
+            "cassert"
+          ]
+        },
+        {
+          "source": "limits",
+          "specifiers": [
+            "limits"
+          ]
+        },
+        {
+          "source": "random",
+          "specifiers": [
+            "random"
+          ]
+        },
+        {
+          "source": "vector",
+          "specifiers": [
+            "vector"
+          ]
+        }
+      ],
+      "exports": [
+        "partially_mask",
+        "partially_mask"
+      ],
+      "totalLines": 142,
+      "hasStructuralAnalysis": true
+    },
+    "lib/par_utils.hpp": {
+      "filePath": "lib/par_utils.hpp",
+      "contentHash": "b5e060341364079ce6b34f1f07c6170891165ade7c0d0691a20c7c3f00839504",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "cstdint",
+          "specifiers": [
+            "cstdint"
+          ]
+        },
+        {
+          "source": "thread",
+          "specifiers": [
+            "thread"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 97,
+      "hasStructuralAnalysis": true
+    },
+    "lib/params.hpp": {
+      "filePath": "lib/params.hpp",
+      "contentHash": "a69a2be60f7c3146b5a4c0ad3e495d16a3f1d618a80240eb0f5a46d1dbdaf388",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "lib/tsp_interface.hpp": {
+      "filePath": "lib/tsp_interface.hpp",
+      "contentHash": "bf96745cd4edade1d026c57704a592e4457c3ba66513aacc52e6c8c7dcaabb95",
+      "functions": [
+        {
+          "name": "tsp_two_opt_inplace_interface",
+          "params": [
+            "tours",
+            "dist_mat",
+            "num_steps",
+            "num_workers"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 37
+        },
+        {
+          "name": "tsp_random_two_opt_inplace_interface",
+          "params": [
+            "seed",
+            "tours",
+            "num_steps",
+            "num_workers"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 38
+        },
+        {
+          "name": "tsp_double_two_opt_interface",
+          "params": [
+            "seed",
+            "tours",
+            "dist_mat",
+            "steps",
+            "random_steps",
+            "num_workers"
+          ],
+          "returnType": "py::tuple",
+          "exported": true,
+          "lineCount": 83
+        },
+        {
+          "name": "tsp_greedy_insert_interface",
+          "params": [
+            "candidate_edges",
+            "num_nodes",
+            "num_workers"
+          ],
+          "returnType": "py::array_t<int>",
+          "exported": true,
+          "lineCount": 40
+        },
+        {
+          "name": "tsp_eval_cost",
+          "params": [
+            "tour",
+            "dist_mat",
+            "num_workers"
+          ],
+          "returnType": "auto",
+          "exported": true,
+          "lineCount": 47
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "pybind11/cast.h",
+          "specifiers": [
+            "pybind11/cast.h"
+          ]
+        },
+        {
+          "source": "pybind11/gil.h",
+          "specifiers": [
+            "pybind11/gil.h"
+          ]
+        },
+        {
+          "source": "pybind11/pytypes.h",
+          "specifiers": [
+            "pybind11/pytypes.h"
+          ]
+        },
+        {
+          "source": "par_utils.hpp",
+          "specifiers": [
+            "par_utils.hpp"
+          ]
+        },
+        {
+          "source": "tsp.hpp",
+          "specifiers": [
+            "tsp.hpp"
+          ]
+        },
+        {
+          "source": "algorithm",
+          "specifiers": [
+            "algorithm"
+          ]
+        },
+        {
+          "source": "cassert",
+          "specifiers": [
+            "cassert"
+          ]
+        },
+        {
+          "source": "pybind11/pybind11.h",
+          "specifiers": [
+            "pybind11/pybind11.h"
+          ]
+        },
+        {
+          "source": "pybind11/numpy.h",
+          "specifiers": [
+            "pybind11/numpy.h"
+          ]
+        },
+        {
+          "source": "random",
+          "specifiers": [
+            "random"
+          ]
+        },
+        {
+          "source": "sys/types.h",
+          "specifiers": [
+            "sys/types.h"
+          ]
+        },
+        {
+          "source": "vector",
+          "specifiers": [
+            "vector"
+          ]
+        }
+      ],
+      "exports": [
+        "tsp_two_opt_inplace_interface",
+        "tsp_random_two_opt_inplace_interface",
+        "tsp_double_two_opt_interface",
+        "tsp_greedy_insert_interface",
+        "tsp_eval_cost"
+      ],
+      "totalLines": 279,
+      "hasStructuralAnalysis": true
+    },
+    "lib/tsp.hpp": {
+      "filePath": "lib/tsp.hpp",
+      "contentHash": "95c6ef2eca2d5639911fffcb9c9829b3a74973206ed4ac8d2a4a94eb55e50203",
+      "functions": [
+        {
+          "name": "find_best_two_opt",
+          "params": [
+            "tour",
+            "dist_mat",
+            "num_nodes"
+          ],
+          "returnType": "std::tuple<int, int, float>",
+          "exported": true,
+          "lineCount": 25
+        },
+        {
+          "name": "apply_two_opt",
+          "params": [
+            "tour",
+            "i",
+            "j"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "two_opt",
+          "params": [
+            "tour",
+            "dist_mat",
+            "num_nodes",
+            "num_steps"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "random_two_opt",
+          "params": [
+            "generator",
+            "tour",
+            "num_nodes",
+            "num_steps"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "random_two_opt",
+          "params": [
+            "seed",
+            "tour",
+            "num_nodes",
+            "num_steps"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "random_two_opt",
+          "params": [
+            "seed",
+            "tour",
+            "num_nodes",
+            "num_steps"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "neighbors2sol",
+          "params": [
+            "sol",
+            "neighbors",
+            "num_nodes"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "edges2neighbors",
+          "params": [
+            "neighbors",
+            "edges",
+            "num_nodes",
+            "num_edges"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 25
+        },
+        {
+          "name": "greedy_insert",
+          "params": [
+            "tour",
+            "candidate_edges",
+            "num_nodes",
+            "num_candidate_edges"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 123
+        },
+        {
+          "name": "partially_greedy_insert",
+          "params": [
+            "edges",
+            "subtour_id",
+            "neighbors",
+            "candidate_edges",
+            "num_nodes",
+            "num_candidate_edges",
+            "num_inserted_edges",
+            "num_edges_to_insert"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 121
+        },
+        {
+          "name": "eval_cost",
+          "params": [
+            "cost",
+            "tour",
+            "dist_mat",
+            "num_nodes"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "fill_solution_naive",
+          "params": [
+            "edges",
+            "neighbors",
+            "subtour_id",
+            "num_nodes",
+            "num_inserted_edges",
+            "num_edges_to_fill"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 38
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "algorithm",
+          "specifiers": [
+            "algorithm"
+          ]
+        },
+        {
+          "source": "cassert",
+          "specifiers": [
+            "cassert"
+          ]
+        },
+        {
+          "source": "limits",
+          "specifiers": [
+            "limits"
+          ]
+        },
+        {
+          "source": "tuple",
+          "specifiers": [
+            "tuple"
+          ]
+        },
+        {
+          "source": "random",
+          "specifiers": [
+            "random"
+          ]
+        },
+        {
+          "source": "vector",
+          "specifiers": [
+            "vector"
+          ]
+        },
+        {
+          "source": "params.hpp",
+          "specifiers": [
+            "params.hpp"
+          ]
+        }
+      ],
+      "exports": [
+        "find_best_two_opt",
+        "apply_two_opt",
+        "two_opt",
+        "random_two_opt",
+        "random_two_opt",
+        "random_two_opt",
+        "neighbors2sol",
+        "edges2neighbors",
+        "greedy_insert",
+        "partially_greedy_insert",
+        "eval_cost",
+        "fill_solution_naive"
+      ],
+      "totalLines": 468,
+      "hasStructuralAnalysis": true
+    },
+    "models/__init__.py": {
+      "filePath": "models/__init__.py",
+      "contentHash": "5331ab6fedff7dded1144d151537d308f70abc3e1fc27558b3e468883e494624",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".TSPModel",
+          "specifiers": [
+            "TSPModel",
+            "TSPModelConfig"
+          ]
+        },
+        {
+          "source": ".MISModel",
+          "specifiers": [
+            "MISModel",
+            "MISModelConfig"
+          ]
+        },
+        {
+          "source": ".MCLModel",
+          "specifiers": [
+            "MCLModel",
+            "MCLModelConfig"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": true
+    },
+    "models/MCLModel.py": {
+      "filePath": "models/MCLModel.py",
+      "contentHash": "6144827ae71db5bbd01bbad3bbdf52fc77c34fdeedf6772a1541ad9b925f049d",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".MISModel",
+          "specifiers": [
+            "MCLModel",
+            "MCLModelConfig"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": true
+    },
+    "models/MISModel.py": {
+      "filePath": "models/MISModel.py",
+      "contentHash": "697d1bc13138d7a48f3ac95dc2d73ce3ac70fcd4c3dc0874c036930d2a4025bd",
+      "functions": [],
+      "classes": [
+        {
+          "name": "MISModelConfig",
+          "methods": [
+            "__post_init__",
+            "get_config",
+            "construct_model"
+          ],
+          "properties": [
+            "num_layers",
+            "embed_dim",
+            "hidden_dim",
+            "num_heads",
+            "activation",
+            "use_swiglu",
+            "dtype",
+            "softcap",
+            "qk_norm",
+            "final_softcap",
+            "sigmoid_head",
+            "softmax_head",
+            "init_method",
+            "rngs"
+          ],
+          "exported": true,
+          "lineCount": 45
+        },
+        {
+          "name": "MISModel",
+          "methods": [
+            "__init__",
+            "get_segment_ids",
+            "encode",
+            "decode"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 162
+        }
+      ],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "dataclasses",
+          "specifiers": [
+            "dataclass"
+          ]
+        },
+        {
+          "source": "modules",
+          "specifiers": [
+            "TransformerEncoder",
+            "TimestepEmbedder",
+            "MLPBlock",
+            "Linear"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any",
+            "Callable",
+            "Literal"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        }
+      ],
+      "exports": [
+        "MISModelConfig",
+        "MISModel"
+      ],
+      "totalLines": 221,
+      "hasStructuralAnalysis": true
+    },
+    "models/TSPModel.py": {
+      "filePath": "models/TSPModel.py",
+      "contentHash": "2d466b84bbaaa48b73ad757d7843128a17c9b70a36482e4b98e15c3017234d77",
+      "functions": [],
+      "classes": [
+        {
+          "name": "TSPModelConfig",
+          "methods": [
+            "__post_init__",
+            "get_config",
+            "construct_model"
+          ],
+          "properties": [
+            "num_layers",
+            "embed_dim",
+            "hidden_dim",
+            "num_heads",
+            "activation",
+            "use_swiglu",
+            "dtype",
+            "encoder_input_dim",
+            "softcap",
+            "qk_norm",
+            "sm_scale",
+            "final_norm",
+            "final_norm_use_scale",
+            "final_softcap",
+            "final_logit_scale",
+            "rngs"
+          ],
+          "exported": true,
+          "lineCount": 65
+        },
+        {
+          "name": "TSPModel",
+          "methods": [
+            "__init__",
+            "encode",
+            "decode",
+            "feature2logit"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 122
+        }
+      ],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "dataclasses",
+          "specifiers": [
+            "dataclass"
+          ]
+        },
+        {
+          "source": "modules",
+          "specifiers": [
+            "TransformerEncoder",
+            "TimestepEmbedder",
+            "MLPBlock",
+            "Linear"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Any",
+            "Literal"
+          ]
+        },
+        {
+          "source": "helpers",
+          "specifiers": [
+            "with_invalid_kwargs_filtered"
+          ]
+        }
+      ],
+      "exports": [
+        "TSPModelConfig",
+        "TSPModel"
+      ],
+      "totalLines": 201,
+      "hasStructuralAnalysis": true
+    },
+    "modules/__init__.py": {
+      "filePath": "modules/__init__.py",
+      "contentHash": "a0e4ad569fd6bd15bbba3167799ac5588c850695a3ec50f8e0d85637be640dbd",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".TransformerEncoder",
+          "specifiers": [
+            "TransformerEncoder"
+          ]
+        },
+        {
+          "source": ".MLPBlock",
+          "specifiers": [
+            "MLPBlock"
+          ]
+        },
+        {
+          "source": ".TimestepEmbedder",
+          "specifiers": [
+            "TimestepEmbedder"
+          ]
+        },
+        {
+          "source": ".Linear",
+          "specifiers": [
+            "Linear"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": true
+    },
+    "modules/functional/__init__.py": {
+      "filePath": "modules/functional/__init__.py",
+      "contentHash": "db919f7a6072b34ccd7485011e0daa90e8614c1e56a6fb222d22a0403987d374",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".coord_transform",
+          "specifiers": [
+            "coord_normalize"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "modules/functional/attention/__init__.py": {
+      "filePath": "modules/functional/attention/__init__.py",
+      "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": true
+    },
+    "modules/functional/attention/triton/fa_kernel_softcap_then_bias.py": {
+      "filePath": "modules/functional/attention/triton/fa_kernel_softcap_then_bias.py",
+      "contentHash": "64ec808536aaa0aae2d5b38f3e12d23177d475492ca9ab6b27bb2b36ee0e938b",
+      "functions": [
+        {
+          "name": "_fwd_kernel",
+          "params": [
+            "Q",
+            "K",
+            "V",
+            "Bias",
+            "segment_ids",
+            "kv_bound",
+            "Out",
+            "Lse",
+            "TMP",
+            "softmax_scale",
+            "stride_qb",
+            "stride_qh",
+            "stride_qm",
+            "stride_kb",
+            "stride_kh",
+            "stride_kn",
+            "stride_vb",
+            "stride_vh",
+            "stride_vn",
+            "stride_bb",
+            "stride_bh",
+            "stride_bm",
+            "stride_ob",
+            "stride_oh",
+            "stride_om",
+            "nheads",
+            "seqlen_q",
+            "seqlen_k",
+            "seqlen_q_rounded",
+            "headdim",
+            "CACHE_KEY_SEQLEN_Q",
+            "CACHE_KEY_SEQLEN_K",
+            "BIAS_TYPE",
+            "IS_CAUSAL",
+            "BLOCK_HEADDIM",
+            "EVEN_M",
+            "EVEN_N",
+            "EVEN_HEADDIM",
+            "BLOCK_M",
+            "BLOCK_N",
+            "softcap",
+            "k_ptr_offset",
+            "v_ptr_offset",
+            "use_fp16_accum",
+            "has_segment_ids",
+            "has_kv_bound",
+            "alibi_scale"
+          ],
+          "exported": true,
+          "lineCount": 319
+        },
+        {
+          "name": "_bwd_preprocess_do_o_dot",
+          "params": [
+            "Out",
+            "DO",
+            "Delta",
+            "stride_ob",
+            "stride_oh",
+            "stride_om",
+            "stride_dob",
+            "stride_doh",
+            "stride_dom",
+            "nheads",
+            "seqlen_q",
+            "seqlen_q_rounded",
+            "headdim",
+            "BLOCK_M",
+            "BLOCK_HEADDIM"
+          ],
+          "exported": true,
+          "lineCount": 42
+        },
+        {
+          "name": "_bwd_store_dk_dv",
+          "params": [
+            "dk_ptrs",
+            "dv_ptrs",
+            "dk",
+            "dv",
+            "offs_n",
+            "offs_d",
+            "seqlen_k",
+            "headdim",
+            "EVEN_M",
+            "EVEN_N",
+            "EVEN_HEADDIM"
+          ],
+          "exported": true,
+          "lineCount": 29
+        },
+        {
+          "name": "_bwd_kernel_one_col_block",
+          "params": [
+            "start_n",
+            "Q",
+            "K",
+            "V",
+            "Bias",
+            "DO",
+            "segment_ids",
+            "DQ",
+            "DK",
+            "DV",
+            "LSE",
+            "D",
+            "softmax_scale",
+            "stride_qm",
+            "stride_kn",
+            "stride_vn",
+            "stride_bm",
+            "stride_dom",
+            "stride_dqm",
+            "stride_dkn",
+            "stride_dvn",
+            "seqlen_q",
+            "seqlen_k",
+            "headdim",
+            "ATOMIC_ADD",
+            "BIAS_TYPE",
+            "IS_CAUSAL",
+            "BLOCK_HEADDIM",
+            "EVEN_M",
+            "EVEN_N",
+            "EVEN_HEADDIM",
+            "BLOCK_M",
+            "BLOCK_N",
+            "softcap",
+            "use_fp16_accum",
+            "has_segment_ids",
+            "off_b",
+            "q_lower_bound",
+            "q_upper_bound",
+            "alibi_scale",
+            "off_h"
+          ],
+          "exported": true,
+          "lineCount": 375
+        },
+        {
+          "name": "handle_q_bound",
+          "params": [
+            "q_bound",
+            "off_b",
+            "BLOCK_M",
+            "BLOCK_N",
+            "seqlen_k",
+            "start_n"
+          ],
+          "exported": true,
+          "lineCount": 16
+        },
+        {
+          "name": "_bwd_kernel",
+          "params": [
+            "Q",
+            "K",
+            "V",
+            "Bias",
+            "DO",
+            "segment_ids",
+            "q_bound",
+            "LSE",
+            "D",
+            "DQ",
+            "DK",
+            "DV",
+            "softmax_scale",
+            "stride_qb",
+            "stride_qh",
+            "stride_qm",
+            "stride_kb",
+            "stride_kh",
+            "stride_kn",
+            "stride_vb",
+            "stride_vh",
+            "stride_vn",
+            "stride_bb",
+            "stride_bh",
+            "stride_bm",
+            "stride_dob",
+            "stride_doh",
+            "stride_dom",
+            "stride_dqb",
+            "stride_dqh",
+            "stride_dqm",
+            "stride_dkb",
+            "stride_dkh",
+            "stride_dkn",
+            "stride_dvb",
+            "stride_dvh",
+            "stride_dvn",
+            "nheads",
+            "seqlen_q",
+            "seqlen_k",
+            "seqlen_q_rounded",
+            "headdim",
+            "CACHE_KEY_SEQLEN_Q",
+            "CACHE_KEY_SEQLEN_K",
+            "BIAS_TYPE",
+            "IS_CAUSAL",
+            "BLOCK_HEADDIM",
+            "SEQUENCE_PARALLEL",
+            "EVEN_M",
+            "EVEN_N",
+            "EVEN_HEADDIM",
+            "BLOCK_M",
+            "BLOCK_N",
+            "softcap",
+            "k_ptr_offset",
+            "v_ptr_offset",
+            "use_fp16_accum",
+            "has_segment_ids",
+            "has_q_bound",
+            "alibi_scale"
+          ],
+          "exported": true,
+          "lineCount": 202
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "math",
+          "specifiers": [
+            "math"
+          ]
+        },
+        {
+          "source": "triton",
+          "specifiers": [
+            "triton"
+          ]
+        },
+        {
+          "source": "triton.language",
+          "specifiers": [
+            "tl"
+          ]
+        },
+        {
+          "source": "triton.language.extra.libdevice",
+          "specifiers": [
+            "pow"
+          ]
+        },
+        {
+          "source": ".tanh",
+          "specifiers": [
+            "tanh"
+          ]
+        },
+        {
+          "source": "jax._src",
+          "specifiers": [
+            "jtu"
+          ]
+        }
+      ],
+      "exports": [
+        "_fwd_kernel",
+        "_bwd_preprocess_do_o_dot",
+        "_bwd_store_dk_dv",
+        "_bwd_kernel_one_col_block",
+        "handle_q_bound",
+        "_bwd_kernel"
+      ],
+      "totalLines": 1418,
+      "hasStructuralAnalysis": true
+    },
+    "modules/functional/attention/triton/get_block_bound.py": {
+      "filePath": "modules/functional/attention/triton/get_block_bound.py",
+      "contentHash": "4ad4fa032333c4940a58106e869e5813bd38b6a128f2f3445646cd06ccbad550",
+      "functions": [
+        {
+          "name": "get_block_bound",
+          "params": [
+            "segment_ids",
+            "block",
+            "need_q_bound"
+          ],
+          "exported": true,
+          "lineCount": 41
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "triton",
+          "specifiers": [
+            "tl"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        }
+      ],
+      "exports": [
+        "get_block_bound"
+      ],
+      "totalLines": 48,
+      "hasStructuralAnalysis": true
+    },
+    "modules/functional/attention/triton/tanh.py": {
+      "filePath": "modules/functional/attention/triton/tanh.py",
+      "contentHash": "59dff726f70490064e858d61d88d7878a6d67c5b7f4592f40cc12fe078095d85",
+      "functions": [
+        {
+          "name": "approx_tanh",
+          "params": [
+            "x"
+          ],
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "triton",
+          "specifiers": [
+            "triton"
+          ]
+        },
+        {
+          "source": "triton.language",
+          "specifiers": [
+            "tl"
+          ]
+        },
+        {
+          "source": "jax._src",
+          "specifiers": [
+            "jtu"
+          ]
+        }
+      ],
+      "exports": [
+        "approx_tanh"
+      ],
+      "totalLines": 25,
+      "hasStructuralAnalysis": true
+    },
+    "modules/functional/attention/triton/wrapper.py": {
+      "filePath": "modules/functional/attention/triton/wrapper.py",
+      "contentHash": "8a352403bfbbd210d64040595c46194c6abf550344b31f675051081387d0dde0",
+      "functions": [
+        {
+          "name": "strides_from_shape",
+          "params": [
+            "shape"
+          ],
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "process_bias",
+          "params": [
+            "bias"
+          ],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "_forward_impl",
+          "params": [
+            "q",
+            "k",
+            "v",
+            "bias",
+            "segment_ids",
+            "causal",
+            "sm_scale",
+            "softcap",
+            "use_alibi"
+          ],
+          "returnType": "tuple[jax.Array, jax.Array]",
+          "exported": true,
+          "lineCount": 91
+        },
+        {
+          "name": "_backward_impl",
+          "params": [
+            "q",
+            "k",
+            "v",
+            "do",
+            "o",
+            "lse",
+            "bias",
+            "segment_ids",
+            "causal",
+            "sm_scale",
+            "softcap",
+            "use_alibi"
+          ],
+          "returnType": "tuple[jax.Array, jax.Array, jax.Array]",
+          "exported": true,
+          "lineCount": 130
+        },
+        {
+          "name": "qkv_unpacked_attention_fn",
+          "params": [
+            "q",
+            "k",
+            "v",
+            "bias",
+            "segment_ids",
+            "causal",
+            "sm_scale",
+            "softcap",
+            "use_alibi"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "_forward",
+          "params": [
+            "q",
+            "k",
+            "v",
+            "bias",
+            "segment_ids",
+            "causal",
+            "sm_scale",
+            "softcap",
+            "use_alibi"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "_backward",
+          "params": [
+            "causal",
+            "sm_scale",
+            "softcap",
+            "use_alibi",
+            "res",
+            "do"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "_qkv_packed_forward_impl",
+          "params": [
+            "qkv",
+            "bias",
+            "segment_ids",
+            "causal",
+            "sm_scale",
+            "softcap",
+            "use_alibi"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "_qkv_packed_backward_impl",
+          "params": [
+            "qkv",
+            "do",
+            "o",
+            "lse",
+            "bias",
+            "segment_ids",
+            "causal",
+            "sm_scale",
+            "softcap",
+            "use_alibi"
+          ],
+          "returnType": "tuple[jax.Array, jax.Array, jax.Array]",
+          "exported": true,
+          "lineCount": 25
+        },
+        {
+          "name": "qkvpacked_attention_fn",
+          "params": [
+            "qkv",
+            "bias",
+            "segment_ids",
+            "causal",
+            "sm_scale",
+            "softcap",
+            "use_alibi"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "_qkvpacked_forward",
+          "params": [
+            "qkv",
+            "bias",
+            "segment_ids",
+            "causal",
+            "sm_scale",
+            "softcap",
+            "use_alibi"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "_qkvpacked_backward",
+          "params": [
+            "causal",
+            "sm_scale",
+            "softcap",
+            "use_alibi",
+            "res",
+            "do"
+          ],
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "attention_fn",
+          "params": [
+            "q",
+            "k",
+            "v",
+            "qkv",
+            "bias",
+            "segment_ids",
+            "causal",
+            "sm_scale",
+            "softcap",
+            "use_alibi"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "triton",
+          "specifiers": [
+            "triton"
+          ]
+        },
+        {
+          "source": "math",
+          "specifiers": [
+            "math"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        },
+        {
+          "source": "common.jax_triton",
+          "specifiers": [
+            "triton_call"
+          ]
+        },
+        {
+          "source": "common.array_view",
+          "specifiers": [
+            "ArrayView"
+          ]
+        },
+        {
+          "source": ".fa_kernel_softcap_then_bias",
+          "specifiers": [
+            "_fwd_kernel",
+            "_bwd_kernel",
+            "_bwd_preprocess_do_o_dot"
+          ]
+        }
+      ],
+      "exports": [
+        "strides_from_shape",
+        "process_bias",
+        "_forward_impl",
+        "_backward_impl",
+        "qkv_unpacked_attention_fn",
+        "_forward",
+        "_backward",
+        "_qkv_packed_forward_impl",
+        "_qkv_packed_backward_impl",
+        "qkvpacked_attention_fn",
+        "_qkvpacked_forward",
+        "_qkvpacked_backward",
+        "attention_fn"
+      ],
+      "totalLines": 397,
+      "hasStructuralAnalysis": true
+    },
+    "modules/functional/coord_transform.py": {
+      "filePath": "modules/functional/coord_transform.py",
+      "contentHash": "6e0a89468ea9a394a8cc746190770cf30b85bc7f058bd1606d3c921130221448",
+      "functions": [
+        {
+          "name": "reflect_x",
+          "params": [
+            "inputs"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "reflect_y",
+          "params": [
+            "inputs"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 2
+        },
+        {
+          "name": "median",
+          "params": [
+            "xs"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "normalize",
+          "params": [
+            "inputs",
+            "centering_method"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 15
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Literal"
+          ]
+        }
+      ],
+      "exports": [
+        "reflect_x",
+        "reflect_y",
+        "median",
+        "normalize"
+      ],
+      "totalLines": 38,
+      "hasStructuralAnalysis": true
+    },
+    "modules/get_activation.py": {
+      "filePath": "modules/get_activation.py",
+      "contentHash": "57b255fbc81dd057587e5551b0bef4b068007116c26d6fa29b5f9e82d56ddc50",
+      "functions": [
+        {
+          "name": "get_activation",
+          "params": [
+            "activation"
+          ],
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        }
+      ],
+      "exports": [
+        "get_activation"
+      ],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "modules/Linear.py": {
+      "filePath": "modules/Linear.py",
+      "contentHash": "a99d8978cf2eef8bcf394b19314430cbb4a4de1ff0c93bd1ed49157e94562ec5",
+      "functions": [
+        {
+          "name": "Linear",
+          "params": [
+            "in_features",
+            "out_features",
+            "use_bias",
+            "dtype",
+            "rngs"
+          ],
+          "returnType": "nnx.Linear",
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        }
+      ],
+      "exports": [
+        "Linear"
+      ],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "modules/MLPBlock.py": {
+      "filePath": "modules/MLPBlock.py",
+      "contentHash": "876c04760144f4976743fa716a50e12be48884ef10dead0058b9d4b8e4f3d06f",
+      "functions": [],
+      "classes": [
+        {
+          "name": "MLPBlock",
+          "methods": [
+            "__init__",
+            "__call__"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 44
+        }
+      ],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        },
+        {
+          "source": ".get_activation",
+          "specifiers": [
+            "get_activation"
+          ]
+        }
+      ],
+      "exports": [
+        "MLPBlock"
+      ],
+      "totalLines": 54,
+      "hasStructuralAnalysis": true
+    },
+    "modules/MultiHeadAttention.py": {
+      "filePath": "modules/MultiHeadAttention.py",
+      "contentHash": "9541039f29a803359f40b62d55d9212bda66b01fb894a65055af609db1b00ea4",
+      "functions": [
+        {
+          "name": "attention_fn",
+          "params": [
+            "q",
+            "k",
+            "v",
+            "qkv",
+            "bias",
+            "causal",
+            "sm_scale",
+            "query_seq_lengths",
+            "key_value_seq_lengths",
+            "local_window_size",
+            "softcap",
+            "**kwargs"
+          ],
+          "exported": true,
+          "lineCount": 66
+        }
+      ],
+      "classes": [
+        {
+          "name": "MultiHeadAttention",
+          "methods": [
+            "__init__",
+            "set_qkv_packed",
+            "__call__"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 95
+        }
+      ],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Callable",
+            "Any"
+          ]
+        },
+        {
+          "source": ".functional.attention.triton.wrapper",
+          "specifiers": [
+            "triton_attention_fn"
+          ]
+        }
+      ],
+      "exports": [
+        "attention_fn",
+        "MultiHeadAttention"
+      ],
+      "totalLines": 174,
+      "hasStructuralAnalysis": true
+    },
+    "modules/SwiGLU.py": {
+      "filePath": "modules/SwiGLU.py",
+      "contentHash": "e8d2a71e886eb41804789c3236ea1e6d077c738167ddf9efbba5a7e01df61f38",
+      "functions": [
+        {
+          "name": "xla_swiglu",
+          "params": [
+            "x",
+            "w",
+            "v",
+            "w2",
+            "bias_w",
+            "bias_v",
+            "bias_w2"
+          ],
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "classes": [
+        {
+          "name": "SwiGLU",
+          "methods": [
+            "__init__",
+            "__call__"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 62
+        }
+      ],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        }
+      ],
+      "exports": [
+        "xla_swiglu",
+        "SwiGLU"
+      ],
+      "totalLines": 86,
+      "hasStructuralAnalysis": true
+    },
+    "modules/TimestepEmbedder.py": {
+      "filePath": "modules/TimestepEmbedder.py",
+      "contentHash": "7653014037bcc7b4665fdddcb3416d5f183d197a13ea7e8fe579d9c43e67a370",
+      "functions": [],
+      "classes": [
+        {
+          "name": "TimestepEmbedder",
+          "methods": [
+            "__init__",
+            "timestep_embedding",
+            "__call__"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 59
+        }
+      ],
+      "imports": [
+        {
+          "source": "math",
+          "specifiers": [
+            "math"
+          ]
+        },
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        }
+      ],
+      "exports": [
+        "TimestepEmbedder"
+      ],
+      "totalLines": 73,
+      "hasStructuralAnalysis": true
+    },
+    "modules/TransformerEncoder.py": {
+      "filePath": "modules/TransformerEncoder.py",
+      "contentHash": "9ebf1bd39eefe3cc7e6ff67c20405f16c34b22fb7f34197dc9b7b19ef3f9c15b",
+      "functions": [],
+      "classes": [
+        {
+          "name": "TransformerEncoder",
+          "methods": [
+            "__init__",
+            "__call__"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 37
+        }
+      ],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "tp"
+          ]
+        },
+        {
+          "source": ".TransformerLayer",
+          "specifiers": [
+            "TransformerLayer"
+          ]
+        }
+      ],
+      "exports": [
+        "TransformerEncoder"
+      ],
+      "totalLines": 47,
+      "hasStructuralAnalysis": true
+    },
+    "modules/TransformerLayer.py": {
+      "filePath": "modules/TransformerLayer.py",
+      "contentHash": "d9cf38b257a8f23ae667474f35832a245951675aa2682941533cb4c0e5759bb8",
+      "functions": [],
+      "classes": [
+        {
+          "name": "TransformerLayer",
+          "methods": [
+            "__init__",
+            "__call__"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 77
+        }
+      ],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "tp"
+          ]
+        },
+        {
+          "source": ".MultiHeadAttention",
+          "specifiers": [
+            "MultiHeadAttention"
+          ]
+        },
+        {
+          "source": ".SwiGLU",
+          "specifiers": [
+            "SwiGLU"
+          ]
+        },
+        {
+          "source": ".MLPBlock",
+          "specifiers": [
+            "MLPBlock"
+          ]
+        }
+      ],
+      "exports": [
+        "TransformerLayer"
+      ],
+      "totalLines": 89,
+      "hasStructuralAnalysis": true
+    },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "6cd49ca138b1413c817b552b085796feb3b66db523f83e3c07ac6fff3bf982af",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 33,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/eval/mcl_rb_large.sh": {
+      "filePath": "scripts/eval/mcl_rb_large.sh",
+      "contentHash": "d3e4118d742ebc1e8f40c762af1751816ae3c895856c14b7ef603b7b4970fca9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/eval/mcl_rb_small.sh": {
+      "filePath": "scripts/eval/mcl_rb_small.sh",
+      "contentHash": "7d48ed8d6630fedfd82cd372e0dc8a0f26542b0bdf98acecdfbc15d82f11b611",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/eval/mis_er.sh": {
+      "filePath": "scripts/eval/mis_er.sh",
+      "contentHash": "7d91d371c1519b199cafd2bb1d83a973df0517aa66b4edb4df2db7e7fc12ace2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/eval/mis_rb.sh": {
+      "filePath": "scripts/eval/mis_rb.sh",
+      "contentHash": "43ea5fdb3c7911ce37d7202c06b9538f75f38d7f1a452dad4f5d09987a19a69c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/eval/tsp100.sh": {
+      "filePath": "scripts/eval/tsp100.sh",
+      "contentHash": "1888e03380c0e7a77231ec1a59d34bec217ad3148fb4ab7526131e51135467bc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/eval/tsp1000.sh": {
+      "filePath": "scripts/eval/tsp1000.sh",
+      "contentHash": "f0c82f45fe42359c2d9f1ad1cfca60bfb76ae75312dbe2790b199c13468e2241",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/eval/tsp500.sh": {
+      "filePath": "scripts/eval/tsp500.sh",
+      "contentHash": "8cf2d55920c558f295320fd5a9d981c0acdb640f384a78e3610bc18b8d35ec76",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/train/mcl_rb_large.sh": {
+      "filePath": "scripts/train/mcl_rb_large.sh",
+      "contentHash": "1c957f2d4059466de739e7b6eaef7e8feccf61637878207388bed55f2807bb1a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/train/mcl_rb_small.sh": {
+      "filePath": "scripts/train/mcl_rb_small.sh",
+      "contentHash": "b9d2d209824e51ac2d37483b6e1444240704737ba484051d26cb19791eead345",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/train/mis_er.sh": {
+      "filePath": "scripts/train/mis_er.sh",
+      "contentHash": "b46c63d346f1e0d85b20fcd39a22f4984f5083e11dd519c68cd3c784c0dcbe77",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/train/mis_rb.sh": {
+      "filePath": "scripts/train/mis_rb.sh",
+      "contentHash": "7fe7ae34df02c7ff8cf5682e1de75b76d71ca2bdde44c17e0f7aadd0d535c802",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/train/tsp100.sh": {
+      "filePath": "scripts/train/tsp100.sh",
+      "contentHash": "3418a0e7cf7b5f0dda2ccac0c3861cd1911301cfd3a36a98c905c015a5079ce6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 16,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/train/tsp1000.sh": {
+      "filePath": "scripts/train/tsp1000.sh",
+      "contentHash": "d5b1c90c65c4764389c483b6016bc1936062cb2670722a2089c37bc745aa5636",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/train/tsp500.sh": {
+      "filePath": "scripts/train/tsp500.sh",
+      "contentHash": "0139c6b36739dd7218f46af9694473cfac8208a5c692f0c62a1a585ab82ab879",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "training/__init__.py": {
+      "filePath": "training/__init__.py",
+      "contentHash": "8e0eeaff32cf522e62be69aecd46856d4887cd9a70227ef9b36a59e44f4ad1d8",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".Logger",
+          "specifiers": [
+            "Logger"
+          ]
+        },
+        {
+          "source": ".init_optimizer",
+          "specifiers": [
+            "init_optimizer"
+          ]
+        },
+        {
+          "source": ".ckpt_utils",
+          "specifiers": [
+            "load_ckpt",
+            "save_ckpt"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "training/ckpt_utils.py": {
+      "filePath": "training/ckpt_utils.py",
+      "contentHash": "56fad2d4975d12db3f24ce967bd9d3b041584889f608ecec6d5e1b719073422a",
+      "functions": [
+        {
+          "name": "load_ckpt",
+          "params": [
+            "ckpt_path"
+          ],
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "save_ckpt",
+          "params": [
+            "params",
+            "opt_state",
+            "np_rd_state",
+            "model_config",
+            "train_config",
+            "step",
+            "savedir",
+            "savepath",
+            "is_replicated"
+          ],
+          "exported": true,
+          "lineCount": 27
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "pickle",
+          "specifiers": [
+            "pickle"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "flax.serialization",
+          "specifiers": [
+            "to_state_dict",
+            "from_state_dict"
+          ]
+        },
+        {
+          "source": "flax.jax_utils",
+          "specifiers": [
+            "unreplicate"
+          ]
+        },
+        {
+          "source": ".TrainConfig",
+          "specifiers": [
+            "TrainConfig"
+          ]
+        }
+      ],
+      "exports": [
+        "load_ckpt",
+        "save_ckpt"
+      ],
+      "totalLines": 55,
+      "hasStructuralAnalysis": true
+    },
+    "training/convert_ckpt.py": {
+      "filePath": "training/convert_ckpt.py",
+      "contentHash": "1c2df6807383be6b25571a1d61fae5b69134cb4ba2ed1abed93c4d8a2c79237d",
+      "functions": [
+        {
+          "name": "load_convert_save",
+          "params": [
+            "load_path",
+            "save_path",
+            "dtype",
+            "delete_train_info"
+          ],
+          "exported": true,
+          "lineCount": 20
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "training.ckpt_utils",
+          "specifiers": [
+            "load_ckpt",
+            "save_ckpt"
+          ]
+        },
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        }
+      ],
+      "exports": [
+        "load_convert_save"
+      ],
+      "totalLines": 37,
+      "hasStructuralAnalysis": true
+    },
+    "training/init_optimizer.py": {
+      "filePath": "training/init_optimizer.py",
+      "contentHash": "73d3c9e6aab2cf9db00db86253d276baed7bcaede6bc3724890042967d26e7c8",
+      "functions": [
+        {
+          "name": "init_optimizer",
+          "params": [
+            "num_steps",
+            "num_warmup_steps",
+            "peak_lr",
+            "init_lr",
+            "end_lr",
+            "weight_decay",
+            "clip_norm",
+            "optimizer_type"
+          ],
+          "exported": true,
+          "lineCount": 29
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "optax",
+          "specifiers": [
+            "optax"
+          ]
+        },
+        {
+          "source": ".optimizers",
+          "specifiers": [
+            "muon"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "Literal"
+          ]
+        }
+      ],
+      "exports": [
+        "init_optimizer"
+      ],
+      "totalLines": 36,
+      "hasStructuralAnalysis": true
+    },
+    "training/Logger.py": {
+      "filePath": "training/Logger.py",
+      "contentHash": "98a39e80c16aeaf35d418262cbf8dacb1eb83237d9cf5550ef7cb1518da5fd7f",
+      "functions": [],
+      "classes": [
+        {
+          "name": "Logger",
+          "methods": [
+            "__init__",
+            "__call__",
+            "flush"
+          ],
+          "properties": [],
+          "exported": true,
+          "lineCount": 25
+        }
+      ],
+      "imports": [
+        {
+          "source": "tensorboardX",
+          "specifiers": [
+            "SummaryWriter"
+          ]
+        },
+        {
+          "source": "queue",
+          "specifiers": [
+            "Queue"
+          ]
+        },
+        {
+          "source": "os",
+          "specifiers": [
+            "os"
+          ]
+        },
+        {
+          "source": "helpers",
+          "specifiers": [
+            "parse_bool"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        }
+      ],
+      "exports": [
+        "Logger"
+      ],
+      "totalLines": 37,
+      "hasStructuralAnalysis": true
+    },
+    "training/optimizers/__init__.py": {
+      "filePath": "training/optimizers/__init__.py",
+      "contentHash": "dca4320bede1256d4fbc49edd22daf2d0ea960016dbefb5a8c6e1872452e24fb",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": ".muon",
+          "specifiers": [
+            "muon"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "training/optimizers/muon.py": {
+      "filePath": "training/optimizers/muon.py",
+      "contentHash": "785f61dedbb9d934eb6dd62e16001e2b63e3ae54ef5eaeab610aa33374b4617e",
+      "functions": [
+        {
+          "name": "zeropower_via_newtonschulz5",
+          "params": [
+            "G",
+            "steps",
+            "eps",
+            "dtype",
+            "qkv_special_case"
+          ],
+          "returnType": "jax.Array",
+          "exported": true,
+          "lineCount": 27
+        },
+        {
+          "name": "if_dispatch_to_muon",
+          "params": [
+            "x"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "merge",
+          "params": [
+            "x",
+            "y"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "set_leaves_to_false",
+          "params": [
+            "pytree",
+            "match_keys"
+          ],
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "multiplied_by_adjustment_ratio_for_muon",
+          "params": [
+            "p"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "muon",
+          "params": [
+            "lr",
+            "momentum",
+            "ns_steps",
+            "weight_decay",
+            "adamw_lr",
+            "adamw_b1",
+            "adamw_b2",
+            "adamw_eps",
+            "adamw_eps_root",
+            "adamw_weight_decay",
+            "adamw_clip_norm",
+            "nesterov",
+            "adamw_param_keys",
+            "qkv_special_case",
+            "adjust_lr"
+          ],
+          "returnType": "optax.GradientTransformation",
+          "exported": true,
+          "lineCount": 103
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "optax",
+          "specifiers": [
+            "optax"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        },
+        {
+          "source": "math",
+          "specifiers": [
+            "math"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "tp"
+          ]
+        }
+      ],
+      "exports": [
+        "zeropower_via_newtonschulz5",
+        "if_dispatch_to_muon",
+        "merge",
+        "set_leaves_to_false",
+        "multiplied_by_adjustment_ratio_for_muon",
+        "muon"
+      ],
+      "totalLines": 187,
+      "hasStructuralAnalysis": true
+    },
+    "training/train_mcl.py": {
+      "filePath": "training/train_mcl.py",
+      "contentHash": "8997bf38de8325d837248465db6b0b1692eebfb4b739d925952846fa90fd30c8",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "flax.jax_utils",
+          "specifiers": [
+            "replicate"
+          ]
+        },
+        {
+          "source": "models",
+          "specifiers": [
+            "MCLModelConfig",
+            "MCLModel"
+          ]
+        },
+        {
+          "source": "training.TrainConfig",
+          "specifiers": [
+            "TrainConfig"
+          ]
+        },
+        {
+          "source": "training",
+          "specifiers": [
+            "load_ckpt"
+          ]
+        },
+        {
+          "source": "data",
+          "specifiers": [
+            "MCLDataloader"
+          ]
+        },
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": ".train_mis",
+          "specifiers": [
+            "train_mcl"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 93,
+      "hasStructuralAnalysis": true
+    },
+    "training/train_mis.py": {
+      "filePath": "training/train_mis.py",
+      "contentHash": "9a84def1dac43d5d1183996e48f274ec2d90974ac0a4b9b4b04f055b09e191c8",
+      "functions": [
+        {
+          "name": "train_mis",
+          "params": [
+            "dataloader",
+            "model_config",
+            "train_config",
+            "model",
+            "opt_state",
+            "save_interval",
+            "logdir",
+            "savedir",
+            "step",
+            "allow_zero_to_one"
+          ],
+          "exported": true,
+          "lineCount": 132
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "flax.jax_utils",
+          "specifiers": [
+            "replicate"
+          ]
+        },
+        {
+          "source": "models",
+          "specifiers": [
+            "MISModelConfig",
+            "MISModel"
+          ]
+        },
+        {
+          "source": "training.TrainConfig",
+          "specifiers": [
+            "TrainConfig"
+          ]
+        },
+        {
+          "source": "training",
+          "specifiers": [
+            "Logger",
+            "load_ckpt",
+            "save_ckpt"
+          ]
+        },
+        {
+          "source": "data",
+          "specifiers": [
+            "MISDataloader"
+          ]
+        },
+        {
+          "source": "helpers.mis_transform",
+          "specifiers": [
+            "edges2adj"
+          ]
+        },
+        {
+          "source": "optax",
+          "specifiers": [
+            "optax"
+          ]
+        },
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        }
+      ],
+      "exports": [
+        "train_mis"
+      ],
+      "totalLines": 224,
+      "hasStructuralAnalysis": true
+    },
+    "training/train_tsp.py": {
+      "filePath": "training/train_tsp.py",
+      "contentHash": "94a123b735da6e66c0d3a4e8d3197c04d20970e47b447aec418d0837c98e002f",
+      "functions": [
+        {
+          "name": "train_tsp",
+          "params": [
+            "dataloader",
+            "model_config",
+            "train_config",
+            "model",
+            "opt_state",
+            "save_interval",
+            "logdir",
+            "savedir",
+            "step"
+          ],
+          "exported": true,
+          "lineCount": 78
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "jax",
+          "specifiers": [
+            "jax"
+          ]
+        },
+        {
+          "source": "jax.numpy",
+          "specifiers": [
+            "jnp"
+          ]
+        },
+        {
+          "source": "flax",
+          "specifiers": [
+            "nnx"
+          ]
+        },
+        {
+          "source": "flax.jax_utils",
+          "specifiers": [
+            "replicate"
+          ]
+        },
+        {
+          "source": "models",
+          "specifiers": [
+            "TSPModelConfig",
+            "TSPModel"
+          ]
+        },
+        {
+          "source": "modules.functional",
+          "specifiers": [
+            "coord_normalize"
+          ]
+        },
+        {
+          "source": "training.TrainConfig",
+          "specifiers": [
+            "TrainConfig"
+          ]
+        },
+        {
+          "source": "training",
+          "specifiers": [
+            "Logger",
+            "load_ckpt",
+            "save_ckpt"
+          ]
+        },
+        {
+          "source": "data",
+          "specifiers": [
+            "TSPDataloader"
+          ]
+        },
+        {
+          "source": "helpers",
+          "specifiers": [
+            "sol2adj"
+          ]
+        },
+        {
+          "source": "optax",
+          "specifiers": [
+            "optax"
+          ]
+        },
+        {
+          "source": "argparse",
+          "specifiers": [
+            "argparse"
+          ]
+        },
+        {
+          "source": "numpy",
+          "specifiers": [
+            "np"
+          ]
+        },
+        {
+          "source": "functools",
+          "specifiers": [
+            "partial"
+          ]
+        }
+      ],
+      "exports": [
+        "train_tsp"
+      ],
+      "totalLines": 162,
+      "hasStructuralAnalysis": true
+    },
+    "training/TrainConfig.py": {
+      "filePath": "training/TrainConfig.py",
+      "contentHash": "0cfc879c4401a61171083183f8852c83f72904e98b7140af4b6eec2c800b8553",
+      "functions": [],
+      "classes": [
+        {
+          "name": "TrainConfig",
+          "methods": [
+            "__post_init__",
+            "init_optimizer"
+          ],
+          "properties": [
+            "num_nodes",
+            "num_steps",
+            "num_warmup_steps",
+            "batch_size",
+            "peak_lr",
+            "end_lr",
+            "weight_decay",
+            "clip_norm",
+            "seed",
+            "noise_type",
+            "target_disruption",
+            "optimizer_type"
+          ],
+          "exported": true,
+          "lineCount": 31
+        }
+      ],
+      "imports": [
+        {
+          "source": "dataclasses",
+          "specifiers": [
+            "dataclass"
+          ]
+        },
+        {
+          "source": "typing",
+          "specifiers": [
+            "tp"
+          ]
+        },
+        {
+          "source": ".init_optimizer",
+          "specifiers": [
+            "init_optimizer"
+          ]
+        }
+      ],
+      "exports": [
+        "TrainConfig"
+      ],
+      "totalLines": 39,
+      "hasStructuralAnalysis": true
+    }
+  }
+}
