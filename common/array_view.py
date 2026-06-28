@@ -15,7 +15,8 @@ import dataclasses
 import math
 import operator
 from types import EllipsisType  # pylint: disable=g-importing-member
-from typing import Any, Self, TypeAlias, TypeVar
+from typing import Any, TypeAlias, TypeVar
+from typing_extensions import Self
 
 import jax
 import jax.experimental
@@ -214,7 +215,7 @@ class ArrayView:
     los = (0, *indices_or_sections)
     his = (*indices_or_sections, None)
     slice_prefix = (slice(None),) * _canonicalize_axis(axis, self.ndim)
-    return tuple(self[*slice_prefix, slice(lo, hi)] for lo, hi in zip(los, his))
+    return tuple(self[(*slice_prefix, slice(lo, hi))] for lo, hi in zip(los, his))
 
   def swapaxes(self, axis1: int, axis2: int) -> Self:
     """Returns a new view with the specified axis swapped."""
